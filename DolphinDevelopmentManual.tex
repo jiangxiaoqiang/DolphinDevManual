@@ -168,14 +168,14 @@
 \begin{minipage}{0.4\textwidth}
 \begin{flushleft} \large
 \emph{Author:}\\
-John \textsc{Smith}
+Xiaoqiang \textsc{Jiang}
 \end{flushleft}
 \end{minipage}
 
 \begin{minipage}{0.4\textwidth}
 \begin{flushright} \large
 \emph{Supervisor:} \\
-Xiaoqiang \textsc{Jiang}
+Donald \textsc{Knuth}
 \end{flushright}
 \end{minipage}
 
@@ -235,6 +235,8 @@ Xiaoqiang \textsc{Jiang}
 		\hline
 		12 & 蒋小强 & 2015-12-25 & 添加浏览器渲染（Render）相关内容\\
 		\hline
+		13 & 蒋小强 & 2015-02-05 & 添加RESTful API授权流程\\
+		\hline
 	\end{tabular}
 \end{table}
 
@@ -274,6 +276,21 @@ they strive to achieve a balance between quality and speed of execution.}
 \clearpage
 
 \section{程序设计原则}
+
+\subsection{Architectural Requirements}
+
+\begin{itemize}
+\item{Easy to seperate \textrightarrow Autonomy(自治，自治权)}
+\item{Easy to understand \textrightarrow Understandability}
+\item{Easy to extend \textrightarrow Extensibility}
+\item{Easy to change \textrightarrow Changeability}
+\item{Easy to replace \textrightarrow Replaceability}
+\item{Easy to deploy \textrightarrow Deployability}
+\item{Easy to scale \textrightarrow Scalability}
+\item{Easy to recover \textrightarrow Resilience(恢复力、弹力、顺应力)}
+\item{Easy to connect \textrightarrow Uniform Interface}
+\item{Easy to afford \textrightarrow Cost-efficiency(for develop\&operation)}
+\end{itemize}
 
 Reliability/Fault torlerance/Reusability/Manageability/Monitorability/
 Maintainability/Extensibility/Understandability/Auditability/
@@ -645,13 +662,20 @@ namespace $rootnamespace$
 	Utility & 工具 & Menu & 菜单\\
 	Entity & 实体 & Static & 静态\\
 	Pattern(s) & 模式 & Template & 模板\\
-	Handler & 处理者 & Public & 公共\\
+	Handler & 处理者 & Public\footnotemark[1] & 公共\\
 	Action & 动作 & Route & 路由\\
 	Base & 基 & Proxy & 代理\\ 
 	Library & 库 & Tools & 工具库 \\
     Platform & 平台 & NetworkProcess & 网络进程 \\
     Storage & 存储的共享代码 & Loader & 资源加载器\\
+    Preview\footnotemark[2] & 预演 & SubView & 子视图\\
+    Network & 网络 & Category & 分类\\
+    Vendor\footnotemark[3] & 第三方 & Expand & 扩展\\
 \end{tabular}
+
+\footnotetext[1]{Base用于存放一些抽离提取或以共用的可被继承的内容}
+\footnotetext[2]{Preview用于存放一些练习的功能页面，集成一些第三插件实例或者实例代码都可以放在里面}
+\footnotetext[3]{Vender(第三方)存放一些可能被修改的第三方插件及一些自个封装插件}
 
 \subsection{代码规范检查}
 
@@ -780,6 +804,7 @@ and not interpreters (step-by-step executors of source code, where no pre-runtim
 	\multirow{1}{*}{项}			
 	& \multicolumn{1}{c}{名称}
 	& \multicolumn{1}{|c}{版本}\\
+	\hline
 	开发工具 & Visual Studio & 2013\\
 	日志组件 & log4net & 1.2.13.0\\	
 	单元测试组件 & NUnit & 2.6.4\\
@@ -806,7 +831,8 @@ and not interpreters (step-by-step executors of source code, where no pre-runtim
 	VS代码缩进提示插件 & Indent Guids & \\
 	代码性能分析 & PerfView & 1.8.0.0  \\ 
 	HTTP调试 &  Fiddler & 4.6.1.4\\		
-    网页性能优化 & YSlow & 3.1.8.1\\		\end{tabular}
+    网页性能优化 & YSlow & 3.1.8.1\\		
+    \end{tabular}
 
 \subsection{Web Server}
 
@@ -916,7 +942,7 @@ WCF的配置编辑可用微软提供的工具\textbf{SvcConfigEditor.exe}，
 然而，Web架构的设计者们却有意避免采用这两种架构风格。
 主要的原因是运行Web应用的互联网环境，与运行企业应用的企业内网环境有很大的差别。 
 
-\subsection{规范(Specification)}
+\section{规范(Specification)}
 
 REST可以降低开发的复杂度，提高系统的可伸缩性，增强系统的可扩展性，简化应用系统之间的集成，
 一些新产品的开发甚至已经几乎完全抛弃了传统的类似JSP的技术，转而大量使用REST风格的构架设计， 即在服务器端所有商业逻辑都以REST API的方式暴露给客户端，所有浏览器用户界面使用widget，Ajax，HTML5 等技术，
@@ -1166,7 +1192,7 @@ DataContract也支持Name\textbackslash Namespace属性，
 \subsection{WCF的调用}
 
 浏览部署完毕后的WCF页面，文件名以svc结尾。
-浏览此文件时会有一个网址，形如：\url{http://119.29.81.128:8018/WCFService/Tools/UploadFile.svc?wsdl}，
+浏览此文件时会有一个网址，形如：\url{http://129.21.11.121:8018/WCFService/Tools/UploadFile.svc?wsdl}，
 将此网址添加进Visual Studio的Web Service引用即可。
 系统在引用后会自动添加形如如下代码的配置并同时创建代理类，
 客户端需要一个代理类来访问服务。
@@ -1179,7 +1205,7 @@ DataContract也支持Name\textbackslash Namespace属性，
         </basicHttpBinding>
     </bindings>
     <client>
-        <endpoint address="http://119.29.81.128:8018/WCFService/Tools/UploadFile.svc?wsdl"
+        <endpoint address="http://129.21.11.121:8018/WCFService/Tools/UploadFile.svc?wsdl"
             binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IUploadFile"
             contract="WCFFileService.IUploadFile" name="BasicHttpBinding_IUploadFile" />
     </client>
@@ -1396,8 +1422,12 @@ WebHttpBinding用于通过HTTP请求提供的服务,
 它对于脚本客户端很有用,
 如ASP.NET AJAX\footnote{<C\#高级编程>43.5节}.在WCF实际运行的过程中，访问的地址以配置文件配置的地址为准，
 和实际引用的地址无关。配置完毕后在浏览器中输入形如如下链接：
-\url{http://119.29.81.128:8019/WCFService/Product/PublicProductService.svc/
-GetSingleSellerAwardListByPage?pageIndex={PAGEINDEX}\&pageSize={PAGESIZE}\&count={COUNT}\&sellerId={SELLERID}}，
+
+\begin{lstlisting}[language=XML]
+http://129.11.21.18:8019/WCFService/Product/PublicProductService.svc/
+GetSingleSellerAwardListByPage?pageIndex={PAGEINDEX}&pageSize={PAGESIZE}&count={COUNT}&sellerId={SELLERID}
+\end{lstlisting}
+
 将会看到访问后的结果。
 将Web.config中的 <webHttp/> 修改为 <webHttp helpEnabled="true"/>将可以在浏览器页面中列举出可用接口，
 并提供提交的数据样例。打开浏览器，
@@ -2834,6 +2864,8 @@ ASP.NET Web API is an ideal platform for building RESTful applications on the .N
 那么调用是也必须在Url的参数集合中以value=1的形式，名称必须一致。
 GlobalConfiguration.Configuration中GlobalConfiguration类在System.Web.Http.WebHost.dll中。
 
+\section{参数传递}
+
 \subsection{Web Api Json传递}
 
 http://blog.csdn.net/besley/article/details/23955147?utm\_source=tuicool\&utm\_medium=referral
@@ -2899,24 +2931,70 @@ Model绑定不仅可以根据参数名（简单类型）从HTTPRouteData的value
 \item{QueryString中的数据}
 \end{itemize}
     
-\subsection{Automated Documentation for REST APIs}
+\section{Automated Documentation for REST APIs}
 
-\subsubsection{Swagger}
+\subsection{Swagger}
 
 The goal of Swagger™ is to define a standard, 
 language-agnostic interface to REST APIs which allows both humans 
 and computers to discover and understand the capabilities 
 of the service without access to source code, documentation, 
-or through network traffic inspection. When properly defined via Swagger, 
+or through network traffic inspection. 
+When properly defined via Swagger, 
 a consumer can understand and interact with the remote service 
 with a minimal amount of implementation logic. 
 Similar to what interfaces have done for lower-level programming, 
 Swagger removes the guesswork in calling the service.
-
-\subsubsection{Swagger-UI}
-
 Swagger-UI本身只提供在线测试功能，要集成它还需要告诉它本项目提供的各种服务和参数信息。
 
+\begin{lstlisting}[language=HTML,caption=Swagger链接]
+http://localhost:5509/swagger/ui/index
+\end{lstlisting}
+
+要让接口的内容显示，需要开启Web Api Tracing，
+在WebApiConfig.cs文件的Rigester方法中添加如下语句。
+
+\begin{lstlisting}[language={[Sharp]C},caption=开启Tracing]
+config.EnableSystemDiagnosticsTracing();
+\end{lstlisting}
+
+需要注意的是EnableSystemDiagnosticsTracing为HttpConfiguration实例的扩展方法，
+需要引用动态链接库System.Web.Http.Tracing，
+另外需要注意的是Swagger对文件WebApiConfig.cs的名字大小写敏感。
+测试页面虽然可以正常工作，但是接口说明和参数说明都是空着的，
+显得不够友好，但这些实际是可以从代码的XML注释中读取出来的。
+要实现这一效果，需要进行如下两步。首先，开放注释的XML文档的输出，
+如图\ref{fig:WebApiOutputComment}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=1]{WebApiOutputComment.jpg}
+	\caption{输出注释}
+	\label{fig:WebApiOutputComment}
+\end{figure}
+
+第二步就是将WebApi的注释(Comments)输出文档在SwaggerConfig.cs类中的Register方法进行指定，
+如下代码片段所示。
+
+\begin{lstlisting}[language={[Sharp]C},caption=Swagger指定注释文档的位置]
+c.IncludeXmlComments(GetXmlCommentsPath());
+
+private static string GetXmlCommentsPath()
+{
+    return System.String.Format(@"{0}\bin\WebApi.XML",System.AppDomain.CurrentDomain.BaseDirectory);
+}
+\end{lstlisting}
+
+WebApi生成注释后的效果如图\ref{fig:WebApiCommentUI}所示，
+所有的Api文档目前的粒度为Controller，Advert为Controller的名称，
+GetAdvertise为Action的名称，往后项目复杂后可以根据模块分离出Area。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{WebApiCommentUI.jpg}
+	\caption{注释的效果}
+	\label{fig:WebApiCommentUI}
+\end{figure}
 
 
 \chapter{数据操作}
@@ -3193,8 +3271,8 @@ var json = LowercaseJsonSerializer.SerializeObject(new { Foo = "bar" });
 
 \subsection{序列化（Serialization）字典值}
 
-程序有时需要动态的配置项，如字典类型的配置(Key-Value)，
-一般的序列化方法不支持字典类型的序列化，
+程序有时需要动态的字典类型（Key-Value）的配置项，
+一般的序列化方法不支持字典(Dictionary)类型的序列化，
 可使用DataContractSerializer进行序列化，
 输出的XML文件需要是可读格式(Readable,不是所有的配置都是一行)，
 可以采用XmlWriterSettings进行设置。
@@ -3209,7 +3287,7 @@ var json = LowercaseJsonSerializer.SerializeObject(new { Foo = "bar" });
 private static void Serialize<T>(T instance, string fileName)
 {
     var serializer = new DataContractSerializer(typeof(T));
-    /*输出为格式化的XML数据*/
+    /*输出为良好缩进的格式化的XML数据*/
     var xmlWriteSettings = new XmlWriterSettings { Indent = true };
     using (var writer = XmlWriter.Create(fileName, xmlWriteSettings))
     {
@@ -3318,7 +3396,7 @@ double.TryParse和double.Parse两者最大的区别是，
 TryParse方法则不会引发异常，它会返回false，同时将result置为0。
 实际上，早期的FCL\footnote{Framework Class Library,即Framework类库。}
 中并没有提供TryParse方法，那时只能调用Parse方法，
-如果转型失败，则要将值设定为一个初始值，同时必须要捕获异常，代码如下所示：
+如果转换类型失败，则要将值设定为一个初始值，同时必须要捕获异常，代码如下所示：
 
 \begin{lstlisting}[language={[Sharp]C}]
 string str = string.Empty;  
@@ -3337,7 +3415,7 @@ Convert.ToDouble调用此方法ToDouble(Char)始终引发InvalidCastException。
 
 \subsubsection{List与string的转换}
 
-我们在开发中经常会用List<string>来保存一组字符串，
+在开发中经常会用List<string>来保存一组字符串，
 比如下面这段代码：
 
 \begin{lstlisting}[language={[Sharp]C}]
@@ -3957,6 +4035,51 @@ Console.WriteLine(guid.ToString("B"));//B:brace
 Console.WriteLine(guid.ToString("P"));//P:parentheses
 \end{lstlisting}
 
+\section{代码生成(Code Generate)}
+
+\subsection{CSharpCodeProvider}
+
+\begin{lstlisting}[language={[Sharp]C},caption=CSharpCodeProvider代码自动生成]
+/// <summary>
+/// 编译源代码
+/// </summary>
+/// <param name="sourceCodeContent"></param>
+/// <param name="outAssemblyPath">DLL输出目录</param>
+/// <param name="referencedAssemblies">编译时需引用的程序集</param>
+/// <returns></returns>
+public static bool CompileUtil(string sourceCodeContent, string outAssemblyPath, IEnumerable<string> referencedAssemblies)
+{
+    var compileSuccess = true;
+    var compileInfo = string.Empty;
+    var csharpCodePrivoder = new CSharpCodeProvider();
+    var codeCompiler = csharpCodePrivoder.CreateCompiler();
+    var compilerParameters = new CompilerParameters();
+    foreach (var singleReference in referencedAssemblies)
+    {
+        //添加引用
+        compilerParameters.ReferencedAssemblies.Add(singleReference);
+    }
+    compilerParameters.GenerateExecutable = false;
+    compilerParameters.GenerateInMemory = false;
+    compilerParameters.OutputAssembly = outAssemblyPath;
+    var compilerResult = codeCompiler.CompileAssemblyFromSource(compilerParameters, sourceCodeContent);
+    if (compilerResult.Errors.HasErrors)
+    {
+        foreach (CompilerError compilerError in compilerResult.Errors)
+        {
+            compileInfo += compilerError.ErrorText;
+        }
+        compileSuccess = false;
+        LogHelper.Logger.Error("Compile error:" + compileInfo);
+    }
+    return compileSuccess;
+}
+\end{lstlisting}
+
+\subsection{CodeDOMProvider}
+
+
+
 \chapter{Web}
 
 \clearpage
@@ -4030,8 +4153,6 @@ URI 属于 URL 更低层次的抽象，一种字符串文本标准。
 二者的区别在于，URI 表示请求服务器的路径，定义这么一个资源。
 而 URL 同时说明要如何访问这个资源（http://）。
 
-
-
 \subsection{CommonJS}
 
 CommonJS是一种规范，NodeJS是这种规范的实现。
@@ -4040,9 +4161,15 @@ CommonJS有很多实现，其中不乏很多大名鼎鼎的项目，
 比如说：Apache的CouchDB和node.js等。
 但这些项目大部分只实现了CommonJS的部分规范。
 
+\section{通信}
 
-\subsection{通信协议}
+\subsection{端口}
 
+\paragraph{22} SSH为Secure Shell的缩写，由IETF的网络工作小组（Network Working Group）所制定；
+SSH为建立在应用层和传输层基础上的安全协议。SSH是目前较可靠，专为远程登录会话和其他网络服务提供安全性的协议。
+利用SSH协议可以有效防止远程管理过程中的信息泄露问题。SSH最初是UNIX系统上的一个程序，
+后来又迅速扩展到其他操作平台。SSH在正确使用时可弥补网络中的漏洞。SSH客户端适用于多种平台。
+几乎所有UNIX平台—包括HP-UX、Linux、AIX、Solaris、Digital UNIX、Irix，以及其他平台，都可运行SSH。
 
 \subsection{Internet Information Service}
 
@@ -4733,7 +4860,7 @@ WEB 服务器表明自己对本响应消息体（不是消息体里面的对象�
 
 \subsection{HTTP协议-压缩(HTTP Protocol-Compress)}
 
-HTTP压缩是指: Web服务器和浏览器之间压缩传输的”文本内容“的方法。
+HTTP压缩是指: Web服务器和浏览器之间压缩传输的“文本内容”的方法。
 HTTP采用通用的压缩算法，比如gzip来压缩HTML,Javascript, CSS文件。
 能大大减少网络传输的数据量，提高了用户显示网页的速度。当然，同时会增加一点点服务器的开销。
 HTTP压缩，在HTTP协议中，其实是内容编码的一种。
@@ -4744,7 +4871,7 @@ HTTP定义了一些标准的内容编码类型，并允许用扩展的形式添�
 Content-Encoding header 就用这些标准化的代号来说明编码时使用的算法。
 Content-Encoding值：
 
-\begin{tabular}{ll}
+\begin{tabular}{l|p{12cm}}
 	\multirow{1}{*}{}			
 	& \multicolumn{1}{c}{}\\
 	gzip & 表明实体采用GNU zip编码\\
@@ -4895,11 +5022,6 @@ HttpTunnel通常被用在受限的网络环境中，比如在NAT环境中的Clie
 （2）Proxy Server向实际的Server发送连接请求（Http协议）
 （3）上述两步成功后，就相当于在Client和Server之间存在了一条连通的Tunnel（如上图中的蓝色虚线所示）
 （4）后续Client和Server就可以直接进行数据的收发，协议由Client和Server自己约定，与HttpTunnel无关
-
-
-
-
-
 
 \subsection{REST方式POST、GET}
 
@@ -5092,6 +5214,7 @@ IE取到Response中Location header的新URL, 又重新发送了一个Request.
 刷新一个网页时，Fiddler会捕获304类型的封包，
 代表此资源可重复使用。
 
+\subsubsection{4XX}
 
 \paragraph{400}~ 400是一种是HTTP状态码，400 Bad Request。
 是在打开网页时浏览器返回到客户端的一种状态码。显示在客户端的也就是400页面。
@@ -5103,6 +5226,10 @@ IE取到Response中Location header的新URL, 又重新发送了一个Request.
 通常只用Windows主机才会出现这样的字样，如果是Linux主机，会显示不同的错误提示。
 bad request invalid hostname出现这个错误的原因是某个域名绑定到了某个主机上，
 而该主机却没有绑定这个域名，所以IIS就返回了这个提示信息。
+
+\paragraph{401}~一般来说该错误消息表明您首先需要登录（输入有效的用户名和密码）。
+如果你刚刚输入这些信息，立刻就看到一个401错误，就意味着，
+无论出于何种原因您的用户名和密码其中之一或两者都无效（输入有误，用户名暂时停用，等）。
 
 
 4XX  客户端错误 - 请求有语法错误或请求无法实现。
@@ -5888,12 +6015,16 @@ Session 的超时时间（Timeout）是20分钟，用户保持连续20分钟不�
 
 浏览器缓存机制是指通过HTTP协议头里的Cache-Control（或 Expires）和Last-Modified（或 Etag）等字段来控制文件缓存的机制。这两个字段配置的是本地缓存，
 如果缓存命中（当前时间小于资源的过期时间）那么浏览器是不会发起HTTP请求而是直接加载缓存资源。
-这(Expires)应该是WEB中最早的缓存机制了，是在HTTP协议中实现的，有点不同于Dom Storage、AppCache 等缓存机制，
+这(Expires)是WEB中较早的缓存机制，是在HTTP 1.0协议中实现的，
+它描述的是一个绝对时间，由服务器返回，用GMT格式的字符串表示。
+有点不同于Dom Storage、AppCache 等缓存机制，
 但本质上是一样的。可以理解为，一个是协议层实现的，一个是应用层实现的。
 
 \subsection{Request缓存相关首部字段}
 
-\paragraph{Cache-Control}Cache-Control在HTTP 1.1中加入的，
+\paragraph{Cache-Control}Expires和Cache-Control同时存在时，
+Cache-Control优先级高于Expires，
+Cache-Control在HTTP 1.1中加入的，
 用于控制文件在本地缓存有效时长。最常见的，比如服务器回包：
 Cache-Control:max-age=600表示文件在本地应该缓存，
 且有效时长是600秒（从发出请求算起）。在接下来600秒内，如果有请求这个资源，
@@ -7410,9 +7541,9 @@ compilation配置节，
 targetFramework指定网站的目标.NET Framework的版本，
 如果省略此特性，则目标版本将由Web.config文件中的其他设置以及与网站相关联的IIS应用程序池确定。
 具体更多内容参见：\url{https://msdn.microsoft.com/zh-cn/library/vstudio/s10awwz0\%28v=VS.100\%29.aspx}。
-另ViewData和ViewBag的简单对比如表\ref{dd}所示：
+另ViewData和ViewBag的简单对比如表\ref{TheDiffOfViewData}所示：
 
-\begin{table}\caption[Caption for LOF]{修改记录}\label{dd}					
+\begin{table}\caption[Caption for LOF]{修改记录}\label{TheDiffOfViewData}					
 	\medskip
 	\centering		
 	\begin{tabular}{|c|c|}
@@ -7536,6 +7667,30 @@ parent 属性、top 属性以及 frame[] 数组都引用了与当前 window 对�
 虽然这也意味着所有元素对脚本而言都是可以访问的，
 但是，并不意味着所有关联的文件都已经下载完毕。
 换句话说，当HMTL下载完成并解析为DOM树之后，代码就会执行。
+
+\subsection{一道Javascript试题}
+
+
+\begin{lstlisting}[language=VBScript]
+function Foo() {
+    getName = function () { alert (1); };
+    return this;
+}
+Foo.getName = function () { alert (2);};
+Foo.prototype.getName = function () { alert (3);};
+var getName = function () { alert (4);};
+function getName() { alert (5);}
+
+//请写出以下输出结果：
+Foo.getName();//2
+getName();//4
+Foo().getName();//1
+getName();//1
+new Foo.getName();//2
+new Foo().getName();//3
+new new Foo().getName();//3
+\end{lstlisting}
+
 
 \subsection{jQuery Rotate插件实现旋转}
 
@@ -8518,7 +8673,7 @@ exec sp_addlinkedserver
 	@server='LinkServer', --远程服务器别名
 	@srvproduct='',
 	@provider='SQLOLEDB',
-	@datasrc='119.29.81.128,5002'
+	@datasrc='139.28.81.128,5002'
 go
 
 --添加远程登录
@@ -8543,11 +8698,11 @@ from [renren-weixin].[dbo].[tb_wxUser]
 where 1=0
 
 --把本地表导入远程表，远程表必须已经存在，且远程表不应设置标识列或主键 
-insert openquery ([119.21.80.128,5002], ' SELECT * FROM [renren-weixin].[dbo].[tb_wxUser1] ' ) 
+insert openquery ([129.21.80.128,5002], ' SELECT * FROM [renren-weixin].[dbo].[tb_wxUser1] ' ) 
 select * from [zouwo-weixin].[dbo].tb_wxUser
 
 --将远程表导入本地表
-select * into tb_awardsCopy from openrowset('SQLOLEDB ', '119.21.80.128,5002'; 'renren-admin'; 'renren-admin!@#','select * from [renren-system].[dbo].[tb_awards]')
+select * into tb_awardsCopy from openrowset('SQLOLEDB ', '129.21.80.128,5002'; 'renren-admin'; 'renren-admin!@#','select * from [renren-system].[dbo].[tb_awards]')
 
 --用表2的记录更新表1（通过openid匹配，openid唯一）
 update tb_wxUser
@@ -8759,7 +8914,16 @@ schtasks /delete /TN "auto update SVN" `\makeremark{移除作业名称为“auto
 \mbox{}         
 \clearpage
 
-\section{Hash Algorithms}
+
+首先需要说明的是，入侵者的来源有两种，
+一种是内部人员利用自己的工作机会和权限来获取不应该获取的权限而进行的攻击。
+另一种是外部人员入侵，包括远程入侵、网络节点接入入侵等。
+进行网络攻击是一件系统性很强的工作，其主要工作流程是：
+收集情报，远程攻击，远程登录，取得普通用户的权限，
+取得超级用户的权限，留下后门，清除日志。
+主要内容包括目标分析，文档获取，破解密码，日志清除等技术。
+
+\section{Encrypt Algorithms}
 
 Hash，一般翻译做“散列”，也有直接音译为“哈希”的，就是把任意长度的输入（又叫做预映射， pre-image），
 通过散列算法，变换成固定长度的输出，该输出就是散列值。这种转换是一种压缩映射，
@@ -8776,6 +8940,20 @@ HAVAL can produce hashes in lengths of 128 bits, 160 bits, 192 bits, 224 bits, a
 HAVAL also allows users to specify the number of rounds (3, 4, or 5) to be used to generate the hash.
 HAVAL目前还没有C\#实现。
 
+\subsection{网站登录安全(Website Login Security)}
+
+博客园的登录采用了Javascript进行RSA加密，
+公钥通过网页发放到客户端，JSEncrypt加密后发送到服务器，
+Javascript本身是经过明文加密，通过手段理论上可进行破解(研究中)，
+还有就是采用安全控件（淘宝），控件的作用就是用二进制代码来隐藏加密的算法，
+防止密码在发送前被截获，
+不知道算法，也就很难破解原文。在不使用原文的情况下，
+使用密文来模拟用户的登录也是可以的，实际上单纯的加密也是无法满足要求的，
+所以就有了盐值，相同的密码多次生成的结果完全不同，非随机盐也会被摸出规律。
+所以就采用HTTPS对通讯进行加密，但是SSL也会爆出漏洞，病毒木马窥视内存同样存在，
+所以优秀的算法尽量不将明文保存在内存中，或者尽量在内存中停留极短时间。
+还有就是采用硬件加密，当然最安全的就是把电源和网线拔了，
+把电脑拆成零件锁到保险柜里面。
 
 \section{RESTful API认证}
 
@@ -8811,6 +8989,64 @@ GET /object?timestamp=1261496500&apiKey=Qwerty2010&signature=abcdef0123456789
 \end{lstlisting}
 
 而签名是应用API密钥的私钥所得到的HMAC-SHA256哈希值。
+
+\subsection{Basic Authentication}
+
+Basic Authentication需要和HTTPS一起使用，
+Http Basic是一种比较简单的身份认证方式。
+在Http header中添加键值对Authorization: Basic xxx （xxx 是 username:passowrd base64值）。
+而Base64的解码是非常方便的，如果不使用HTTPS，相当于是帐号密码直接暴露在请求中。
+
+\subsection{Api Key + Security Key + Sign}
+
+\begin{enumerate}
+	\setcounter{enumi}{0}
+    \item{用户登录返回一个api\_key和security\_key}注意这里返回的两个key可以被劫持，所以为了进一步安全可以考虑下放key时采用非对称加密进行下放，服务端采用服务端的私钥进行签名，签名后用客户端的公钥进行加密，
+客户端接收后用客户端的私钥进行解密，
+服务端的公钥解密出发送的内容(key)。
+    \item{然后客户端将security\_key存在客户端}
+    \item{当要发送请求之前，通过function2加密方法，把如图所示的五个值一起加密，得到一个sign}
+    \item{发送请求的时候，则将除去security\_key之外的值，以及sign一起发送给服务器端}
+    \item{服务器端首先验证时间戳是否有效，比如是服务器时间戳5分钟之前的请求视为无效}
+    \item{然后根据api\_key得到sercurity\_key}
+    \item{最后验证sign}
+\end{enumerate}
+
+\subsection{Amazon的API鉴权流程}
+
+\begin{enumerate}
+\setcounter{enumi}{0}
+\item{[客户端]在调用REST API之前，首先将待发送消息体打包,combine a bunch of unique data together (Web Sevice端将要接收的数据)}
+\item{[客户端]用系统分派的密钥使用哈希(最好是HMAC-SHA1 or SHA256)加密(第一步的数据)}
+\item{[客户端]向服务器发送数据}
+发送生成的HMAC码.
+
+发送消息体（属性名和属性值），如果是私有信息需要加密，像是（“mode=start\&number=4\&order=desc”或其他不重要的信息）直接发送即可.
+
+(可选项)避免重放攻击(Replay Attacks)的唯一办法就是加上时间戳。在使用HMAC算法时加入时间戳，这样系统就能依据一定的条件去验证是否有重放的请求并拒绝.
+
+用户身份认证信息例如,用户ID，客户ID或是其他能别用户身份的信息。这是公共API，大家都能访问的到(自然也包括了那些居心叵测的访问者)系统仅仅需要这部分信息来区分发信人而不考虑可靠与否(当然可以通过HMAC来判断可靠性).
+
+\item{[服务器端]接收客户端发来的消息}
+
+\item{[服务器端] (参看可选项)检查接收时间和发送时间的间隔是否在允许范围内（5-15分）以避免重放攻击(Replay Attacks).}
+
+提示: 确保待检对象的时区无误Daylight Savings Time 
+
+更新: 最近得到的结论就是直接使用UTC时区而无需考虑DST的问题use UTC time.
+
+\item{[服务器端]使用发送请求中用户信息（比如.API值）从数据库检索出对应的私匙.}
+
+\item{[服务器端]跟客户端相同，先将消息体打包然后用刚得到的私匙加密（生成HMAC）消息体.}
+
+(参看可选项) 如果你使用了加入时间戳的方式避免重放攻击，请确保服务端生成的加密信息中拥有和客户端相同的时间戳信息以避免中间人攻击man-in-the-middle attack.
+
+\item{[服务器端]就像在客户端一样，使用HMAC哈希加密刚才的信息体.}
+
+\item{[服务器端]将服务器端刚生成的哈希与客户端的对比。如果一致，则通讯继续；否则，拒绝请求!}
+
+\end{enumerate}
+
 
 \section{数字签名(Digital Signature)}
 
@@ -8860,8 +9096,8 @@ GET /object?timestamp=1261496500&apiKey=Qwerty2010&signature=abcdef0123456789
 
 \subsection{SHA1算法}
 
-安全哈希算法（Secure Hash Algorithm）主要适用于数字签名标准 （Digital Signature Standard DSS）
-里面定义的数字签名算法（Digital Signature Algorithm DSA）。
+安全哈希算法（Secure Hash Algorithm）主要适用于数字签名标准 （Digital Signature Standard,DSS）
+里面定义的数字签名算法（Digital Signature Algorithm,DSA）。
 对于长度小于2\^64位的消息，SHA1会产生一个160位的消息摘要。
 当接收到消息的时候，这个消息摘要可以用来验证数据的完整性。
 在传输的过程中，数据很可能会发生变化，那么这时候就会产生不同的消息摘要。 
@@ -9017,8 +9253,8 @@ Base64在C\#中的编码解码如下代码片段所示。
 byte[] bytes = Encoding.Default.GetBytes("要转换的字符");
 string str = Convert.ToBase64String(bytes);
 //解码
-byte[] outputb = Convert.FromBase64String(str);
-string orgStr = Encoding.Default.GetString(outputb);
+byte[] outputByte = Convert.FromBase64String(str);
+string originalStr = Encoding.Default.GetString(outputByte);
 \end{lstlisting}
 
 某些RESTful接口的授权信息采用Base64编码的方式，
@@ -9065,18 +9301,20 @@ nmap -F -sT -v nmap.org
 \end{lstlisting}
 
 \begin{itemize}
-\item{-F}扫描100个最有可能开放的端口,F表示Fast Model，
+\item{-F}扫描100个最有可能开放的端口,F表示快速模式(Fast Model)，
 比默认模式扫描更少的端口（Scan fewer ports than the default scan），
-如果需要扫描更多的端口哦，指定p参数，如下代码片段所示：
+如果需要扫描更多的端口，指定p参数，如下命令行片段所示：
 
 \begin{lstlisting}[language=Bash]
 nmap -p 0-10000 -A -v <Host>
 \end{lstlisting}
 
-端口号最好分段指定，否则扫描的速度会非常缓慢。
+端口号最好分段指定，否则扫描的速度会非常缓慢，
+例如需要扫描0-65535端口，可以先扫描0-10000端口，
+再扫描10001-20000，依次类推。
 
 \item{-v}获取扫描的信息
-\item{-sT}采用的是TCP扫描，不写也是可以的，默认采用的就是TCP扫描
+\item{-sT(Scan using TCP)}采用的是TCP扫描，不写也是可以的，默认采用的就是TCP扫描
 \end{itemize}
 
 Nmap输出的是扫描目标的列表，以及每个目标的补充信息，至于是哪些信息则依赖于所使用的选项。
@@ -9112,7 +9350,14 @@ nmap -sS -P0 -sV -O <target>
 2）UDP端口是指用户数据包协议端口，不需要在客户端和服务器之间建立连接。
 常见的端口有DNS服务的53端口。
 
+\paragraph{"ppp0" is not an ethernet device}在使用nmap扫描时候，提示 
 
+\begin{lstlisting}
+Only ethernet devices can be used for raw scans on Windows, and "ppp0" is not an ethernet device. Use the --unprivileged option for this scan. QUITTING!
+\end{lstlisting}
+
+因为用Nmap扫描时，不能用pppoe的拨号口，只能用以太网口。根据提示带参数--unprivileged就可以了,注意扫描的命令不能带-A参数，
+否则会要求root权限，无法启动扫描。 
 
 
 \subsection{版本侦测（Version Detection）}
@@ -9125,6 +9370,43 @@ nmap -sS -P0 -sV -O <target>
 
 
 \subsection{操作系统侦测（Operating System Detection）}
+
+\section{OpenVPN}
+
+\subsection{OpenVPN配置(OpenVPN Configuration)}
+
+OpenVPN的配置可以参考OpenVPN bible\footnote{\url{https://openvpn.net/index.php/open-source/documentation/howto.html}}，
+Step by Step可以参考CodePlayer上的分享\footnote{\url{http://www.365mini.com/page/14.htm}}.
+在服务器上生成所有的配置（包括客户端），
+将配置拷贝到客户端。
+
+
+\paragraph{TLS key negotiation failed to occur within 60 seconds (check your network connectivity)}
+
+One of the most common problems in setting up OpenVPN is that the two OpenVPN daemons on either side of the connection are unable to establish a TCP or UDP connection with each other.
+This is almost a result of:
+
+\begin{itemize}
+\item{A perimeter firewall on the server's network is filtering out incoming OpenVPN packets (by default OpenVPN uses UDP or TCP port number 1194).}
+\item{A software firewall running on the OpenVPN server machine itself is filtering incoming connections on port 1194. Be aware that many OSes will block incoming connections by default, unless configured otherwise.}
+\item{A NAT gateway on the server's network does not have a port forward rule for TCP/UDP 1194 to the internal address of the OpenVPN server machine.}
+\item{The OpenVPN client config does not have the correct server address in its config file. The remote directive in the client config file must point to either the server itself or the public IP address of the server network's gateway.}
+\item{Another possible cause is that the windows firewall is blocking access for the openvpn.exe binary. You may need to whitelist (add it to the "Exceptions" list) it for OpenVPN to work.}
+
+\end{itemize}
+
+查看OpenVPN的监听端口：
+
+\begin{lstlisting}[language=Bash]
+
+#netstat发现计算机上的监听或开放端口
+netstat -an |find /i "listening"
+
+netstat -an |find /i "1194"
+
+#查看一下计算机到底通过哪些端口通信
+netstat -an |find /i "established"
+\end{lstlisting}
 
 
 
@@ -9386,9 +9668,9 @@ var http = require("http");
 var sql = require("mssql");
 
 var config = {
-    user: "renren-admin",
-    password: "renren-admn!@#321",
-    server: "119.29.81.129", // You can use "localhost\\instance" to connect to named instance
+    user: "renren",
+    password: "renren!@#321",
+    server: "129.29.81.129", // You can use "localhost\\instance" to connect to named instance
     port:"5001",
     database: "renren-weixin",
     options: {
@@ -9425,7 +9707,7 @@ NodeJS配置文件可以通过JavaScript和Json格式的文件进行管理，
         {
             "user": "renren-admin",
             "password": "renren-admin!@#321",
-            "server": "119.29.81.128",
+            "server": "129.20.84.118",
             "port":"5002",
             "database": "renren-weixin"
         }        
@@ -9620,12 +9902,12 @@ WinFrom的Application对象本身就提供了ThreadException时间来捕捉为�
 static void Main()
 {
     //注册捕捉异常事件
-    Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
+    Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
     Application.EnableVisualStyles();
     Application.SetCompatibleTextRenderingDefault(false);
     Application.Run(new Form1());
 }
-static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
+static void Application_ThreadException(object sender,ThreadExceptionEventArgs e)
 {
     Exception ex = e.Exception;
     //做一些极其简单的记录异常信息操作
@@ -9772,7 +10054,7 @@ public class Message<T>
 方法的调用如下代码所示。
 
 \begin{lstlisting}[language={[Sharp]C}]
-Message<List<tb_usersModel>> msg = _apiClient.GetModel<List<tb_usersModel>>("http://119.29.81.128:8018/User/web/GetUserInfoByID?userId=888");
+Message<List<tb_usersModel>> msg = _apiClient.GetModel<List<tb_usersModel>>("http://129.20.11.168:8018/User/web/GetUserInfoByID?userId=888");
 List<tb_usersModel> userModel1 = (List<tb_usersModel>)msg.data;
 \end{lstlisting}
 
@@ -9914,7 +10196,7 @@ Windows根据这些信息发现并加载DLL，然后通过符号名或标识号�
 
 Dll的搜索顺序，在Windows上有个注册表键值决定了Dll的搜索顺序：
 HKLM/System/CurrentControlSet/SessionManager/SafeDllSearchMode。
-在vista,server2003,xp sp2中这个值为1，在xp,2000 sp4中为0。1值时的搜素顺序为：
+在Vista,Server 2003,XP sp2中这个值为1，在xp,2000 sp4中为0。1值时的搜素顺序为：
 
 \begin{enumerate}
 \setcounter{enumi}{0}
@@ -10563,7 +10845,7 @@ application code can be subject to subtle bugs, poor performance,
 and, in some cases, security issues.
 
 \begin{itemize}
-\item{Use comparisons with StringComparison.Ordinal or StringComparison.OrdinalIgnoreCase for better performance.}
+\item{Use comparisons with StringComparison.Ordinal or StringComparison.OrdinalIgnoreCase for better performance.}在进行调用String.Compare(string1,string2,StringComparison.Ordinal)的时候是进行非语言(non-linguistic)上的比较,API运行时将会对两个字符串进行byte级别的比较,因此这种比较是比较严格和准确的,并且在性能上也很好,一般通过StringComparison.Ordinal来进行比较比使用String.Compare(string1,string2)来比较要快10倍左右.StringComparison.OrdinalIgnoreCase就是忽略大小写的比较,同样是byte级别的比较.性能稍弱于StringComparison.Ordinal.
 \item{Use overloads that explicitly specify the string comparison rules for string operations.Typically, this involves calling a method overload that has a parameter of type StringComparison.}
 \item{Use StringComparison.Ordinal or StringComparison.OrdinalIgnoreCase for comparisons as your safe default for culture-agnostic string matching.}
 \end{itemize}
@@ -10683,7 +10965,7 @@ C\#中没有传统意义上的全局变量，
 <configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
   <appSettings>
     <!-- WCF正式接口路径 -->
-    <add key="WCFPath" value="http://119.29.81.128:8888" xdt:Transform="SetAttributes" xdt:Locator="Match(key)"/>`\makeremark{设置（SetAttributes）生产环境所调用的接口的值，根据key进行匹配（Match(key)）}`
+    <add key="WCFPath" value="http://129.21.11.122:88" xdt:Transform="SetAttributes" xdt:Locator="Match(key)"/>`\makeremark{设置（SetAttributes）生产环境所调用的接口的值，根据key进行匹配（Match(key)）}`
     <!--新版静态文件地址-->
     <add key="newStaticServer" value="http://192.168.35.17:8083" xdt:Transform="SetAttributes" xdt:Locator="Match(key)"/>
   </appSettings>
@@ -11081,10 +11363,6 @@ MySQL单表最大限制就已经扩大到了64PB了（官方文档显示）。�
 
 \section{PhoneGap}
 
-
-
-
-
 根据Forrester针对开发人员的调查研究显示，在2014年，
 31\%的开发人员编写的都是原生应用程序;
 27\%的编写的是基于Web的应用程序;22\%的编写的是混合应用程序(Apache Cordova或Adobe的PhoneGap(基于Cordova));
@@ -11108,15 +11386,62 @@ npm install -g phonegap
 
 #查看安装的PhoneGap版本
 npm install -g phonegap
-
-#安装Cordova
-npm install -g cordova
-
-#运行Cordova
-cordova run android
 \end{lstlisting}
 
 设置Android路径，变量名：ANDROID\_SDK\_HOME，变量值是android-SDK-windows的路径.
+
+\subsection{Cordova安装}
+
+狗日的PhoneGap又搞成Cordova了，乱搞，苦逼程序员。
+安装Cordova CLI（cordova command-line interface），
+输入如下命令:
+
+\begin{lstlisting}[language=Bash]
+#安装Cordova
+npm install -g cordova
+
+#创建一个新的Cordova项目
+cordova create hello com.example.hello Helloworld
+
+#为该项目添加Android平台支持
+cordova platform add android
+
+#运行Cordova
+cordova run android
+#运行，指定模拟器
+cordova run --target=name_of_your_emulator android
+
+#build应用
+cordova build
+
+#启动Android模拟器
+emulator.exe avd Dolphin
+
+#Cordova调试器
+npm install -g ripple-emulator
+\end{lstlisting}
+
+cordova create项目时，第一个参数为创建项目的路径，
+第二个参数(com.example.hello)为ID，第三个参数(Helloworld)为项目名称。
+build应用成功以后会输出一个apk安装文件，
+将生成的apk拷贝到手机上面运行即可。
+
+\section{React Native for Android}
+
+\subsection{环境搭建}
+
+安装
+
+\begin{lstlisting}[language=Bash]
+npm install -g react-native-cli
+
+#初始化项目
+react-native init MyProject
+
+#To run your app on Android，在你的模拟器设备上面安装生成的应用
+react-native run-android
+\end{lstlisting}
+
 
 
 \clearpage
@@ -11917,6 +12242,7 @@ GEQ - 大于或等于
 
 \subsection{基本使用}
 
+如下代码片段是Git的常见用法。
 
 \begin{lstlisting}[language=Bash]
 # 在当前目录新建一个Git代码库
@@ -11924,10 +12250,16 @@ $ git init
 
 # 添加指定目录到暂存区，包括子目录
 $ git add [dir]
+
+#浏览器中列出git add命令的帮助内容
+$ git add --help
+
+#命令行中列出git add命令的帮助内容
+$ git add -h
 \end{lstlisting}
 
 
-\paragraph{配置}
+\paragraph{配置}使用Git之前的基本配置操作
 
 \begin{lstlisting}[language=Bash]
 # 显示当前的Git配置
@@ -11941,7 +12273,7 @@ $ git config [--global] user.name "[name]"
 $ git config [--global] user.email "[email address]"
 \end{lstlisting}
 
-\paragraph{代码提交}
+\paragraph{代码提交}使用Git进行代码的提交操作
 
 \begin{lstlisting}[language=Bash]
 # 提交暂存区到仓库区
@@ -11959,15 +12291,33 @@ git clone https://github.com/jiangxiaoqiang/DolphinDevManual.git
 #将本地文件添加到git仓库中
 git add [file1]
 
+#生成密钥,在github.com的网站上到ssh密钥管理页，添加新公钥并取名，内容粘贴生成的公钥
+ssh-keygen -t rsa -C "jiangtingqiang@gmail.com"
+
 #推送到GitHub
 git push origin master
-
-#生成密钥,在github.com的网站上到ssh密钥管理页面，添加新公钥，随便取个名字，内容粘贴生成的公钥
-ssh-keygen -t rsa -C "jiangtingqiang@gmail.com"
 \end{lstlisting}
 
+注意每次提交都需要执行git add命令，
+git add与svn中的add有明显的区别，
+修改过的文件也要执行git add后才能够提交。
 
+\subsection{保存Git配置信息}
 
+每次git push时都需要输入用户名和密码，
+需要将密码输入保存在本地。Git支持如下方式的凭据保存：
+
+\paragraph{默认所有都不缓存}每一次连接都会询问你的用户名和密码。
+
+\paragraph{cache}“cache” 模式会将凭证存放在内存中一段时间。 密码永远不会被存储在磁盘中，并且在15分钟后从内存中清除。
+
+\paragraph{store}“store” 模式会将凭证用明文的形式存放在磁盘中，并且永不过期。 这意味着除非你修改了你在 Git 服务器上的密码，否则你永远不需要再次输入你的凭证信息。 这种方式的缺点是你的密码是用明文的方式存放在你的 home 目录下。
+
+\paragraph{osxkeychain}
+如果你使用的是 Mac，Git 还有一种 “osxkeychain” 模式，它会将凭证缓存到你系统用户的钥匙串中。 这种方式将凭证存放在磁盘中，并且永不过期，但是是被加密的，
+这种加密方式与存放 HTTPS 凭证以及 Safari 的自动填写是相同的。
+如果你使用的是Windows，你可以安装一个叫做 “winstore” 的辅助工具。 
+这和上面说的 “osxkeychain” 十分类似，但是是使用 Windows Credential Store 来控制敏感信息。
 
 \section{StyleCop.exe}
 
@@ -12038,7 +12388,7 @@ triggers配置节里说明持续集成的触发条件，seconds表示
 <!--自动获取源码-->
 <sourcecontrol 	type="svn">
 	<!--该项目的SVN路径-->
-    <trunkUrl>https://119.29.81.128/svn/hotmark</trunkUrl>  
+    <trunkUrl>https://129.11.21.112/svn/hotmark</trunkUrl>  
     <!--配置的这个目录将作为CruiseControl.NET的工作目录,CruiseControl.NET会将代码从SVN中check out到这个目录中.-->
     <workingDirectory>D:\Dailybuild\Source</workingDirectory>  
     <!--机器上的SVN的可执行文件路径-->
@@ -12371,6 +12721,12 @@ pause
 目的路径（Target Path）为生成的更新文件存放路径。
 当批处理文件中有中文时，文件本身的编码需要保存为ANSI编码，
 否则脚本执行时会出现乱码的现象。
+
+\section{Gradle}
+
+\subsection{安装}
+
+新建环境变量GRADLE\_HOME，值为Gradle的解压路径；
 
 
 \chapter{测试组件}
@@ -13118,7 +13474,7 @@ Fiddler Composer的功能就是用来创建HTTP Request然后发送。
 在Fiddler的OnBeforeRequest方法中添加如下信息即可。
 
 \begin{lstlisting}[language={[Sharp]C}]
-if(oSession.host.Contains("192.168.1.222:8101")||oSession.host.Contains("119.29.81.128:8101"))
+if(oSession.host.Contains("192.168.1.222:801")||oSession.host.Contains("129.89.81.118:801"))
 {
     oSession.oRequest["auth"] = "app|e10adc3949ba59abbe56e057f20f883e";
 }
@@ -13204,7 +13560,7 @@ MyGeneration是一个功能很强大的代码生成工具。
 存储过程，SQL语句等等。我甚至用它来生成Asp.Net的页面。
 
 \begin{lstlisting}
-Provider=SQLOLEDB.1;Persist Security Info=False;User ID=sa;Password=12345;Data Source=119.29.81.128,5002
+Provider=SQLOLEDB.1;Persist Security Info=False;User ID=sa;Password=12345;Data Source=129.19.11.121,5002
 \end{lstlisting}
 
 \section{Brackets(MIT License)}
@@ -13488,9 +13844,6 @@ http://liyaodong.com
 netstat –ano|findstr “<端口号>”
 \end{lstlisting}
 
-
-
-
 \section{NuGet}
 
 \subsection{打开命令行界面}
@@ -13503,6 +13856,20 @@ NuGet的命令行管理界面在视图>其他窗口>程序包管理控制台下�
 	\caption{NuGet进入命令行}
 	\label{fig:NuGetProgramManageConsole}
 \end{figure}
+
+常用的Nuget命令如下，可以切换当前的默认项目，选择为不同的项目安装相同或不同的组件。
+
+\begin{lstlisting}[language=Bash]
+#安装包
+Install-Package Swashbuckle
+
+#卸载包
+Uninstall-Package Swashbuckle
+
+#列出当前可用的包
+Get-Package -ListAvailable -Filter Swashbuckle
+\end{lstlisting}
+
 
 \section{Quartz.NET}
 
@@ -13735,22 +14102,6 @@ h.打印失败（API：http://ip/weixin/printData?an=error[POST][guid={guid}]）
 \section{配置}
 
 \subsection{app.config}
-
-\subsection{appSettings}
-
-\begin{tabular}{ll}
-	\multirow{1}{*}{}			
-	& \multicolumn{1}{c}{}\\
-	macId & 微信打印机标识（ID）\\
-	FTPAddr & FTP地址，程序更新时获取的文件地址\\	
-	FTPUserName & FTP登录的用户名\\
-	FTPUserPassword & FTP登录的密码\\
-	GetConfigRetryTimes & 配置文件获取失败后的重试次数\\
-	AutoRunProgram & 自动启动程序，多个程序需要设置为自动启动时以英文的反斜杠‘/’符号隔开\\
-	TempPath & 临时文件路径\\
-	PicUrl & 接口的地址，如http://119.29.81.128:8001\\
-	Version & 软件版本号\\						
-\end{tabular}
 
 \section{程序环境}	
 
@@ -14784,7 +15135,7 @@ $\rightarrow$接口权限表$\rightarrow$获取用户地理位置。
 </xml>
 \end{lstlisting}
 
-action="http://119.29.81.128:8001/weixin/getmsg?id=1" 
+action="http://129.19.11.118:801/weixin/getmsg?id=1" 
 
 在Web页面中查看POST信息，利用FireDebug工具进行查看，如图\ref{CheckBrowerPOSTinfo}所示。
 
@@ -15017,59 +15368,10 @@ public static void Cut(Stream fromFile, string fileSaveUrl, int xPosition, int y
 
 2.确保用于签名的公众号在微信公众平台中绑定了“JS接口安全域名”，狗日的微信，整些设置
 
-\clearpage
-\mbox{}         
-\clearpage
-
-
-\part{微信后台管理}
 
 \clearpage
 \mbox{}         
 \clearpage
-
-\section{微信后台}
-
-\begin{tabular}{ll}
-	\multirow{1}{*}{}			
-	& \multicolumn{1}{c}{}\\
-	登录地址XINLG.AdminMange & http://localhost:5050/login\\
-	登录地址XINLG.WeiXin & http://localhost:56593/account/login\\							
-\end{tabular}
-
-
-5050为IIS中配置的端口号，192.168.1.254为本机的IP地址，login为访问页面的名称。
-修改之后需要重新生成下再进行访问
-	
-\subsection{布点管理}
-
-\clearpage
-\mbox{}         
-\clearpage
-		
-\part{走喔}
-
-\clearpage
-\mbox{}         
-\clearpage
-
-
-\section{SQL}
-
-\subsection{即将过期奖品数量}
-
-\begin{lstlisting}[language=SQL]
-select *
-from discount_awardRecord AR 
-where (select [expireDate] 
-	   from discount_award 
-	   where awardId=AR.awardId)-datediff(day,(select winningDate 
-												from discount_awardRecord AR2 
-													where AR2.awardRecordId=AR.awardRecordId),GETDATE())<7				
-and AR.userId=15
-and recordStatus=1
-\end{lstlisting}
-
 
 \printglossaries
 
@@ -15145,6 +15447,10 @@ and recordStatus=1
 	pitfall & 陷阱，圈套；缺陷；诱惑\\
 	MVP & Minimum Viable Product(最小可用产品)\\
 	Over Engineering & 过度工程\\
+	Gene-Editing & 基因编辑\\
+	ludicrous & 滑稽的，荒唐的\\
+	Disposable items & 一次性用品\\
+	bible & 有权威的书\\
 \end{tabular}
 
 \footnotetext[5]{In computer science, syntactic sugar is syntax within a 
@@ -15896,13 +16202,16 @@ de4dot.exe dllFullPath
 
 \section{开发技巧}
 
-\subsection{搜索技巧}
+\subsection{搜索技巧(Search Tricks)}
 
 \paragraph{准确搜索(Exact phrase)}最简单、有效的准确搜索方式是在关键词上加上双引号，在这种情况下，搜索引擎只会反馈和关键词完全吻合的搜索结果。比方说在搜索「Joe Bloggs」的时候，在没有给关键词加上双引号的情况，搜索引擎会显示所有分别和「Joe」以及「Bloggs」相关的信息，但这些显然并不是我们想要的结果。但在加上双引号后，搜索引擎则仅会在页面上反馈和「Joe Bloggs」相吻合的信息。准确搜索在排除常见但相近度偏低的信息时非常有用，可以为用户省去再度对结果进行筛选的麻烦。
 
 \paragraph{排除关键词(Exclude terms)}如果在进行准确搜索时没有找到自己想要的结果，用户可以对包含特定词汇的信息进行排除，仅需使用减号即可。例如在搜索「『Joe Bloggs』-jeans」时，你所得到的结果反馈是不包含「jeans」字眼的「Joe Bloggs」条目。
 
-\paragraph{用「Either OR」（或）逻辑进行搜索}在默认搜索下，搜索引擎会反馈所有和查询词汇相关的结果，但通过使用「OR」逻辑，你可以得到和两个关键词分别相关的结果，而不仅仅是和两个关键词都同时相关的结果。巧妙使用「OR」搜索可以让你在未能确定哪个关键词对于搜索结果起决定作用时依然可以确保搜索结果的准确性。
+\paragraph{用「Either OR」（或）逻辑进行搜索}在默认搜索下，搜索引擎会反馈所有和查询词汇相关的结果，但通过使用「OR」逻辑，你可以得到和两个关键词分别相关的结果，而不仅仅是和两个关键词都同时相关的结果。巧妙使用「OR」搜索可以让你在未能确定哪个关键词对于搜索结果起决定作用时依然可以确保搜索结果的准确性。[OR]也可以替换成竖线(|)。
+
+\paragraph{@}关键字前加@符号，查找社交网站上相关结果。
+
 \subsection{合理使用Using子句}
 
 如果你明确知道某个对象在进行完某些操作后，不再有用，需要回收，你可以使用'using' 语句来销毁对象。
@@ -17170,6 +17479,9 @@ Document根节点包含子节点：forms、location、anchors、images、links�
 
 被internal修饰的东西只能在本程序集（当前项目）内被使用，
 被protected internal修饰的属性/方法可以在其他项目中,被派生类使用。
+
+\subsection{IEnumerable和string[]的区别}
+
 
 
 \section{非技术类}
