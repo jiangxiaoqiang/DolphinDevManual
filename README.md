@@ -1,2 +1,0 @@
-# DolphinDevManual
-Development summary

@@ -9373,6 +9373,10 @@ Only ethernet devices can be used for raw scans on Windows, and "ppp0" is not an
 
 \section{OpenVPN}
 
+
+
+
+
 \subsection{OpenVPN配置(OpenVPN Configuration)}
 
 OpenVPN的配置可以参考OpenVPN bible\footnote{\url{https://openvpn.net/index.php/open-source/documentation/howto.html}}，
@@ -9392,13 +9396,12 @@ This is almost a result of:
 \item{A NAT gateway on the server's network does not have a port forward rule for TCP/UDP 1194 to the internal address of the OpenVPN server machine.}
 \item{The OpenVPN client config does not have the correct server address in its config file. The remote directive in the client config file must point to either the server itself or the public IP address of the server network's gateway.}
 \item{Another possible cause is that the windows firewall is blocking access for the openvpn.exe binary. You may need to whitelist (add it to the "Exceptions" list) it for OpenVPN to work.}
-
+\item{注意所用的是TCP连接还是UDP连接，如果是采用UDP连接，子网上的NAT网关应该有一条端口转发规则： forward UDP port 1194 from my public IP address to 192.168.X.X}
 \end{itemize}
 
 查看OpenVPN的监听端口：
 
 \begin{lstlisting}[language=Bash]
-
 #netstat发现计算机上的监听或开放端口
 netstat -an |find /i "listening"
 
@@ -9408,6 +9411,34 @@ netstat -an |find /i "1194"
 netstat -an |find /i "established"
 \end{lstlisting}
 
+\subsection{添加新客户端(Add New Client)}
+
+OpenVPN多个客户端不能共享一个密钥和证书（严格来说可以共享，但是推荐用单独的证书），
+共享证书会导致不同客户端连接时获取的IP相同，建议在添加新的客户端时需生成新的密钥和证书。
+切换到服务端的OpenVPN目录下，执行如下命令添加新的证书。
+
+\begin{lstlisting}[language=Bash]
+#设置相应的局部环境变量，就是我们在vars.bat.sample文件中设置的内容
+vars
+
+#创建客户端证书
+build-key client-aoxianghua
+\end{lstlisting}
+
+证书创建成功后，将证书拷贝到客户端config目录下，
+在客户端配置文件中指定证书名称。
+
+\begin{lstlisting}[language=Bash]
+# SSL/TLS parms.
+# See the server config file for more
+# description.  It's best to use
+# a separate .crt/.key file pair
+# for each client.  A single ca
+# file can be used for all clients.
+ca ca.crt
+cert client-aoxianghua.crt
+key client-aoxianghua.key
+\end{lstlisting}
 
 
 \chapter{Node.js}
@@ -15451,6 +15482,7 @@ public static void Cut(Stream fromFile, string fileSaveUrl, int xPosition, int y
 	ludicrous & 滑稽的，荒唐的\\
 	Disposable items & 一次性用品\\
 	bible & 有权威的书\\
+	swagger & 昂首阔步; 夸耀，炫耀\\
 \end{tabular}
 
 \footnotetext[5]{In computer science, syntactic sugar is syntax within a 
@@ -16604,6 +16636,8 @@ RunTime using activator:00:00:00:20
 	38 & \url{http://unbug.github.io/codelf/} & 2016-01-12 & 变量命名搜索\\
 	\hline
 	39 & \url{http://pagespeed.webkaka.com/docs/} & 2016-01-24 & 网站速度诊断 \\
+	\hline
+	40 & \url{http://cn.bing.com/} & 微软必应搜索\\
 	\hline				
 \end{tabular}
 
