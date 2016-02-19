@@ -9463,6 +9463,149 @@ cert client-aoxianghua.crt
 key client-aoxianghua.key
 \end{lstlisting}
 
+\section{Windows自带VPN}
+
+使用Windows自带VPN，省去了安装客户端和服务端的麻烦，
+灰常方便。
+
+\subsection{VPN类型}
+
+\subsubsection{PPTP（Point to Point Tunneling Protocol，点对点隧道协议）}
+
+默认端口号：1723，即PPTF协议。该协议是在PPP协议的基础上开发的一种新的增强型安全协议，
+支持多协议虚拟专用网（VPN），可以通过密码身份验证协议（PAP）、可扩展身份验证协议（EAP）等方法增强安全性。
+可以使远程用户通过拨入ISP、通过直接连接Internet或其他网络安全地访问企业网。
+点对点隧道协议（PPTP）是一种支持多协议虚拟专用网络的网络技术，它工作在第二层。
+通过该协议，远程用户能够通过Microsoft Windows NT工作站、Windows xp 、
+Windows 2000和windows2003、windows7操作系统以及其它装有点对点协议的系统安全访问公司网络，
+并能拨号连入本地ISP，通过Internet 安全链接到公司网络。
+PPTP协议是点对点隧道协议，其将控制包与数据包分开，控制包采用TCP控制。
+PPTP使用TCP协议，适合在没有防火墙限制的网络中使用。
+
+\subsubsection{L2TP（Layer 2 Tunneling Protocol，第二层隧道协议）}
+
+默认端口号：1701，L2TP是一种工业标准的Internet隧道协议，功能大致和PPTP协议类似，
+比如同样可以对网络数据流进行加密。不过也有不同之处，比如PPTP要求网络为IP网络，
+L2TP要求面向数据包的点对点连接；PPTP使用单一隧道，L2TP使用多隧道；
+L2TP提供包头压缩、隧道验证，而PPTP不支持。
+
+L2TP是一个数据链路层协议，基于UDP。其报文分为数据消息和控制消息两类。
+数据消息用投递 PPP 帧，该帧作为L2TP报文的数据区。L2TP不保证数据消息的可靠投递，
+若数据报文丢失，不予重传，不支持对数据消息的流量控制和拥塞控制。
+控制消息用以建立、维护和终止控制连接及会话，L2TP确保其可靠投递，
+并支持对控制消息的流量控制和拥塞控制。
+
+L2TP是国际标准隧道协议，它结合了PPTP协议以及第二层转发L2F协议的优点，
+能以隧道方式使PPP包通过各种网络协议，包括ATM、SONET和帧中继。
+但是L2TP没有任何加密措施，更多是和IPSec协议结合使用，提供隧道验证。
+
+L2TP使用UDP协议，一般可以穿透防火墙，适合在有防火墙限制、局域网用户，如公司、网吧、学校等场合使用。
+
+PPTP和L2TP二个连接类型在性能上差别不大，如果使用PPTP不正常，那就更换为L2TP。
+
+\subsubsection{OpenVPN}
+
+默认端口号：1194，OpenVpn的技术核心是虚拟网卡，其次是SSL协议实现。
+虚拟网卡是使用网络底层编程技术实现的一个驱动软件，安装后在主机上多出现一个网卡，
+可以像其它网卡一样进行配置。服务程序可以在应用层打开虚拟网卡，如果应用软件（如IE）向虚拟网卡发送数据，
+则服务程序可以读取到该数据，如果服务程序写合适的数据到虚拟网卡，应用软件也可以接收得到。
+虚拟网卡在很多的操作系统下都有相应的实现，这也是OpenVpn能够跨平台一个很重要的理由。
+
+OpenVPN使用OpenSSL库加密数据与控制信息：它使用了OpenSSL的加密以及验证功能，意味着，
+它能够使用任何OpenSSL支持的算法。它提供了可选的数据包HMAC功能以提高连接的安全性。
+此外，OpenSSL的硬件加速也能提高它的性能。
+
+OpenVPN所有的通信都基于一个单一的IP端口，默认且推荐使用UDP协议通讯，同时TCP也被支持。
+
+在选择协议时候，需要注意2个加密隧道之间的网络状况，如有高延迟或者丢包较多的情况下，
+请选择TCP协议作为底层协议，UDP协议由于存在无连接和重传机制，导致要隧道上层的协议进行重传，效率非常低下。
+
+OpenVPN是一个基于SSL加密的纯应用层VPN协议，是SSL VPN的一种，
+支持UDP与TCP两种方式（说明：UDP和TCP是2种通讯协议，这里通常UDP的效率会比较高，速度也相对较快。
+所以尽量使用UDP连接方式，实在UDP没法使用的时候，再使用TCP连接方式）。
+
+由于其运行在纯应用层，避免了PPTP和L2TP在某些NAT设备后面不被支持的情况，
+并且可以绕过一些网络的封锁（通俗点讲，基本上能上网的地方就能用OpenVPN）。
+
+OpenVPN客户端软件可以很方便地配合路由表，实现不同线路（如国内和国外）的路由选择，实现一部分IP走VPN，
+另一部分IP走原网络。
+
+
+易用性：    PPTP > L2TP > OpenVPN
+
+速度：      PPTP > OpenVPN UDP > L2TP > OpenVPN TCP
+
+安全性：    OpenVPN > L2TP > PPTP
+
+稳定性：    OpenVPN > L2TP > PPTP
+
+网络适用性：OpenVPN > PPTP > L2TP
+
+电脑上优先使用PPTP，无法使用可以尝试L2TP，对安全性要求高的优先使用OpenVPN。手持设备推荐使用L2TP。
+
+PPTP：      最常用，设置最简单，大多数设备都支持；
+L2TP：      支持PPTP的设备基本都支持此种方式，设置略复杂，需要选择L2TP/IPSec PSK方式，且设置预共享密钥PSK；
+OpenVPN：最稳定，适用于各种网络环境，但需要安装第三方软件和配置文件，较复杂。
+
+\subsubsection{SSTP:安全套接字隧道协议}
+
+SSTP可以创建一个在HTTPS上传送的VPN隧道，从而消除与基于PPTP（点对点隧道协议）或L2TP（第2层隧道协议）VPN连接有关的诸多问题。
+因为这些协议有可能受到某些位于客户端与服务器之间的Web代理、防火墙和网络地址转换（NAT）路由器的阻拦。
+这种SSTP只适用于远程访问，不能支持站点与站点之间的VPN隧道。
+微软公司希望，当IPSec VPN连接受到防火墙或路由器的阻拦后，
+SSTP可以帮助客户减少与IPSec VPN有关的问题。此外，SSTP也不会产生保留的问题，
+因为它不会改变最终用户的VPN控制权。
+基于VPN隧道的SSTP可直接插入当前的微软VPN客户端和服务器软件的接口中。
+
+\subsubsection{IKEv2(Internet Key Exchange v2)}
+
+IKEv2(Internet Key Exchange v2)是一款新版的安全协议。
+简单理解的话可以说和大家常见的PPTP/L2TP是差不多一类的东西。
+不过IKEv2协议要比PPTP和L2TP更加优秀，将会是之后发展的方向之一。
+二、IKEV2有什么优势？
+Quote:
+IKEv2连接在用户自身网络状况经常变化的情况下仍旧能够维持加密连接，
+而不会出现频繁闪断、断开又重连之类的情况，能大大提高网络连接的稳定性。
+IKEv2能够拥有比PPTP/L2TP更加高效的网络通讯效率。IKEv2是IKE（v1）的改良版，
+使用了公钥证书和密码等多重认证，弥补了v1时代的安全性上的不足。比PPTP/L2TP更是可靠许多。
+同时IKEv2还支持硬件加速，保证了高效的传输效率。
+三、IKEV2的局限：
+Quote:
+优势和局限总是相对的，新技术面临的问题就是各方面的支持性。
+现阶段提供IKEv2协议连接的VPN商家并不多，或者也可以说很少，选择余地也很小。
+对于用户来说Windows 7以上包括RT系统都对IKEv2有原生支持，
+Android需要第三方软件才可以支持，iOS仅支持IKEv1，
+而Windows Phone干脆仅支持IKEv2协议的VPN连接。
+
+IKE(v1)传输效率大大超于PPTP和L2TP，但仍然存在某种安全隐患。
+IKEv2是IKE(v1)的全新改良版，使用公钥证书和密码等多重认证，
+支持硬件加速，保持了高效的传输效率。如果出门在外，(手机)网络环境(IP 地址)经常变动的情况下，
+IKEv2 是唯一使用 “MOBIKE” – Mobility and Multihoming 技术来达到加密通讯不中断目的的。
+所以用户再也无需考虑手动开启或者关闭VPN，或者担心因网络环境变化而导致的VPN连接中断了。
+
+\subsection{常见错误}
+
+
+\paragraph{Error 809}
+
+
+
+\paragraph{Error 720: Unable to establish a connection to the remote computer. Might need to change the network settings for this connection}
+
+出现此错误原因不明，解决此错误需要在服务端配置VPN连接的IP范围，
+Open Network and Sharing Center and click Change Adapter Settings.
+Find Incoming Connection and right-click on it and click Properties.
+具体配置如图\ref{fig:ConfigurationVPNIPAddressRange}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{ConfigurationVPNIPAddressRange.jpg}
+	\caption{配置VPN客户端连接的IP范围}
+	\label{fig:ConfigurationVPNIPAddressRange}
+\end{figure}
+
+
+
 
 \chapter{Node.js}
 
