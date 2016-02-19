@@ -12314,7 +12314,8 @@ $ git add -h
 #切换目录到E:盘
 \end{lstlisting}
 
-在Git Bash下切换目录到Git Repository。
+Windows下Git Bash切换目录比较特殊，
+在Git Bash下切换目录到Git Repository如下代码片段所示。
 
 \begin{lstlisting}[language=Bash]
 #切换到E:盘,注意与DOS下写法的区别
@@ -12386,6 +12387,30 @@ git add与svn中的add有明显的区别，
 这种加密方式与存放 HTTPS 凭证以及 Safari 的自动填写是相同的。
 如果你使用的是Windows，你可以安装一个叫做 “winstore” 的辅助工具。 
 这和上面说的 “osxkeychain” 十分类似，但是是使用 Windows Credential Store 来控制敏感信息。
+
+\subsection{添加忽略列表(Add Ignore List)}
+
+有的文件并不需要进行版本管理，
+比如日志文件和中间生成的辅助文件临时文件等等，
+此时就需要将不需要管理的文件放在Git的忽略列表中。
+在Git中添加忽略列表首先在Repository根目录下创建.gitignore文件。
+
+\begin{lstlisting}[language=Bash]
+$ touch .gitignore
+\end{lstlisting}
+
+编辑文件添加需要忽略的文件或者忽略规则。
+
+\begin{lstlisting}[language=Bash]
+vi .gitignore
+\end{lstlisting}
+
+添加了忽略文件后查看是否还报需要忽略的文件Untrace，
+如果没有报告，则证明添加到忽略列表的文件生效了。
+
+\begin{lstlisting}[language=Bash]
+git status
+\end{lstlisting}
 
 \section{StyleCop.exe}
 
