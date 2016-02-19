@@ -9017,13 +9017,15 @@ Http Basic是一种比较简单的身份认证方式。
 \begin{enumerate}
 \setcounter{enumi}{0}
 \item{[客户端]在调用REST API之前，首先将待发送消息体打包,combine a bunch of unique data together (Web Sevice端将要接收的数据)}
-\item{[客户端]用系统分派的密钥使用哈希(最好是HMAC-SHA1 or SHA256)加密(第一步的数据)}
+\item{[客户端]用系统分派的密钥使用哈希(最好是HMAC\footnote{HMAC是密钥相关的哈希运算消息认证码（Hash-based Message Authentication Code）,HMAC运算利用哈希算法，以一个密钥和一个消息为输入，生成一个消息摘要作为输出。}-SHA\footnote{哈希安全算法(Secure Hash Algorithm),确切地说，这不是一种算法，而是一组加密哈希函数，由美国国家标准技术研究所首先提出。无论是你的应用商店，电子邮件和杀毒软件，还是浏览器等等，都使用这种算法来保证你正常下载，以及是否被“中间人攻击”，或者“网络钓鱼”。}1 or SHA256)加密(第一步的数据)}
 \item{[客户端]向服务器发送数据}
 发送生成的HMAC码.
 
 发送消息体（属性名和属性值），如果是私有信息需要加密，像是（“mode=start\&number=4\&order=desc”或其他不重要的信息）直接发送即可.
 
-(可选项)避免重放攻击(Replay Attacks)的唯一办法就是加上时间戳。在使用HMAC算法时加入时间戳，这样系统就能依据一定的条件去验证是否有重放的请求并拒绝.
+(可选项)避免重放攻击(Replay Attacks)的唯一办法就是加上时间戳。
+在使用HMAC(Hash-based Message Authentication Code)算法时加入时间戳，
+这样系统就能依据一定的条件去验证是否有重放的请求并拒绝.
 
 用户身份认证信息例如,用户ID，客户ID或是其他能别用户身份的信息。这是公共API，大家都能访问的到(自然也包括了那些居心叵测的访问者)系统仅仅需要这部分信息来区分发信人而不考虑可靠与否(当然可以通过HMAC来判断可靠性).
 
@@ -9047,6 +9049,10 @@ Http Basic是一种比较简单的身份认证方式。
 
 \end{enumerate}
 
+HMAC算法更象是一种加密算法，它引入了密钥，其安全性已经不完全依赖于所使用的HASH算法，
+安全性主要是：使用的密钥是双方事先约定的，第三方不可能知道。
+作为非法截获信息的第三方，能够得到的信息只有作为“挑战”的随机数和作为“响应”的HMAC结果，
+无法根据这两个数据推算出密钥。由于不知道密钥，所以无法仿造出一致的响应。
 
 \section{数字签名(Digital Signature)}
 
@@ -9411,11 +9417,28 @@ netstat -an |find /i "1194"
 netstat -an |find /i "established"
 \end{lstlisting}
 
+OpenVPN的配置认证文件的详细解释如下表所示。
+
+\begin{tabular}{|l|l|l|l|l|}
+	\hline
+	\multirow{1}{*}{File Name}
+	& \multicolumn{1}{c|}{Needed By}
+	& \multicolumn{1}{c|}{Purpose}
+	& \multicolumn{1}{c|}{Secret}\\
+	\cline{1-4}
+	ca.crt & server + all clients & Root CA certificate & NO \\
+	\hline
+	ca.key & key signing machine only & Root CA key & YES\\
+	\hline
+	dh{n}.pem & Server Only & Diffie Hellman parameters & NO\\
+	\hline						
+\end{tabular}
+
 \subsection{添加新客户端(Add New Client)}
 
 OpenVPN多个客户端不能共享一个密钥和证书（严格来说可以共享，但是推荐用单独的证书），
 共享证书会导致不同客户端连接时获取的IP相同，建议在添加新的客户端时需生成新的密钥和证书。
-切换到服务端的OpenVPN目录下，执行如下命令添加新的证书。
+切换到服务端的OpenVPN的easy-rsa目录下，执行如下命令添加新的证书。
 
 \begin{lstlisting}[language=Bash]
 #设置相应的局部环境变量，就是我们在vars.bat.sample文件中设置的内容
@@ -12287,8 +12310,22 @@ $ git add --help
 
 #命令行中列出git add命令的帮助内容
 $ git add -h
+
+#切换目录到E:盘
 \end{lstlisting}
 
+在Git Bash下切换目录到Git Repository。
+
+\begin{lstlisting}[language=Bash]
+#切换到E:盘,注意与DOS下写法的区别
+$ cd /e
+
+#切换到Repository目录
+$ cd Temp/doc/DolphinDev/DolphinDevManual
+
+#列出当前Repository的状态
+$ git status
+\end{lstlisting}
 
 \paragraph{配置}使用Git之前的基本配置操作
 
@@ -13453,7 +13490,29 @@ Tools->Fiddler Options->Connections下。如图所示：
 
 \subsection{Fiddler Capture}
 
+Fiddler暂时没有找到暂停抓包的选项，
+有时为了仔细分析某个特定的请求，需要停止抓包或者说是暂停抓包(过多的包干扰分析)，
+此时有2个选择，一是可以禁止左侧的请求记录列表自动滚动(AutoScroll Session List)，
+任意HTTP记录右键即出现此菜单，二是在下方有展示或者抓取的进程，选择Hide All选项，
+如图\ref{fig:HideAllProcessCapture}所示。
 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{HideAllProcessCapture.jpg}
+	\caption{Fiddler隐藏所有进程数据流向}
+	\label{fig:HideAllProcessCapture}
+\end{figure}
+
+注意在用宽带拨号上网时代理设置需要在宽带连接中进行设置，
+而不是设置局域网的代理，
+如图\ref{fig:BrandwithProxySetting}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{BrandwithProxySetting.jpg}
+	\caption{Fiddler宽带连接代理设置}
+	\label{fig:BrandwithProxySetting}
+\end{figure}
 
 \subsection{图标含义}
 
