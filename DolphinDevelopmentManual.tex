@@ -5302,7 +5302,7 @@ placeholder属性是HTML5 中为input添加的。
 <input type="text" name="UserName" class="form-control" placeholder="用户唯一ID"/>
 \end{lstlisting}
 
-\subsection{调试（Debug）}
+\section{调试（Debug）}
 
 WCF接口调试是在路由配置文件中设置，
 传入适当的参数。如下所示：
@@ -5338,8 +5338,11 @@ WCF接口调试是在路由配置文件中设置，
 当修改页面之后只需要点击刷新符号，
 链接到Visual Studio的浏览器即可即时刷新页面，
 刷新链接浏览可以快速的看到页面修改结果，刷新是刷新链接浏览器的所有页面。
+在调试MVC的Action时，没有View一样可以调试，
+只需要浏览器链接指向Action即可，如果有参数带上相应参数。
 
-\subsubsection{Chrome Javascript条件断点(Condition Breakpoint)}
+
+\subsection{Chrome Javascript条件断点(Condition Breakpoint)}
 
 在开发过程中Javascipt报空引用错误，
 报错的地方有十几个循环，
@@ -8914,7 +8917,7 @@ schtasks /delete /TN "auto update SVN" `\makeremark{移除作业名称为“auto
 \mbox{}         
 \clearpage
 
-
+物理路径泄露，CGI源代码泄露，目录遍历，执行任意命令，缓冲区溢出，拒绝服务，SQL注入，条件竞争和跨站脚本执行漏洞。
 首先需要说明的是，入侵者的来源有两种，
 一种是内部人员利用自己的工作机会和权限来获取不应该获取的权限而进行的攻击。
 另一种是外部人员入侵，包括远程入侵、网络节点接入入侵等。
@@ -9586,9 +9589,7 @@ IKEv2 是唯一使用 “MOBIKE” – Mobility and Multihoming 技术来达到�
 \subsection{常见错误}
 
 
-\paragraph{Error 809}
-
-
+\paragraph{Error 809}VPN类型选择自动。
 
 \paragraph{Error 720: Unable to establish a connection to the remote computer. Might need to change the network settings for this connection}
 
@@ -9604,8 +9605,9 @@ Find Incoming Connection and right-click on it and click Properties.
 	\label{fig:ConfigurationVPNIPAddressRange}
 \end{figure}
 
-
-
+如果VPN服务端在局域网中，在传入的IP属性中指定IP地址段时从192.168.1.2开始（图中的IP需要修改），
+因为192.168.1.1为路由器的地址，从192.168.1.1开始会导致VPN服务器会分配到路由器的默认IP，
+导致路由器的部分功能不可用。
 
 \chapter{Node.js}
 
@@ -12448,13 +12450,20 @@ $ git init
 # 添加指定目录到暂存区，包括子目录
 $ git add [dir]
 
+# 添加所有修改文件
+$ git add .
+
+#移除文件
+$ git rm -r --cache Fosc.Dolphin.UI/Fosc.Dolphin.UI/obj/
+
 #浏览器中列出git add命令的帮助内容
 $ git add --help
 
 #命令行中列出git add命令的帮助内容
 $ git add -h
 
-#切换目录到E:盘
+#Git提交
+$ git commit -m "Init"
 \end{lstlisting}
 
 Windows下Git Bash切换目录比较特殊，
@@ -12492,6 +12501,30 @@ $ git config [--global] user.email "[email address]"
 $ git commit -m [message]
 \end{lstlisting}
 
+在将代码推送到GitHub之前，
+需要设置SSH，查看当前已经有的SSH Key如下代码片段所示：
+
+\begin{lstlisting}[language=Bash]
+# Lists the files in your .ssh directory, if they exist
+$ ls -al ~/.ssh 
+\end{lstlisting}
+
+如果没有SSH Key执行如下命令创建：
+
+\begin{lstlisting}[language=Bash]
+#生成密钥
+ssh-keygen -t rsa -C "jiangtingqiang@gmail.com" 
+\end{lstlisting}
+
+在github.com的网站上到ssh密钥管理页，添加新公钥并取名，内容粘贴本地生成的公钥。
+在push时可能出现错误：fatal: could not read Username for ‘https://github.com’: No such file or directory。运行命令设置git的远程url即可解决问题，
+在Url中添加用户名，注意用户名是大小写敏感的:
+
+\begin{lstlisting}[language=Bash]
+git remote set-url origin git@github.com:jiangxiaoqiang/Fosc.git
+\end{lstlisting}
+
+
 \subsection{推送到GitHub}
 
 在GitHub上添加第一个Git仓库，配置项目名称和相关信息。
@@ -12503,9 +12536,6 @@ git clone https://github.com/jiangxiaoqiang/DolphinDevManual.git
 #将本地文件添加到git仓库中
 git add [file1]
 
-#生成密钥,在github.com的网站上到ssh密钥管理页，添加新公钥并取名，内容粘贴生成的公钥
-ssh-keygen -t rsa -C "jiangtingqiang@gmail.com"
-
 #推送到GitHub
 git push origin master
 \end{lstlisting}
@@ -12514,7 +12544,7 @@ git push origin master
 git add与svn中的add有明显的区别，
 修改过的文件也要执行git add后才能够提交。
 
-\subsection{保存Git配置信息}
+\subsection{Git配置}
 
 每次git push时都需要输入用户名和密码，
 需要将密码输入保存在本地。Git支持如下方式的凭据保存：
@@ -13661,7 +13691,7 @@ Tools->Fiddler Options->Connections下。如图所示：
 Fiddler暂时没有找到暂停抓包的选项，
 有时为了仔细分析某个特定的请求，需要停止抓包或者说是暂停抓包(过多的包干扰分析)，
 此时有2个选择，一是可以禁止左侧的请求记录列表自动滚动(AutoScroll Session List)，
-任意HTTP记录右键即出现此菜单，二是在下方有展示或者抓取的进程，选择Hide All选项，
+任意HTTP列表记录右键单击即出现此菜单，二是在下方有展示或者抓取的进程，选择Hide All选项，
 如图\ref{fig:HideAllProcessCapture}所示。
 
 \begin{figure}[htbp]
@@ -13672,15 +13702,37 @@ Fiddler暂时没有找到暂停抓包的选项，
 \end{figure}
 
 注意在用宽带拨号上网时代理设置需要在宽带连接中进行设置，
-而不是设置局域网的代理，
+而不是设置局域网(LAN)的代理，设置局域网代理是本机处于局域网时，
+当电脑直接用宽带拨号时会动态分配一个广域网的IP，
+重新拨号时IP会再分配，不再是原有IP，宽带设置代理
 如图\ref{fig:BrandwithProxySetting}所示。
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.8]{BrandwithProxySetting.jpg}
+	\includegraphics[scale=0.7]{BrandwithProxySetting.jpg}
 	\caption{Fiddler宽带连接代理设置}
 	\label{fig:BrandwithProxySetting}
 \end{figure}
+
+\subsection{Fiddler移动端Capture}
+
+Fiddler同样可以捕获移动端的HTTP请求，
+如果手机和电脑在同一个局域网内，
+在手机端设置无线代理的IP为PC端的IP，
+端口为8888，如果PC在广域网中的话，
+设置移动端的IP为广域网的IP，
+此时手机可在任意网络(需要和PC ping通，不能是单独的网络)中，
+PC都能够捕获到手机端的请求。
+另需在Fiddler中允许远程抓包，
+具体设置如图\ref{fig:FiddlerCaptureMobilePackage}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{FiddlerCaptureMobilePackage.jpg}
+	\caption{Fiddler开启远程捕获}
+	\label{fig:FiddlerCaptureMobilePackage}
+\end{figure}
+
 
 \subsection{图标含义}
 
@@ -13778,6 +13830,9 @@ Cookies标签可以看到请求的cookie和响应的set-cookie头信息。
 	\caption{请求体中的用户名密码}
 	\label{fig:RequestBodyUserPassword}
 \end{figure}
+
+在QQ发送接收离线文件时也是通过HTTP进行传输，
+且未加密，可以通过Fiddler看到部分发送的文件的内容。
 
 \subsection{断点调试(Breakpoint Debugging)}
 
@@ -15188,26 +15243,6 @@ where printId=25980
 
 \chapter{配置}
 
-\section{web.config}
-
-\subsection{appSettings}
-
-\begin{tabular}{ll}
-	\multirow{1}{*}{\textbf{Key}}
-	& \multicolumn{1}{c}{\textbf{Value}}\\
-	staticPath & 服务器地址\\
-	uploadPath & 图片上传地址\\							
-\end{tabular}
-
-\subsubsection{connectionStrings}
-
-程序实时读取配置文件获取当前需要使用的数据库名称，此数据名称固定，connectionStrings的name属性名称不能更改。连接串中database值可以更改。
-
-\begin{lstlisting}
-<add name="sql-system" connectionString="Data Source=192.168.1.254;Uid=sa;Pwd=123456;database=zouwo-system"/>
-<add name="sql-weixin" connectionString="Data Source=192.168.1.254;Uid=sa;Pwd=123456;database=zouwo-weixin"/>
-\end{lstlisting}
-
 \section{微信配置}
 
 \subsection{添加自定义菜单}
@@ -16594,6 +16629,29 @@ roadLineModels = roadlineIdArr.Select(t => GetRoadLineModel(t)).ToList();
 roadLineModels = roadlineIdArr.Select(GetRoadLineModel).ToList();
 \end{lstlisting}
 
+如下语句：
+
+\begin{lstlisting}[language={[Sharp]C}]
+var distnateProduct = new List<ProductModel>();
+foreach (var current in originProduct)
+{
+    var productModel = new ProductModel();
+    productModel = HttpPost.MapModel(productModel, current);
+    distnateProduct.Add(productModel);
+}
+\end{lstlisting}
+
+可以转化为：
+
+\begin{lstlisting}[language={[Sharp]C}]
+ var distnateProduct = (from current 
+                       in originProduct 
+                       let productModel = new ProductModel() 
+                       select HttpPost.MapModel(productModel, current)).ToList();
+                
+\end{lstlisting}
+
+
 \paragraph{减少嵌套(Reducing Nesting)}
 
 在if语句中可直接通过返回的方式减少代码的嵌套层数，使代码更加易于阅读，
@@ -16613,7 +16671,10 @@ if(!condition) return;
 \paragraph{显式指定Culture(Specify Culture Explicity)}
 
 在进行字符串比较或者字符串输出等操作时，
-不同的CultureInfo会影响某些函数的执行结果，.NET中有一个特殊的CultureInfo：InvariantCulture，
+不同的CultureInfo会影响某些函数的执行结果，
+在进行日期时间输出时，.NET会考虑当前线程的CultureInfo，
+即Thread.CurrentThread.CurrentCulture（或者CultureInfo.CurrentCulture），
+并根据CultureInfo，进行相应地区文化的数据处理。.NET中有一个特殊的CultureInfo：InvariantCulture，
 这个CultureInfo有点像英语格式，但它不和国家地区挂钩，它可以提供一个可靠的在多语言环境下的规范格式化。
 
 \begin{lstlisting}[language={[Sharp]C}]
@@ -16622,6 +16683,7 @@ string str=i.ToString(CultureInfo.InvariantCulture);
 \end{lstlisting}
 
 这样不管客户端运行在什么语言环境下，输出的时间格式都是统一的，方便数据中心服务器对数据做后续处理。
+默认的Culture是CurrentCulture。
 
 \paragraph{用泛型来代替不同类型的查询}在做数据分页查询时，不同的查询对象对应有一个查询方法，
 可考虑采用泛型将所有对象的分页查询写在一个方法中，
