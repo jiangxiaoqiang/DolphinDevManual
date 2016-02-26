@@ -1831,7 +1831,7 @@ public JpegFileInfoResult UploadJpegImage(Stream fileStream)
         }
         else
         {
-            storePath = System.IO.Path.Combine(HttpRuntime.AppDomainAppPath, "\\upload\\");
+            storePath = Path.Combine(HttpRuntime.AppDomainAppPath, "\\upload\\");
         }
         if (!Directory.Exists(storePath))
         {
@@ -3011,50 +3011,41 @@ QRCodeScale、QRCodeVersion、QRCodeErrorCorrect属性。
 如下语句生成二维码：
 
 \begin{lstlisting}[language={[Sharp]C},caption=生成二维码]
-#region 创建二维码-混合平台（Web+WinForm）
+#region 创建二维码
 /// <summary>
 /// 
 /// </summary>
 /// <param name="data">二维码内容</param>
-/// <param name="qrCodeEncoder">Encoder实例</param>
 /// <returns></returns>
-public string CreateQRCodeWithRelativePath(string data, QRCodeEncoder qrCodeEncoder)
+public string CreateQrCodeWithRelativePath(string data)
 {
-    ValidateUtil.RequireNotNullOrEmpty("data", data);
-    string fileName = string.Empty;
-    string tempPath = string.Empty;
-    string QRCodeStorePath = string.Empty;
-    string relativePath = string.Empty;
+    var savePath = string.Empty;
+    var qrCodeEncoder = new QRCodeEncoder
+    {
+        QRCodeEncodeMode = QRCodeEncoder.ENCODE_MODE.BYTE,
+        QRCodeScale = 12,
+        QRCodeVersion = 0,
+        QRCodeErrorCorrect = QRCodeEncoder.ERROR_CORRECTION.M
+    };
     try
     {
-        fileName = System.Guid.NewGuid().ToString() + ".png";
-        QRCodeStorePath = ConfigUtil.GetConfigString("QRCodeStorePath");
-        relativePath = (QRCodeStorePath.EndsWith("/") ? QRCodeStorePath : (QRCodeStorePath + "/"))`\makeremark{此处生成的url路径需要用/，而不是\textbackslash，        这点很重要，因为Firefox对路径要求比较严格，生成的二维码url路径如果为\textbackslash ，在Firefox浏览器中可能无法解析此url路径。}`;
-        if (HttpContext.Current != null)
-        {
-            tempPath = HttpContext.Current.Server.MapPath("/") + relativePath;`\makeremark{此处在获取服务器上面的相对路径时使用了HttpContext.Current.Server.MapPath的方式。}`
-        }
-        else
-        {
-            tempPath = Application.StartupPath + relativePath;
-        }
+        var fileName = Guid.NewGuid() + ".png";
+        var tempPath = Path.Combine(HttpRuntime.AppDomainAppPath, "qrcode\\");
         if (!Directory.Exists(tempPath))
         {
             Directory.CreateDirectory(tempPath);
         }
-        string savePath = tempPath + fileName;
+        savePath = tempPath + fileName;
         qrCodeEncoder.Encode(data, Encoding.UTF8).Save(savePath);
     }
     catch (Exception e)
     {
-        logger.Error("Generate QRCode encount an error", e);
+        PublicAttribute.Logger.Error("Generate QRCode encount an error", e);
     }
-    return domainName + "/" + relativePath + fileName;
+    return savePath;
 }
 #endregion
 \end{lstlisting}
-
-\showremarks
 
 方法中获取Web程序当前运行的主目录的语句为：
 
@@ -5850,7 +5841,7 @@ Cookies最典型的应用是判定注册用户是否已经登录网站，
 
 \subsubsection{编辑Cookie}
 
-在FireFox中可通过FireDebug编辑Cookie，
+在FireFox中可通过Firebug编辑Cookie，
 或者添加Cookie，如图\ref{fig:EditCookieUsingFireDebug}所示。
 
 \begin{figure}[htbp]
@@ -7208,7 +7199,7 @@ MVC异常处理一般可以在Action级别处理，
 \begin{lstlisting}[language={[Sharp]C},caption=应用程序级别错误处理,label=code:ApplicationLevelErrorHandler]
 void Application_Error(object sender, EventArgs e)
 {
-    // 在出现未处理的错误时运行的代码 
+    //在出现未处理的错误时运行的代码 
     Exception ex = Server.GetLastError().GetBaseException();
     StringBuilder str = new StringBuilder();
     str.Append("\r\n" + DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"));
@@ -7231,7 +7222,7 @@ void Application_Error(object sender, EventArgs e)
     //处理完及时清理异常 
     Server.ClearError();
     //跳转至友好的出错页面 
-    //Response.Redirect("~/Views/Error/error.html");
+    Response.Redirect(@"~/Error/Index");
 }
 \end{lstlisting}
 
@@ -7694,6 +7685,16 @@ new Foo().getName();//3
 new new Foo().getName();//3
 \end{lstlisting}
 
+\subsection{Javascript日期}
+
+Javascript的Date对象用于处理日期和时间，
+如下代码片段。
+
+\begin{lstlisting}[language=VBScript]
+var myDate=new Date();
+\end{lstlisting}
+
+Date对象会自动把当前日期和时间保存为其初始值。
 
 \subsection{jQuery Rotate插件实现旋转}
 
@@ -7929,11 +7930,12 @@ function saveUserPhone(mobile) {
             }
         }
     }
-    xhr.open("GET", "/Active/SaveUserPhone?ccnId=" + cardId + "&phone=" + mobile, true);
+    xhr.open("GET", "/Active/SaveUserPhone?phone=" + mobile, true);
     xhr.send(null);
 }
 \end{lstlisting}
 
+最后一个参数asynch表示是否采用异步方法，true为异步，false为同步。
 
 \subsection{Ajax提交}
 
@@ -9588,6 +9590,24 @@ IKEv2 是唯一使用 “MOBIKE” – Mobility and Multihoming 技术来达到�
 
 \subsection{常见错误}
 
+\paragraph{Error 800：未建立远程链接，因为尝试的VPN隧道失败。VPN服务器可能无法访问。如果该连接尝试使用L2TP/IPSec隧道，则IPSec协议所需的安全参数可能配置错误。}
+由于Windows2000/XP/2003 系统缺省情况下启动了IPSec功能,因此在发起VPN请求时应禁止IPSec功能,
+为什么要如此还无从知晓，此时需要更改注册表，
+在cmd中执行regedit,找到如下路径
+\begin{lstlisting}
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\RasMan\Parameters]
+\end{lstlisting}
+
+新建一个键值，名称ProhibitIPSec，类型dword，值1。
+或者执行如下脚本：
+
+\begin{lstlisting}[language=Bash]
+Windows Registry Editor Version 5.00
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\RasMan\Parameters]
+"ProhibitIpSec"=dword:00000001
+\end{lstlisting} 
+
+键值修改成功后重新启动计算机即可成功连接VPN。
 
 \paragraph{Error 809}VPN类型选择自动。
 
@@ -11470,6 +11490,33 @@ released on July 7, 2007. As of July 14,
 2007 iMacros is one of the TOP 10 most popular Firefox extensions in the Bookmark, 
 Web Data, Alerts, and Widgets and Social and Sharing categories.
 
+\section{LINQ}
+
+\subsection{Linq中的Any和All方法}
+
+LINQ提供了两个布尔方法：Any()和All()，它们可以快速确定对于数据而言，
+某个条件是true还是false。Any用于判断集合中是否有元素满足某一条件；不延迟。
+（若条件为空，则集合只要不为空就返回True，否则为False）。
+有2种形式，分别为简单形式和带条件形式，
+下面是一个示例。
+
+\begin{lstlisting}[language={[Sharp]C}]
+var wantGoResult = from query in areadyGoneModel
+                   	where query.played == 1 && query.collectionStatus == 1
+                   	select query;
+var isContains = wantGoResult.Any<tour_wantToPlacesModel>();
+\end{lstlisting}
+
+以上代码通过Linq语句根据条件查询一个集合areadyGoneModel，
+使用any方法(返回bool)获得这个集合中是否有满足条件的元素(tour\_wantToPlacesModel)。
+All方法则确定某一集合中是否所有的元素都满足某一特定条件。
+以上语句可以简化为：
+
+\begin{lstlisting}[language={[Sharp]C}]
+var containsAreadyGone = areadyGoneModel.Any(areadyGome => areadyGome.played == 1 && areadyGome.collectionStatus == 1);
+\end{lstlisting}
+
+
 \chapter{基础引擎(Fundation Engine)}
 
 消息引擎、实体引擎、服务引擎、工作流引擎、规则引擎
@@ -12831,7 +12878,6 @@ Released under the MIT License, Jenkins is free software.
 
 \subsection{创建Job}
 
-
 一般添加节点时指定jenkins的主目录，安装好的jenkins目录为C:/Program Files (x86)/Jenkins，
 构建的项目一般就在这个目录下的workspace目录下，
 以构建的项目名为目录名。在高级配置选项中可以配置“使用自定义的工作空间”。
@@ -13791,7 +13837,7 @@ if(oSession.host.Contains("192.168.1.222:801")||oSession.host.Contains("129.89.8
 \end{lstlisting}
 
 在添加请求头时用host条件进行过滤，
-只需要向测试主机可正式主机交互时发送认证信息，
+只需要与特定主机交互时才发送认证信息，
 否则在所有的请求头中都会添加上认证信息。
 
 \subsection{Statistics}
@@ -15181,7 +15227,7 @@ InvokeRequired获取一个值，该值指示调用方在对控件进行方法调
 
 \subsection{获取机器Mac地址}
 
-\begin{lstlisting}
+\begin{lstlisting}[language={[Sharp]C}]
 public string GetMacAddress()
 {
     string macAddress = string.Empty;
@@ -15210,8 +15256,6 @@ public string GetMacAddress()
 \subsection{重复打印一张照片}
 
 \subsubsection{原因分析}
-
-
 
 \subsubsection{应急解决方案}
 
@@ -16937,6 +16981,19 @@ RunTime using activator:00:00:00:20
 	\label{DeobfuscationedDll}
 \end{figure}
 
+\chapter{Open Source}
+
+\section{参与开源项目}
+
+https://guides.github.com/activities/contributing-to-open-source/
+
+\subsection{Pull Request}
+
+首先Fork项目代码，将代码克隆到本地：
+
+\begin{lstlisting}[language=Bash]
+git clone https://github.com/jiangxiaoqiang/OpenLiveWriter.git
+\end{lstlisting}
 
 \chapter{FAQ}
 
@@ -17273,13 +17330,12 @@ position:absolute\footnote{详细信息可参考：http://zh.learnlayout.com/pos
 （因为绝对定位的框与文档流无关，所以它们可以覆盖页面上的其他元素并可以通过z-index来控制它层级次序。
 z-index的值越高，它显示的越在上层。）
 
-\subsection{FTP主动模式（Active FTP）和被动模式（Passive FTP）区别}
-
+\subsection{FTP主动模式(Active FTP)和被动模式(Passive FTP)区别}
 
 主动FTP对FTP服务器的管理有利，但对客户端的管理不利。
 因为FTP服务器企图与客户端的高位随机端口建立连接，
 而这个端口很有可能被客户端的防火墙阻塞掉。
-被动FTP对FTP客户端的管理有利，但对服务器端的管理不利。
+被动(推荐模式)FTP对FTP客户端的管理有利，但对服务器端的管理不利。
 因为客户端要与服务器端建立两个连接，
 其中一个连到一个高位随机端口，而这个端口很有可能被服务器端的防火墙阻塞掉。
 
