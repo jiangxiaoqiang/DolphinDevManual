@@ -3763,6 +3763,13 @@ this.Text = condition;
 输出结果为：'12','13','14','15'
 \end{lstlisting}
 
+这里是将数组、集合中的元素拼接为带引号的字符串，
+方便放入SQL的in操作符中，
+这个语法可以做一些复杂的聚合运算，例如累计求和，累计求乘积。
+它接受2个参数，一般第一个参数是称为累积数（默认情况下等于第一个值），
+而第二个代表了下一个值。
+第一次计算之后，计算的结果会替换掉第一个参数，继续参与下一次计算。
+
 \subsection{获取foreach循环索引}
 
 在C\#开发中往往使用foreach循环语句来代替for循环语句。
@@ -4319,9 +4326,9 @@ IIS\_IUSRS组也是内置的，
 事物总是不断发展，网站也越来越复杂，所以出现动态技术。
 但是服务器并不能直接运行php，asp这样的文件，
 自己不能做，外包给别人吧，但是要与第三做个约定，
-我给你什么，然后你给我什么，就是握把请求参数发送给你，
+我给你什么，然后你给我什么，就是把请求参数发送给你，
 然后我接收你的处理结果给客户端。那这个约定就是Common Gateway Interface，简称CGI。
-这个协议可以用vb，c，php，python 来实现。
+这个协议可以用vb，c，php，python来实现。
 CGI只是接口协议，根本不是什么语言。
 从图\ref{fig:CGIHandleWorkflow}可以看到流程。
 
@@ -6707,6 +6714,7 @@ IIS 6默认运行在Network Service账户下，
 \clearpage
 
 \section{MVC生命周期}
+
 
 \subsection{ASP.NET MVC的处理流程}
 
@@ -10480,6 +10488,51 @@ mscoree.dll一定是唯一的，且总是处于系统目录的system32下，
 例如我的机器为C:/WINDOWS/system32目录下。.net 2.0的mscoree.dll的大小只有256k左右，
 这个dll被叫做shim，它的作用是连接PE文件和CLR之间的一个桥梁。
 
+\subsection{PE文件的结构}
+
+PE文件的结构如下图所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{PEFileStructure.jpg}
+	\caption{PE文件的结构}
+	\label{fig:PEFileStructure}
+\end{figure}
+
+\paragraph{Dos stub}由100个左右的字节所组成，用来输出类似“这个程序不能在DOS下运行！”这样的错误信息；
+
+\paragraph{PE Signature}DWORD类型，PE文件签名，用来表示这是个PE文件，用ASCII码表示；
+
+\paragraph{File Header}包含PE文件最基本信息，通过dumpbin可以看到，
+如图\ref{fig:DumpbinToCheckPEHeader}所示。从这里可以看到：CPU类型为14c，
+是Intel I386、I486或者I586；section的数量为2；链接器产生这个文件的日期；
+COFF符号表的文件偏移量，为0；COFF符号表的符号数目，为0；Optional Header的大小。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{DumpbinToCheckPEHeader.jpg}
+	\caption{PE文件File Header}
+	\label{fig:DumpbinToCheckPEHeader}
+\end{figure}
+
+3、PE loader接着会找到Entry Point，例如本例中图\ref{fig:PEFileEntryPoint}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{PEFileEntryPoint.jpg}
+	\caption{PE文件Entry Point}
+	\label{fig:PEFileEntryPoint}
+\end{figure}
+
+这个PE文件的入口点地址为00407FAE，然后通过这个地址来查找.text section的原始数据表，由图6所示，
+0040251E这个地址开始的6个字节的内容为【FF 25 00 20 40 00】，
+这个内容就是由编译器写入PE文件的.text section的重要信息，
+FF在x86汇编语言与机器码对照表中代表无条件转移指令Jmp，
+这条指令的作用是无条件跳转到00402000地址处，
+从图3可以看到image base 是00400000，2000是import address table的RVA地址，
+由图7可以看到，此时程序会跳转到00402000这个地址所引用的mscoree.dll的\_CorExeMain(\_CorExeMain为mscoree.dll的入口方法)方法，
+所有的托管应用都会通过上述过程找到并执行\_CorExeMain方法；
+
 4、\_CorExeMain方法会帮助程序找到并载入适当的CLR版本，
 在.net 2.0以后实现CLR的程序集为mscorwks.dll或mscorsvr.dll，例如，
 在我的机器上mscorwks.dll的位置是：C:/WINDOWS/Microsoft.NET/Framework/v2.0.50727/；
@@ -10491,6 +10544,8 @@ mscoree.dll一定是唯一的，且总是处于系统目录的system32下，
 -- 创建线程池
 
 -- 创建应用程序域(AppDomain):利用sos.dll可以查看CLR创建了哪些AppDomain。
+
+
 
 9、进入Main方法，进而执行后续程序。
 
@@ -12571,6 +12626,19 @@ ssh-keygen -t rsa -C "jiangtingqiang@gmail.com"
 git remote set-url origin git@github.com:jiangxiaoqiang/Fosc.git
 \end{lstlisting}
 
+生成了密钥之后记得将密钥添加到ssh-agent中，add your SSH key to the ssh-agent。
+
+\begin{lstlisting}[language=Bash]
+ssh-add ~/.ssh/id_rsa
+\end{lstlisting}
+
+若执行命令出现如下错误Could not open a connection to your authentication agent，则先执行如下命令即可：
+
+\begin{lstlisting}[language=Bash]
+ssh-agent bash
+\end{lstlisting}
+
+在ssh bash中添加RSA key之后退出即可。
 
 \subsection{推送到GitHub}
 
@@ -12631,6 +12699,16 @@ vi .gitignore
 \begin{lstlisting}[language=Bash]
 git status
 \end{lstlisting}
+
+\subsection{常见问题}
+
+\paragraph{debug1: No more authentication methods to try.Permission denied (publickey)}运行命令
+
+\begin{lstlisting}[language=Bash]
+ssh -vT git@github.com
+\end{lstlisting}
+
+出现以上错误，解决方法是将Public Key拷贝到GitHub的设置（SSH Key Settings）中。
 
 \section{StyleCop.exe}
 
@@ -14141,6 +14219,14 @@ tcp.port==80，这条规则是把源端口和目的端口为80的都过滤出来
 使用tcp.dstport==80只过滤目的端口为80的，
 tcp.srcport==80只过滤源端口为80的包；
 
+\subsection{常用过滤语句}
+
+过滤目标IP语句如下：
+
+\begin{lstlisting}
+ip.dst == 192.168.1.222 or ip.dst ==183.230.47.195
+\end{lstlisting}
+
 \subsection{删除Filter}
 
 在路径C:/Users/Dolphin/AppData/Roaming/Wireshark下的preferences文件中，
@@ -14155,8 +14241,12 @@ tcp.srcport==80只过滤源端口为80的包；
 	\label{fig:WireSharkFilterManagement}
 \end{figure}
 
+\subsection{常见问题}
 
+\paragraph{The temporary file to which the capture would be saved ("") could not be opened: Invalid argument}
 
+在Capture的option选项下，填写输出文件路径即可，
+如：C:\textbackslash a.cap。
 
 \section{Gulp}
 
