@@ -1510,7 +1510,7 @@ AJax支持跨域的解决方案目前就是JSONP（JSON with Padding）。
 在使用用AJax调用接口时出现如下提示：
 
 \begin{lstlisting}
-同源策略禁止读取位于http://119.29.81.128:8019/Product/web/Get?{%20%22a%22:%20%22a%22%20}&_=1441558531991 的远程资源。（原因：CORS 头缺少 'Access-Control-Allow-Origin'）。
+同源策略禁止读取位于http://129.29.1.28:8019/Product/web/Get?{%20%22a%22:%20%22a%22%20}&_=1441558531991 的远程资源。（原因：CORS 头缺少 'Access-Control-Allow-Origin'）。
 \end{lstlisting}
 
 正常使用AJax会需要正常考虑跨域问题，
@@ -1560,7 +1560,7 @@ var xmlHttpRequest=new XMLHttpRequest();
 $(function () {
     $("#input-verifycros").bind("click", function () {               
         //http://127.0.0.1:5509/my/WCFAJaxTest
-        var url = "http://119.29.81.128:7019/WCFService/Custom/ServiceCros.svc/web/DoWork/a";                
+        var url = "http://129.19.1.138:7019/WCFService/Custom/ServiceCros.svc/web/DoWork/a";                
         if (xmlHttpRequest) {
             xmlHttpRequest.open('GET', url, true);
             xmlHttpRequest.onreadystatechange = handler;
@@ -1680,7 +1680,7 @@ function handler(evtXHR) {
     $(function () {
         $("#input-verify").bind("click", function () {                 
             //http://192.168.1.254:5508/my/WCFAJaxTest
-            var url = "http://119.29.81.128:8019/Product/web/Get/a";
+            var url = "http://129.9.1.138:8019/Product/web/Get/a";
             jQuery.ajax({                    
                 url: url,                                       
                 type: 'get',                    
@@ -2000,7 +2000,7 @@ C:\textbackslash WINDOWS\textbackslash microsoft.net\textbackslash Framework64\t
 在配置文件中添加数据库连接串：
 
 \begin{lstlisting}
-<add name="WCFCredential" connectionString="Data Source=119.29.81.128,5002;Uid=WCFCredential;Pwd=WCFCredential!@#321;database=WCFCredential"/>
+<add name="WCFCredential" connectionString="Data Source=129.39.1.138,5002;Uid=WCFCredential;Pwd=WCFCredential!@#321;database=WCFCredential"/>
 \end{lstlisting}
 
 如果你有一个真正的X509证书，那么现在的代码就可以正常运行了。
@@ -3300,9 +3300,9 @@ SelectSingleNode方法总是返回为null，
 \subsection{XML删除内容}
 
 
-\subsection{数据转换}
+\section{数据转换}
 
-\subsubsection{将DataTable转为List}
+\subsection{将DataTable转为List}
 
 在从数据库中获取数据库的时候,我们经常会返回一个DataTable类型,然后将其转换为List集合。
 代码如下：
@@ -3380,7 +3380,7 @@ return (T)Convert.ChangeType(str, typeof(T));
 
 因为str显式转为T肯定是不行的，只能ChangeType。
 
-\subsubsection{Double转换}
+\subsection{Double转换}
 
 double.TryParse和double.Parse两者最大的区别是，
 如果字符串格式不满足转换的要求，Parse方法将会引发一个异常；
@@ -3404,7 +3404,7 @@ catch (Exception ex)
 
 Convert.ToDouble调用此方法ToDouble(Char)始终引发InvalidCastException。
 
-\subsubsection{List与string的转换}
+\subsection{List与string的转换}
 
 在开发中经常会用List<string>来保存一组字符串，
 比如下面这段代码：
@@ -3425,7 +3425,7 @@ string.Join(", ", studentNames.ToArray());
 
 输出John, Mary, Rose。
 
-\subsubsection{获取集合的列}
+\subsection{获取集合的列}
 
 \begin{lstlisting}[language={[Sharp]C}]
 var questionIdCollectionList = from qids in questionnaire.QuetionnaireModel.QuestionModelList
@@ -3433,7 +3433,39 @@ var questionIdCollectionList = from qids in questionnaire.QuetionnaireModel.Ques
 string questionIdCollection = string.Join(",", questionIdCollectionList.ToArray());
 \end{lstlisting}
 
-\subsubsection{Unix时间戳格式转换}
+\subsection{去除List中重复的对象}
+
+\paragraph{List的Distinct扩展方法}要实现对象的相等比较，需要实现IEquatable<T>，
+或单独写一个类实现IEqualityComparer<T>接口。
+
+\begin{lstlisting}[language={[Sharp]C}]
+public class WantGoPlaceCompare : IEqualityComparer<tour_wantToPlacesModel>
+{
+    public bool Equals(tour_wantToPlacesModel x, tour_wantToPlacesModel y)
+    {
+        return x.objId == y.objId;
+    }
+
+    public int GetHashCode(tour_wantToPlacesModel obj)
+    {
+        return obj.objId.GetHashCode();
+    }
+}
+\end{lstlisting}
+
+Distinct函数在比较时，先比较的HashCode值，
+扩展函数Distinct在内部使用了一个Set<T>的类来帮助踢掉重复数据，
+而这个内部类使用的是hash表的方式存储数据，
+所以会调用到我们自定义类的GetHashCode函数，
+如果返回的hashcode值不等，它就不会再调用Equels方法进行比较了。
+使用List的Distinct方法来剔除重复数据如下代码片段所示：
+
+\begin{lstlisting}[language={[Sharp]C}]
+//去除List重复对象
+wantGoIds = wantGoIds.Distinct(new WantGoPlaceCompare()).ToList();
+\end{lstlisting}
+
+\subsection{Unix时间戳格式转换}
 
 经常发现很多地方使用一个时间戳\footnote{时间戳,又叫Unix Stamp. 
 从1970年1月1日（UTC/GMT的午夜）开始所经过的秒数，不考虑闰秒。}表示时间。
@@ -3917,7 +3949,7 @@ string configFilePath = domain.SetupInformation.ConfigurationFile;
 另在CS类型项目运行中配置文件信息默认从启动程序exe的配置文件中获取，
 例如RRMall.WxPrint.Dal的配置信息从RRMall.WxPrint.exe.config中读取。
 
-\section{格式化（Format）}
+\section{字符串格式化（Format）}
 
 \begin{lstlisting}[language={[Sharp]C}]
 //250,000.00，默认保留2位小数，如果为{0:N1},则默认保留1位小数，N为Number的缩写
@@ -7575,7 +7607,37 @@ ViewData为object型，而ViewBag为dynamic型。
 而object型则需要我们自己去强制转换。比如上面我们遍历ViewBag.Items时，
 它自动根据数据类型转换，而ViewData则需要我们强制转换。
 
-\chapter{JavaScript}
+\subsection{指定的转换无效}
+
+在从接口接受到Object类型数据后，
+需要转换为指定的泛型类型，提示指定的转换无效，
+此时需要凡序列化返回的对象。
+
+\begin{lstlisting}[language={[Sharp]C}]
+/// <summary>
+/// </summary>
+/// <param name="relativeUrl">请求地址</param>
+/// <param name="param">请求地址</param>
+/// <returns></returns>
+public static T SaveObject<T>(string relativeUrl, string param)
+{
+    var restUrl = PublicAttribute.WebApiPath + relativeUrl;
+    var restResult = (Message) PublicAttribute.ApiClient.POST(restUrl, param);
+    if (restResult == null)
+        throw new RestfulNullDataException("接口返回空,url:" + restUrl + param);
+    if (restResult.status)
+    {
+    	//不能直接强转为泛型T，需要反序列化
+        return JsonConvert.DeserializeObject<T>(restResult.data.ToString());
+    }
+    PublicAttribute.Logger.Error("SaveObjects failed,url:" + restUrl + param + ",message:" + restResult.message);
+    return default(T);
+}
+\end{lstlisting}
+
+其中restResult.data为Object类型，使用JsonConvert反序列化为指定类型。
+
+\chapter{Javascript}
 
 \clearpage
 \mbox{}         
@@ -7692,6 +7754,17 @@ new Foo.getName();//2
 new Foo().getName();//3
 new new Foo().getName();//3
 \end{lstlisting}
+
+第一问的Foo.getName是访问Foo函数上存储的静态属性。
+第二问，直接调用 getName 函数。
+既然是直接调用那么就是访问当前上文作用域内的叫getName的函数，
+所以跟1 2 3都没什么关系。此题有无数面试者回答为5。
+此处有两个坑，一是变量声明提升，二是函数表达式。
+
+\paragraph{变量声明提升}所有声明变量或声明函数都会被提升到当前函数的顶部。
+
+\paragraph{函数表达式}var getName与function getName都是声明语句，
+区别在于var getName是函数表达式，而function getName是函数声明。
 
 \subsection{Javascript日期}
 
@@ -12013,14 +12086,17 @@ DeclaringType获取声明此方法的类（Gets the class that declares this mem
 \end{figure}
 
 解决方法为在log4net配置文件的Appender配置节里添加：
-\begin{lstlisting}
+
+\begin{lstlisting}[language=XML]
 <param name="lockingModel"  type="log4net.Appender.FileAppender+MinimalLock" />
 \end{lstlisting}
 
-\textbf{lockingModel}属性为文件锁类型，RollingFileAppender本身不是线程安全的，如果在程序中没有进行线程安全的限制，
+\textbf{lockingModel}属性为文件锁类型，RollingFileAppender本身不是线程安全的，
+如果在程序中没有进行线程安全的限制，
 可以在这里进行配置，确保写入时的安全。文件锁定的模式，官方文档上他有三个可选值“FileAppender.ExclusiveLock, 
-FileAppender.MinimalLock and FileAppender.InterProcessLock”，默认是第一个值，排他锁定，
-一次值能有一个进程访问文件，close后另外一个进程才可以访问；第二个是最小锁定模式，允许多个进程可以同时写入一个文件。
+FileAppender.MinimalLock and FileAppender.InterProcessLock”，
+默认是第一个值，排他锁定，一次值能有一个进程访问文件，
+close后另外一个进程才可以访问；第二个是最小锁定模式，允许多个进程可以同时写入一个文件。
 
 \subsection{log4net自定义字段}
 
