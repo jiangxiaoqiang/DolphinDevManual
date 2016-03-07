@@ -2866,6 +2866,10 @@ GlobalConfiguration.Configuration中GlobalConfiguration类在System.Web.Http.Web
 
 \section{参数传递}
 
+\subsection{添加Area支持}
+
+
+
 \subsection{Web Api Json传递}
 
 http://blog.csdn.net/besley/article/details/23955147?utm\_source=tuicool\&utm\_medium=referral
@@ -2932,6 +2936,15 @@ Model绑定不仅可以根据参数名（简单类型）从HTTPRouteData的value
 \end{itemize}
     
 \section{Automated Documentation for REST APIs}
+
+\subsection{安装Swagger-UI}
+
+使用如下的命令安装Swagger-UI。
+
+\begin{lstlisting}[language=Bash]
+Install-Package Swashbuckle
+\end{lstlisting}
+
 
 \subsection{Swagger}
 
@@ -3455,7 +3468,11 @@ public class WantGoPlaceCompare : IEqualityComparer<tour_wantToPlacesModel>
 
 Distinct函数在比较时，先比较的HashCode值，
 扩展函数Distinct在内部使用了一个Set<T>的类来帮助踢掉重复数据，
-而这个内部类使用的是hash表的方式存储数据，
+而这个内部类使用的是hash表\footnote{散列表（Hash table，也叫哈希表），
+是根据关键码值(Key value)而直接进行访问的数据结构。
+也就是说，它通过把关键码值映射到表中一个位置来访问记录，
+以加快查找的速度。这个映射函数叫做散列函数，
+存放记录的数组叫做散列表。}的方式存储数据，
 所以会调用到我们自定义类的GetHashCode函数，
 如果返回的hashcode值不等，它就不会再调用Equels方法进行比较了。
 使用List的Distinct方法来剔除重复数据如下代码片段所示：
@@ -6644,10 +6661,18 @@ asp.net请求处理，2步的过程如图\ref{fig:IISHandleUserRequest}所示，
 	\caption{ASP.NET生命周期}
 	\label{fig:TheWholeLifeCycleOfHttp}
 \end{figure}
-
-
-
 http://www.cnblogs.com/suizhouqiwei/archive/2012/08/15/2637775.html
+\section{页面适应多屏}
+
+\subsection{适应手机浏览}
+\paragraph{使用meta标签}这也是普遍使用的方法，理论上讲使用这个标签是可以适应所有尺寸的屏幕的，
+但是各设备对该标签的解释方式及支持程度不同造成了不能兼容所有浏览器或系统。
+
+\begin{lstlisting}[language=HTML]
+<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+\end{lstlisting}
+
+
 
 \section{性能（Performance）}
 
@@ -6745,8 +6770,52 @@ IIS 6默认运行在Network Service账户下，
 \mbox{}         
 \clearpage
 
-\section{MVC生命周期}
+\section{MVC权限}
 
+\subsection{MVC登录验证}
+
+有时有的网页需要用户登录才能够操作，
+所以需要进行用户是否登录的验证。
+基本思路是用户登录后Cookie里存放一个值，
+当再次请求时判断此值是否存在，
+存在就代表已经登录。
+编写过滤器ActionExecuteFilter继承ActionFilterAttribute在每一个Action执行之前判断用户是否已经登录：
+
+\begin{lstlisting}[language={[Sharp]C}]
+public class ActionExecuteFilter : ActionFilterAttribute
+{
+    public override void OnActionExecuting(ActionExecutingContext filterContext)
+    {
+        //OnActionExecuting:正要准备执行Action的时候但还未执行时执行
+        var userId = filterContext.HttpContext.Request.Cookies["userId"];
+        if (userId != null) return;
+        var controllerName = (string)filterContext.RouteData.Values["controller"];
+        if (controllerName != "Login")
+        {
+            //跳转到登陆页
+            filterContext.Result = new RedirectResult("/Login/Index");
+        }
+    }
+}
+\end{lstlisting}
+
+用户登录时设置Cookie，下一次请求时Cookie将通过HTTP发送到服务端。
+
+\begin{lstlisting}[language={[Sharp]C}]
+public JsonResult SignIn(string input1, string input2)
+{
+    var loginSuccess = false;
+    if (input1 == "doc" && input2 == "doc")
+    {
+        var cookie = new HttpCookie("userId", "1");
+        Response.Cookies.Add(cookie);
+        loginSuccess = true;
+    }
+    return new JsonResult { Data = loginSuccess, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+}
+\end{lstlisting}
+
+\section{MVC生命周期}
 
 \subsection{ASP.NET MVC的处理流程}
 
@@ -6986,7 +7055,7 @@ ActionInvoker的作用是寻找并调用Action方法。
 
 \section{MVC页面传值}
 
-\paragraph{POST传值（View \textrightarrow ~Controller)}
+\subsection{(View \textrightarrow ~Controller)}
 ~MVC中通过AJax的POST方式向Controller传值如下代码所示：
 
 \begin{lstlisting}[language=VBScript]
@@ -7637,7 +7706,7 @@ public static T SaveObject<T>(string relativeUrl, string param)
 
 其中restResult.data为Object类型，使用JsonConvert反序列化为指定类型。
 
-\chapter{Javascript}
+\chapter{JavaScript}
 
 \clearpage
 \mbox{}         
@@ -8415,9 +8484,9 @@ http-equiv为HTTP响应的标题头Http Response Header）。
 <meta http-equiv="参数" content="参数变量值"/>
 \end{lstlisting}
 
-\section{CSS}
+\chapter{CSS}
 
-\subsection{规范}
+\section{规范}
 
 \subsubsection{文件规范}
 
@@ -8538,12 +8607,14 @@ table就是表格，而不是其他什么（更不能被用来布局和定位）
 这样可以让网站在任何情况下显示的很棒！ 
 
 
-\subsection{居中}
+\section{居中}
 
 \subsubsection{把margin设为auto}
 
 就是把要居中的元素的margin-left和margin-right都设为auto，
 此方法只能进行水平的居中，且对浮动元素或绝对定位元素无效。
+行级元素设置其父元素的text-align center，
+块级元素设置其本身的left和right margins为auto即可。
 
 \subsubsection{使用text-align:center}
 
@@ -8591,6 +8662,24 @@ table就是表格，而不是其他什么（更不能被用来布局和定位）
 \end{lstlisting}
 
 \showremarks
+
+\subsection{竖直居中}
+
+竖着居中的CSS代码如下所示：
+
+\begin{lstlisting}
+.login-center {
+    width: 300px;
+    height: 200px;
+    padding: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -170px; /* (width + padding)/2 */
+    margin-top: -120px; /* (height + padding)/2 */
+}
+\end{lstlisting}
+
 
 \subsection{CSS3 Media Queries}
 
@@ -8667,9 +8756,9 @@ testability, maintainability and boiler-plate reduction.
 
 
 
-\section{数据库}
+\chapter{数据库}
 
-\subsection{数据恢复}
+\section{数据恢复}
 
 误删除了微信用户表中的数据。
 查看数据库的备份历史。
@@ -8710,7 +8799,9 @@ and wxUserId not in
 
 数据库的恢复模式设置为完整。
 
-\subsection{数据库还原}
+\section{数据库还原}
+
+\subsection{切换到单用户还原}
 
 在还原数据库时，有时会提示无法获取数据库的独占访问权，
 是因为其他用户在还原的时刻连接数据库，
@@ -8724,6 +8815,10 @@ alter database [zouwo-weixin] set single_user;
 alter database [zouwo-weixin] set single_user;
 \end{lstlisting}
 
+\subsection{活动监视器}
+
+也可以打开SQL Server的活动监视器终止当前连接的用户再进行还原，
+此种方式比较暴力，不推荐此种方式。
 
 \subsection{数据泵(Data Pump)}
 
@@ -9028,8 +9123,24 @@ HAVAL目前还没有C\#实现。
 
 \subsection{网站登录安全(Website Login Security)}
 
-博客园的登录采用了Javascript进行RSA加密，
-公钥通过网页发放到客户端，JSEncrypt加密后发送到服务器，
+博客园登录的用户名密码采用了JSEncrypt库进行RSA加密，
+公钥通过OpenSSL生成后通过网页分发到客户端，
+用户名和密码经过JSEncrypt加密后发送到服务器。
+通过OpenSSL生成公钥和私钥对，生成公钥的命令如下：
+
+\begin{lstlisting}[language=Bash]
+openssl genrsa -out rsa_1024_priv.pem 1024
+\end{lstlisting}
+
+接下来根据公钥生成私钥，使用如下命令：
+
+\begin{lstlisting}[language=Bash]
+openssl rsa -pubout -in rsa_1024_priv.pem -out rsa_1024_pub.pem
+\end{lstlisting}
+
+私钥保存在服务器端，经过公钥加密后的数据通过私钥进行解密，
+在与数据库的用户名密码进行比对。
+注意在后端需要将OpenSSL生成的私钥转换为XML格式，再进行解密。
 Javascript本身是经过明文加密，通过手段理论上可进行破解(研究中)，
 还有就是采用安全控件（淘宝），控件的作用就是用二进制代码来隐藏加密的算法，
 防止密码在发送前被截获，
@@ -9362,7 +9473,12 @@ string originalStr = Encoding.Default.GetString(outputByte);
 
 \section{SQL注入(SQL Injection)}
 
-\subsubsection{参数化SQL语句}
+SQL Injection为网络安全中漏洞中，发生次数最多的漏洞。
+主要是在输入SQL语法中，插入恶意的数据库查询语法。
+采用完全参数化的设计，过滤使用者输入的内容。
+
+
+\subsection{参数化SQL语句}
 
 \subsubsection{正则表达校验用户输入}
 
@@ -9430,6 +9546,34 @@ nmap -sS -P0 -sV -O <target>
 \subsection{端口扫描（Port Scanning）}
 
 端口扫描是Nmap最基本最核心的功能，用于确定目标主机的TCP/UDP端口的开放情况。
+端口扫描简单示例如下代码片段所示：
+
+\begin{lstlisting}[language=Bash]
+#扫描淘宝IP
+nmap -p 0-1000 -v 218.201.46.124
+nmap -T4 -A -v 218.201.46.124
+\end{lstlisting}
+
+通过扫描可以发现一些主机信息，比如淘宝的数字证书用的是GlobalSign，
+加密位数是2048，签名算法是sha256WithRSAEncryption，
+操作系统猜测是Linux系列的，内核版本可能是3.X或者2.6.X，
+具体信息如下。
+
+\begin{lstlisting}
+443/tcp open  ssl/http Tengine httpd
+|_http-server-header: Tengine
+|_http-title: 501 Not Implemented
+| ssl-cert: Subject: commonName=*.tmall.com/organizationName=Alibaba (China) Technology Co., Ltd./stateOrProvinceName=ZheJiang/countryName=CN
+| Issuer: commonName=GlobalSign Organization Validation CA - SHA256 - G2/organizationName=GlobalSign nv-sa/countryName=BE
+| Public Key type: rsa
+| Public Key bits: 2048
+| Signature Algorithm: sha256WithRSAEncryption
+| Not valid before: 2015-12-14T10:38:38
+| Not valid after:  2016-12-14T10:38:38
+| MD5:   5d67 3ca3 7f0e 2ab7 7b4f 59d5 0700 7223
+|_SHA-1: d048 e9cf 5487 5030 9f26 e638 7d3f 94ad a2b3 e6fa
+\end{lstlisting}
+
 默认情况下，Nmap会扫描1000个最有可能开放的TCP端口。
 
 1）公认端口(0～1023)，又称常用端口，为已经公认定义或为将要公认定义的软件保留的。
@@ -10545,24 +10689,22 @@ CLR是托管程序运行的环境，就像Windows是普通的PE程序的运行�
 比如mscorwks.dll、mscorjit.dll，它们共同的特点就是前缀均为mscor。
 在win32中，可执行文件在开始运行时，有操作系统载入到内存中，
 然后运行文件中的.text代码，结束时有操作系统负责卸载。
-而在.NET下，这个过程却不大一样。用PE结构查看工具（这里使用PEiD）载入一个实例文件，观察导入表，可以发现整个表只引入了一个mscoree.dll中的一个方法：
-\_CorExeMain。而这个方法，真是该可执行文件在win32意义上的入口点。
+而在.NET下，这个过程却不大一样。用PE结构查看工具（这里使用PEiD）载入一个实例文件，
+观察导入表，可以发现整个表只引入了一个mscoree.dll中的一个方法：
+\_CorExeMain。而这个方法，正是该可执行文件在win32意义上的入口点。
 托管Assembly本身只包含CLR可识别的MetaData(元资料), 
 不包含机器指令. 托管Assembly都与mscoree.dll绑定.
 mscoree.dll在system32目录下, 全称是Microsoft Core Execution Engine. 
 它的功能是选择合适的CLR Execution Engine来加载.
 
-1、当你双击一个.exe文件时，Windows操作系统提供的PE Loader会将该exe文件载入内存，
+\subsection{PE Loader载入PE文件}当你双击一个.exe文件时，
+Windows操作系统提供的PE Loader会将该exe文件载入内存，
 exe文件就是一种PE文件，PE(Portable Execute)文件是微软Windows操作系统上的程序文件，
 EXE、DLL、OCX、SYS文件以及COM组件都是PE文件；
-
-2、PE loader通过查找CLR头发现该目录不为空，则自动将mscoree.dll载入进程地址空间中，
+PE loader通过查找CLR头发现该目录不为空，则自动将mscoree.dll载入进程地址空间中，
 mscoree.dll一定是唯一的，且总是处于系统目录的system32下，
 例如我的机器为C:/WINDOWS/system32目录下。.net 2.0的mscoree.dll的大小只有256k左右，
 这个dll被叫做shim，它的作用是连接PE文件和CLR之间的一个桥梁。
-
-\subsection{PE文件的结构}
-
 PE文件的结构如下图所示：
 
 \begin{figure}[htbp]
@@ -10571,6 +10713,21 @@ PE文件的结构如下图所示：
 	\caption{PE文件的结构}
 	\label{fig:PEFileStructure}
 \end{figure}
+
+当mscoree.dll加载后, 它根据托管代码的MetaData和app.config,
+选择恰当版本的引擎加载. 同时mscoree还负责判断应该用何种GC Flavor. 
+GC Flavor包括Workstation GC和Server GC. 
+在CLR1中, Workstation GC对应到mscorwks.dll, 
+而Server GC对应到mscorsvr.dll文件. 在CLR2中虽然保留了mscorsvr.dll文件, 
+但是mscorwks.dll已经包含了两种GC Flavor的实现, 只需要加载mscorwks就可以了.
+ 
+CLR加载后, 先初始化CLR需要的各种功能, 比如必要的全局变量, 
+引擎需要的模块(ClassLoader, assembly Loader, JitEngine, Copntext等), 
+启动Finalizer thread和GC thread, 创建System AppDomain和Shared AppDomain, 
+创建RCDebugger Thread, 加载CLR基础类(比如mscorlib.dll, system.dll)
+ 
+当CLR引擎初始化完成后, CLR会找到当前exe的元数据, 然后找到Main函数, 编译Main函数, 
+执行Main函数.
 
 \paragraph{Dos stub}由100个左右的字节所组成，用来输出类似“这个程序不能在DOS下运行！”这样的错误信息；
 
@@ -10597,7 +10754,8 @@ COFF符号表的文件偏移量，为0；COFF符号表的符号数目，为0；O
 	\label{fig:PEFileEntryPoint}
 \end{figure}
 
-这个PE文件的入口点地址为00407FAE，然后通过这个地址来查找.text section的原始数据表，由图6所示，
+这个PE文件的入口点地址为00407FAE，然后通过这个地址来查找.text section的原始数据表，
+由图6所示，
 0040251E这个地址开始的6个字节的内容为【FF 25 00 20 40 00】，
 这个内容就是由编译器写入PE文件的.text section的重要信息，
 FF在x86汇编语言与机器码对照表中代表无条件转移指令Jmp，
@@ -10606,25 +10764,100 @@ FF在x86汇编语言与机器码对照表中代表无条件转移指令Jmp，
 由图7可以看到，此时程序会跳转到00402000这个地址所引用的mscoree.dll的\_CorExeMain(\_CorExeMain为mscoree.dll的入口方法)方法，
 所有的托管应用都会通过上述过程找到并执行\_CorExeMain方法；
 
-4、\_CorExeMain方法会帮助程序找到并载入适当的CLR版本，
-在.net 2.0以后实现CLR的程序集为mscorwks.dll或mscorsvr.dll，例如，
-在我的机器上mscorwks.dll的位置是：C:/WINDOWS/Microsoft.NET/Framework/v2.0.50727/；
+\subsection{启动CLR服务}
+
+\_CorExeMain方法会帮助程序找到并载入适当的CLR版本，
+在.net 2.0以后实现CLR的程序集为mscorwks.dll或mscorsvr.dll，
+例如，在我的机器上mscorwks.dll的位置是：
+
+\begin{lstlisting}[language=Bash]
+C:\Windows\Microsoft.NET\Framework64\v2.0.50727
+\end{lstlisting}
+
+mscorwks.dll是dotNet的核心文件，尤其是在net2.0中，
+以前分散的功能都集中到了这个dll中。 
+net 1.1中，还有一个文件mscorsvr.dll和mscorwks.dll 是同等地位的。 
+它们分别对应于Windows Service程序以及desktop程序。 
+在net 2.0中，它们都统一到了 mscorwks.dll中。 
+同时在net 2.0中mscorsn.dll的功能也合并到了mscorwks.dll中。 
+它就是dotnet运行库的核心。 
+DotNet的执行引擎(ee),内部对象的实现都在这个dll里面。 
+   
+在我们用reflector查看dotnet类库源代码时经常会遇到一些函数看不到源代码，
+只是标记成内部实现。这些函数基本上实际实现的代码就在这个dll里面，
+是native实现的。如反射功能的相关对象以及实现就是这里面。 
 
 5、启动CLR服务，开始初始化工作，这个初始化工作包括:
 
--- 分配一块内存空间，建立托管堆及其它必要的堆，由GC监控整个托管堆
+\begin{itemize}
+\item{分配一块内存空间，建立托管堆及其它必要的堆，由GC监控整个托管堆}
+\item{创建线程池}
+\item{创建应用程序域(AppDomain)}
+\end{itemize}
 
--- 创建线程池
+利用sos.dll可以查看CLR创建了哪些AppDomain。
+由图\ref{fig:CLRAppdomainDump}可见，CLR创建了System Domain、Shared Domain和Domain1，
+这个Domain1是默认Appdomain。
 
--- 创建应用程序域(AppDomain):利用sos.dll可以查看CLR创建了哪些AppDomain。
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{CLRAppdomainDump.jpg}
+	\caption{Dump CLR AppDomain}
+	\label{fig:CLRAppdomainDump}
+\end{figure}
 
+6、接下来就会向默认AppDomain中载入mscorlib.dll，
+由图\ref{fig:CLRMscoreLoad}可见。
 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{CLRMscoreLoad.jpg}
+	\caption{Load Compenet mscorlib}
+	\label{fig:CLRMscoreLoad}
+\end{figure}
+
+任何托管代码，
+CLR在创建好默认AppDomain后，
+第一个载入的组件一定是mscorlib.dll，
+根据命名，我的理解是Microsoft Core Library（微软核心库）。
+实际上这个组件定义了System.Object、所有基元类型：如System.Int32等，
+如图\ref{fig:CLRDumpMudoleMsCoreLib}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{CLRDumpMudoleMsCoreLib.jpg}
+	\caption{CLR Dump Module}
+	\label{fig:CLRDumpMudoleMsCoreLib}
+\end{figure}
+
+利用sos.dll(SOS Debugging Extension)可以看到有哪些类被载入，
+依据Domain 1里的Module地址，
+在WinDbg窗口敲入命令!dumpmodule -mt 000007fef7111000，
+其中000007fef7111000为Mudule的地址，
+在!dumpdomain输出的Assembly中。
+结果比较长，只列出部分。
+
+7、产生主线程后可能会触发一些mscorlib.dll里的类型并加载入内存，接着，
+当你的PE文件：hello.exe被载入后，默认Appdomain的名字被改为你的PE文件的名字，
+载入过程完成后的结果可见图8。
+ 
+8、包含在mscorwks.dll中的\_CorExeMain2方法接管主线程，\_CorExeMain2的代码如下：
+代码中GetEntryPoint将通过MetaData表提供的接口查找包含.entrypoint的类型，
+接着返回入口方法(在C\#中这个入口方法一定是Main方法)的一个MethodDesc类型的实例，
+获取MethodDesc类型实例的这个过程我认为是：CLR通过读取元数据表，
+定位入口方法所属的类型，建立这个类型的EECLASS(EECLASS结构中包含重要信息有：
+指向当前类型父类的指针、指向方法表的指针、实例字段和静态字段等)
+和这个类型所包含方法的Method Table(方法表由一个个Method Descripter组成，
+具体到内存中就是指向若干MethodDesc类型实例的地址)，
+通过EEClass::FindMethod方法找到并返回入口方法的MethodDesc类型实例。
+最后通过ClassLoader::RumMain来执行入口方法。
+
+\subsection{进入Main方法}
 
 9、进入Main方法，进而执行后续程序。
-
 最后，从上述分析也可以看出，.NET的几个核心组件的被调用顺序大致是： 
-mscoree.dll -----> mscorwks.dll(mscorsvr.dll)  -----> 
-mscorlib.dll ----->mscorjit.dll。
+mscoree.dll --> mscorwks.dll(mscorsvr.dll) --> 
+ mscorlib.dll --> mscorjit.dll。
 一般来说调试.NET程序使用VS2005就可以了，但是要想得到更详细的信息，
 如内存情况等就需要借助其他工具了，
 个人觉得sos.dll和Windbg\footnote{Windbg可以在http://www.microsoft.com/whdc/devtools/debugging/default.mspx下载}是很好的工具。而如果你装的是VS2005 Team Version，那么自带sos.dll。
@@ -12631,7 +12864,7 @@ $ git add [dir]
 # 添加所有修改文件
 $ git add .
 
-#移除文件
+#移除文件，-r参数代表递归移除
 $ git rm -r --cache Fosc.Dolphin.UI/Fosc.Dolphin.UI/obj/
 
 #浏览器中列出git add命令的帮助内容
@@ -13159,6 +13392,17 @@ PublishProfile指定创建的Profile名称（没有扩展名)，
 DeployOnBuild=true 表示启用编译并发布，
 VisualStudioVersion=11.0 表示VS2012。
 
+\subsection{邮件通知(E-Mail Notification)}
+
+为了保证持续的构建成功，当构建失败后需要通知相关人员。
+以163邮箱配置为例，在Jenkins全局配置的邮件通知模块下，
+配置SMTP服务器为：smtp.163.com，勾选使用SMTP认证，
+认证的用户名填写163邮箱地址：dolphinjiang123@163.com。
+注意密码不是登录邮箱的密码，而是在163邮箱开通SMTP服务时要求输入的密码。
+全局变量配置完毕后，在单个项目的构建配置增加构建后操作，
+添加构建失败需要通知的人员，
+多个邮箱地址以空格键相隔。管理员邮箱的名字需要和认证的邮箱的名字一致。
+
 \section{Travis CI}
 
 
@@ -13166,7 +13410,7 @@ VisualStudioVersion=11.0 表示VS2012。
 
 \subsection{生成更新文件}
 
-\begin{lstlisting}
+\begin{lstlisting}[language={[Sharp]C}]
 @echo off
 title 生成更新文件
 set sourcePath=D:\软件共享\走喔热印部署软件\V0.0.4-Stable-Release20150710\Debug
@@ -13195,9 +13439,264 @@ pause
 新建环境变量GRADLE\_HOME，值为Gradle的解压路径；
 
 
-\chapter{测试组件}
+\chapter{测试调试组件}
 
 \clearpage
+
+\section{WinDbg}
+
+WinDbg是在windows平台下，强大的用户态和内核态调试工具。
+它能够通过dmp文件轻松的定位到问题根源，可用于分析蓝屏、程序崩溃（IE崩溃）原因。
+
+\subsection{基本使用}
+
+\paragraph{WinDbg设置Symbol Path}符号表是WinDbg关键的“数据库”，
+如果没有它，WinDbg无法分析出更多问题原因。
+运行WinDbg->菜单->File->Symbol File Path->设置\_NT\_SYMBOL\_PATH变量：
+在弹出的框中输入
+
+\begin{lstlisting}[language=Bash]
+cache*c:\MySymbol;srv*http://msdl.microsoft.com/download/symbols
+\end{lstlisting}
+
+按照这样设置，WinDbg将先从本地文件夹C:\textbackslash MySymbol中查找Symbol，
+如果找不到，则自动从MS的Symbol Server上下载Symbols)。
+另一种做法是从这个Symbol下载地址中http://www.microsoft.com/whdc/devtools/debugging/symbolpkg.mspx，
+下载相应操作系统所需要的完整的Symbol安装包，并进行安装，
+例如我将其安装在D:\textbackslash WINDOWS\textbackslash Symbols，
+在该框中输入“D:\textbackslash WINDOWS\textbackslash Symbols”。
+
+\paragraph{命令输出自动换行}有时键入命令后输出的内容太长，
+而又不想拖动Command窗口的左右滚动条进行查看，
+此时可以设置输出内容自动换行，当超出当前屏幕展示范围时，
+自动从下一行开始显示，如图\ref{fig:WinDbgAutoWrapWord}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=1]{WinDbgAutoWrapWord.jpg}
+	\caption{WinDbg自动换行}
+	\label{fig:WinDbgAutoWrapWord}
+\end{figure}
+
+\subsection{WinDbg加载SOS}
+
+SOS调试扩展(SOS.dll)通过提供有关内部公共语言运行库(CLR)环境的信息，
+帮助您在WinDbg.exe调试器和Visual Studio中调试托管程序。
+注意Visual Studio 2013不支持SOS，
+If you are using Visual Studio 2013, 
+SOS.dll is supported in the Windows Debugger within Visual Studio, but not in the Immediate window of the Visual Studio debugger.
+使用如下命令加载SOS：
+
+\begin{lstlisting}[language=Bash]
+.load C:\Windows\Microsoft.NET\Framework64\v4.0.30319\SOS.dll
+g #开始调试
+.loadby sos clr
+\end{lstlisting}
+
+使用.load加载程序集时需要制定全路径，
+使用.loadby加载程序集时指定程序集名称即可。
+Specifies the debugger extension DLL to load. 
+If you use the .load command, DLLName should include the full path. 
+If you use the .loadby command, DLLName should include only the file name. 
+如果出现了“Unable to find module 'clr'”这样的错误。
+请键入g让调试程序运行一会儿，停下来的时候再尝试命令.loadby sos clr，这时一般都会成功。
+
+\section{Fiddler(Free,Not Open Source)}
+
+Fiddler（中文名称：小提琴）是一个HTTP的调试代理，以代理服务器的方式，
+监听系统的Http网络数据流动，Fiddler可以也可以让你检查所有的HTTP通讯，
+设置断点。Fiddler默认监听端口为8888，有时8888端口会被其他程序占用，
+Fiddler会选择一个随机的端口。查看Fiddler的监听端口在：
+Tools->Fiddler Options->Connections下。如图所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{FiddlerListeningPort.jpg}
+	\caption{Fiddler监听端口}
+	\label{fig:FiddlerListeningPort}
+\end{figure}
+
+在浏览器中将代理端口设置为Fiddler相应端口值即可。
+
+\subsection{Fiddler Capture}
+
+Fiddler暂时没有找到暂停抓包的选项，
+有时为了仔细分析某个特定的请求，需要停止抓包或者说是暂停抓包(过多的包干扰分析)，
+此时有2个选择，一是可以禁止左侧的请求记录列表自动滚动(AutoScroll Session List)，
+任意HTTP列表记录右键单击即出现此菜单，二是在下方有展示或者抓取的进程，选择Hide All选项，
+如图\ref{fig:HideAllProcessCapture}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{HideAllProcessCapture.jpg}
+	\caption{Fiddler隐藏所有进程数据流向}
+	\label{fig:HideAllProcessCapture}
+\end{figure}
+
+注意在用宽带拨号上网时代理设置需要在宽带连接中进行设置，
+而不是设置局域网(LAN)的代理，设置局域网代理是本机处于局域网时，
+当电脑直接用宽带拨号时会动态分配一个广域网的IP，
+重新拨号时IP会再分配，不再是原有IP，宽带设置代理
+如图\ref{fig:BrandwithProxySetting}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.7]{BrandwithProxySetting.jpg}
+	\caption{Fiddler宽带连接代理设置}
+	\label{fig:BrandwithProxySetting}
+\end{figure}
+
+\subsection{Fiddler捕获HTTPS}
+
+要抓取走HTTPS的JS内容，Fiddler必须解密HTTPS流量。
+但是，浏览器将会检查数字证书，并发现会话遭到窃听。
+为了骗过浏览器，Fiddler通过使用另一个数字证书重新加密HTTPS流量。
+Fiddler被配置为解密HTTPS流量后，
+会自动生成一个名为DO\_NOT\_TRUST\_FiddlerRoot的CA证书，
+并使用该CA颁发每个域名的TLS证书。
+若DO\_NOT\_TRUST\_FiddlerRoot证书被列入浏览器或其他软件的信任CA名单内，
+则浏览器或其他软件就会认为HTTPS会话是可信任的、而不会再弹出“证书错误”警告。
+菜单栏Tools>>Fiddler Options>>HTTPS，
+将Decrypt HTTPS Traffic复选框勾选上，
+如图\ref{fig:FiddlerDecryptHttpsTraffic}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.7]{FiddlerDecryptHttpsTraffic.jpg}
+	\caption{Fiddler捕获HTTPS通信}
+	\label{fig:FiddlerDecryptHttpsTraffic}
+\end{figure}
+
+Fiddler2 使用man-in-the-middle(中间人)攻击的方式来截取HTTPS流量。
+在Web浏览器面前Fiddler2假装成一个HTTPS服务器，
+而在真正的HTTPS服务器面前Fiddler2假装成浏览器。
+Fiddler2会动态地生成HTTPS证书来伪装服务器。
+
+\subsection{Fiddler移动端Capture}
+
+Fiddler同样可以捕获移动端的HTTP请求，
+如果手机和电脑在同一个局域网内，
+在手机端设置无线代理的IP为PC端的IP，
+端口为8888，如果PC在广域网中的话，
+设置移动端的IP为广域网的IP，
+此时手机可在任意网络(需要和PC ping通，不能是单独的网络)中，
+PC都能够捕获到手机端的请求。
+另需在Fiddler中允许远程抓包，
+具体设置如图\ref{fig:FiddlerCaptureMobilePackage}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{FiddlerCaptureMobilePackage.jpg}
+	\caption{Fiddler开启远程捕获}
+	\label{fig:FiddlerCaptureMobilePackage}
+\end{figure}
+
+
+\subsection{图标含义}
+
+\url{http://docs.telerik.com/fiddler/configure-fiddler/tasks/configurefiddler}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=1]{MeaningOfFiddlerIcon.jpg}
+	\caption{Fiddler图标含义}
+	\label{fig:MeaningOfFiddlerIcon}
+\end{figure}
+
+\subsection{配置过滤规则(Configurate Filter Rule)}
+
+Fiddler可以过滤出与某些特定网址交互的信息，
+如图\ref{fig:FiddlerFilter}所示。
+注意配置主机时，不用带http://，和左侧的列表中的主机名称一致即可。
+配置好过滤规则后可点击右上角的Actions按钮保存或者应用过滤规则。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{FiddlerFilter.jpg}
+	\caption{Fiddler Filter过滤}
+	\label{fig:FiddlerFilter}
+\end{figure}
+
+\subsection{Composer}
+
+Fiddler的作者把HTTP Request发射器取名叫Composer(中文意思是：乐曲的创造者), 很有诗意。
+Fiddler Composer的功能就是用来创建HTTP Request然后发送。 
+可以自定义一个Request, 也可以手写一个Request, 
+甚至可以在Web会话列表中拖拽一个已有的Request. 来创建一个新的HTTP Request.
+能创建发送HTTP Request的工具很多很多。 但是Fiddler的功能有如下的优势。
+
+1. 能从"Web会话列表"中拖拽一个先前捕获到的Request, 然后稍微修改一下
+
+2. 发送Request后，还能设置断点，继续修改Request.
+
+3. 支持在Request中上传文件
+
+4. 支持发送多次Request.
+
+在Composor窗口的右侧有Request History列表，可以右键添加Comment，
+给请求的Url设置别名以便于识别，默认情况下Composor会自动过滤掉重复的Url。
+有许多时候RESTful接口涉及到认证的过程，
+而Fiddler的请求头中默认是不带认证信息的，
+可将认证信息通过FiddlerScript统一写入，
+而不用每次都粘贴认证信息。
+在Fiddler的OnBeforeRequest方法中添加如下信息即可。
+
+\begin{lstlisting}[language={[Sharp]C}]
+if(oSession.host.Contains("192.168.1.222:801")||oSession.host.Contains("129.89.81.118:801"))
+{
+    oSession.oRequest["auth"] = "app|e10adc3949ba59abbe56e057f20f883e";
+}
+\end{lstlisting}
+
+在添加请求头时用host条件进行过滤，
+只需要与特定主机交互时才发送认证信息，
+否则在所有的请求头中都会添加上认证信息。
+
+\subsection{Statistics}
+
+使用Fiddler的统计可以查看网页的性能信息，包括请求了多少次，
+耗时等，查看Fiddler的统计图表可以。很清楚的看到加载了哪些类型的文件，
+已及文件的大小，文件相对于页面的占比\marginpar{Margin Text}。
+有时一个页面包含非常多的请求，可以点击查找(Find)按钮，
+如图所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{WebsiteUrlMatch.jpg}
+	\caption{查询匹配的请求}
+	\label{fig:WebsiteUrlMatch}
+\end{figure}
+
+以凤凰网为例，关键字中输入“ifeng”，勾选“选中匹配选项(Select matches)”，
+在右侧是统计图中即可看出当前页面的统计信息，
+包括图片，css，js等文件的占比。
+
+\subsection{Inspectors}
+
+分为上下两个部分，上半部分是请求头部分，下半部分是响应头部分。
+对于每一部分，提供了多种不同格式查看每个请求和响应的内容。
+JPG 格式使用ImageView就可以看到图片，HTML/JS/CSS使用TextView可以看到响应的内容。
+Raw标签可以查看原始的符合HTTP标准的请求和响应头。
+Auth则可以查看授权Proxy-Authorization和Authorization的相关信息。
+Cookies标签可以看到请求的cookie和响应的set-cookie头信息。
+部分网站的Inspectors请求里可以直接看到登录网站的用户名和密码，
+如图\ref{fig:RequestBodyUserPassword}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{RequestBodyUserPassword.jpg}
+	\caption{请求体中的用户名密码}
+	\label{fig:RequestBodyUserPassword}
+\end{figure}
+
+在QQ发送接收离线文件时也是通过HTTP进行传输，
+且未加密，可以通过Fiddler看到部分发送的文件的内容。
+
+\subsection{断点调试(Breakpoint Debugging)}
+
+在启用了Fiddler断点调试的功能后，通过Fiddler代理请求的所有网站不是立即相应，
+在请求之前可以对请求的数据包进行编辑。
+
 
 \section{NUnit（MIT License）}
 
@@ -13388,15 +13887,9 @@ SoapUI provides complete test coverage and supports all the standard protocols
 and technologies. There are simply no limits to what you can do with your tests. 
 Meet SoapUI, the world's most complete testing tool!
 
-
-
-
 \chapter{辅助软件}
 
 \clearpage
-
-
-
 
 \section{ildasm.exe(MSIL Disassembler)}
 
@@ -13869,175 +14362,6 @@ NodeJS的配置在Run->Edit Configurations->
 	\label{fig:WebStormPackageNodeJSConfig}
 \end{figure}
 
-\section{Fiddler(Free,Not Open Source)}
-
-Fiddler（中文名称：小提琴）是一个HTTP的调试代理，以代理服务器的方式，
-监听系统的Http网络数据流动，Fiddler可以也可以让你检查所有的HTTP通讯，
-设置断点。Fiddler默认监听端口为8888，有时8888端口会被其他程序占用，
-Fiddler会选择一个随机的端口。查看Fiddler的监听端口在：
-Tools->Fiddler Options->Connections下。如图所示：
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.8]{FiddlerListeningPort.jpg}
-	\caption{Fiddler监听端口}
-	\label{fig:FiddlerListeningPort}
-\end{figure}
-
-在浏览器中将代理端口设置为Fiddler相应端口值即可。
-
-\subsection{Fiddler Capture}
-
-Fiddler暂时没有找到暂停抓包的选项，
-有时为了仔细分析某个特定的请求，需要停止抓包或者说是暂停抓包(过多的包干扰分析)，
-此时有2个选择，一是可以禁止左侧的请求记录列表自动滚动(AutoScroll Session List)，
-任意HTTP列表记录右键单击即出现此菜单，二是在下方有展示或者抓取的进程，选择Hide All选项，
-如图\ref{fig:HideAllProcessCapture}所示。
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.8]{HideAllProcessCapture.jpg}
-	\caption{Fiddler隐藏所有进程数据流向}
-	\label{fig:HideAllProcessCapture}
-\end{figure}
-
-注意在用宽带拨号上网时代理设置需要在宽带连接中进行设置，
-而不是设置局域网(LAN)的代理，设置局域网代理是本机处于局域网时，
-当电脑直接用宽带拨号时会动态分配一个广域网的IP，
-重新拨号时IP会再分配，不再是原有IP，宽带设置代理
-如图\ref{fig:BrandwithProxySetting}所示。
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.7]{BrandwithProxySetting.jpg}
-	\caption{Fiddler宽带连接代理设置}
-	\label{fig:BrandwithProxySetting}
-\end{figure}
-
-\subsection{Fiddler移动端Capture}
-
-Fiddler同样可以捕获移动端的HTTP请求，
-如果手机和电脑在同一个局域网内，
-在手机端设置无线代理的IP为PC端的IP，
-端口为8888，如果PC在广域网中的话，
-设置移动端的IP为广域网的IP，
-此时手机可在任意网络(需要和PC ping通，不能是单独的网络)中，
-PC都能够捕获到手机端的请求。
-另需在Fiddler中允许远程抓包，
-具体设置如图\ref{fig:FiddlerCaptureMobilePackage}所示。
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.8]{FiddlerCaptureMobilePackage.jpg}
-	\caption{Fiddler开启远程捕获}
-	\label{fig:FiddlerCaptureMobilePackage}
-\end{figure}
-
-
-\subsection{图标含义}
-
-\url{http://docs.telerik.com/fiddler/configure-fiddler/tasks/configurefiddler}
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=1]{MeaningOfFiddlerIcon.jpg}
-	\caption{Fiddler图标含义}
-	\label{fig:MeaningOfFiddlerIcon}
-\end{figure}
-
-\subsection{配置过滤规则(Configurate Filter Rule)}
-
-Fiddler可以过滤出与某些特定网址交互的信息，
-如图\ref{fig:FiddlerFilter}所示。
-注意配置主机时，不用带http://，和左侧的列表中的主机名称一致即可。
-配置好过滤规则后可点击右上角的Actions按钮保存或者应用过滤规则。
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.8]{FiddlerFilter.jpg}
-	\caption{Fiddler Filter过滤}
-	\label{fig:FiddlerFilter}
-\end{figure}
-
-\subsection{Composer}
-
-Fiddler的作者把HTTP Request发射器取名叫Composer(中文意思是：乐曲的创造者), 很有诗意。
-Fiddler Composer的功能就是用来创建HTTP Request然后发送。 
-可以自定义一个Request, 也可以手写一个Request, 
-甚至可以在Web会话列表中拖拽一个已有的Request. 来创建一个新的HTTP Request.
-能创建发送HTTP Request的工具很多很多。 但是Fiddler的功能有如下的优势。
-
-1. 能从"Web会话列表"中拖拽一个先前捕获到的Request, 然后稍微修改一下
-
-2. 发送Request后，还能设置断点，继续修改Request.
-
-3. 支持在Request中上传文件
-
-4. 支持发送多次Request.
-
-在Composor窗口的右侧有Request History列表，可以右键添加Comment，
-给请求的Url设置别名以便于识别，默认情况下Composor会自动过滤掉重复的Url。
-有许多时候RESTful接口涉及到认证的过程，
-而Fiddler的请求头中默认是不带认证信息的，
-可将认证信息通过FiddlerScript统一写入，
-而不用每次都粘贴认证信息。
-在Fiddler的OnBeforeRequest方法中添加如下信息即可。
-
-\begin{lstlisting}[language={[Sharp]C}]
-if(oSession.host.Contains("192.168.1.222:801")||oSession.host.Contains("129.89.81.118:801"))
-{
-    oSession.oRequest["auth"] = "app|e10adc3949ba59abbe56e057f20f883e";
-}
-\end{lstlisting}
-
-在添加请求头时用host条件进行过滤，
-只需要与特定主机交互时才发送认证信息，
-否则在所有的请求头中都会添加上认证信息。
-
-\subsection{Statistics}
-
-使用Fiddler的统计可以查看网页的性能信息，包括请求了多少次，
-耗时等，查看Fiddler的统计图表可以。很清楚的看到加载了哪些类型的文件，
-已及文件的大小，文件相对于页面的占比\marginpar{Margin Text}。
-有时一个页面包含非常多的请求，可以点击查找(Find)按钮，
-如图所示。
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.8]{WebsiteUrlMatch.jpg}
-	\caption{查询匹配的请求}
-	\label{fig:WebsiteUrlMatch}
-\end{figure}
-
-以凤凰网为例，关键字中输入“ifeng”，勾选“选中匹配选项(Select matches)”，
-在右侧是统计图中即可看出当前页面的统计信息，
-包括图片，css，js等文件的占比。
-
-\subsection{Inspectors}
-
-分为上下两个部分，上半部分是请求头部分，下半部分是响应头部分。
-对于每一部分，提供了多种不同格式查看每个请求和响应的内容。
-JPG 格式使用ImageView就可以看到图片，HTML/JS/CSS使用TextView可以看到响应的内容。
-Raw标签可以查看原始的符合HTTP标准的请求和响应头。
-Auth则可以查看授权Proxy-Authorization和Authorization的相关信息。
-Cookies标签可以看到请求的cookie和响应的set-cookie头信息。
-部分网站的Inspectors请求里可以直接看到登录网站的用户名和密码，
-如图\ref{fig:RequestBodyUserPassword}所示：
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.8]{RequestBodyUserPassword.jpg}
-	\caption{请求体中的用户名密码}
-	\label{fig:RequestBodyUserPassword}
-\end{figure}
-
-在QQ发送接收离线文件时也是通过HTTP进行传输，
-且未加密，可以通过Fiddler看到部分发送的文件的内容。
-
-\subsection{断点调试(Breakpoint Debugging)}
-
-在启用了Fiddler断点调试的功能后，通过Fiddler代理请求的所有网站不是立即相应，
-在请求之前可以对请求的数据包进行编辑。
 
 
 
@@ -14628,10 +14952,6 @@ h.打印失败（API：http://ip/weixin/printData?an=error[POST][guid={guid}]）
 
 \subsection{app.config}
 
-\section{程序环境}	
-
-部署系统需要在场地机器上安装.NET Framework 4.0。
-
 \subsubsection{Node-Webkit}
 
 有时网页中的图片在浏览器中可以正常展示，但是在Node-Webkit中无法显示，
@@ -14698,8 +15018,6 @@ static void Main(string[] Args)
     Application.Run(new FrmUpdate(Args));    
 }
 \end{lstlisting}
-
-
 
 \subsection{定时任务}
 
@@ -15599,12 +15917,6 @@ $\rightarrow$接口权限表$\rightarrow$获取用户地理位置。
 开通了上报地理位置接口的公众号，用户在关注后进入公众号会话时，
 会弹框让用户确认是否允许公众号使用其地理位置。
 弹框只在关注后出现一次，用户以后可以在公众号详情页面进行操作。
-
-\subsection{title}
-
-\section{组件}
-
-打印查询、布点管理
 
 \subsection{调试}
 
@@ -17137,7 +17449,8 @@ RunTime using activator:00:00:00:20
 	39 & \url{http://pagespeed.webkaka.com/docs/} & 2016-01-24 & 网站速度诊断 \\
 	\hline
 	40 & \url{http://cn.bing.com/} & 微软必应搜索\\
-	\hline				
+	\hline
+	41 & \url{http://www.infoq.com/} & \\				
 \end{tabular}
 
 \begin{figure}[htbp]
@@ -18026,6 +18339,8 @@ Document根节点包含子节点：forms、location、anchors、images、links�
 被protected internal修饰的属性/方法可以在其他项目中,被派生类使用。
 
 \subsection{IEnumerable和string[]的区别}
+
+\subsection{foreach和List<T>.Foreach的区别}
 
 
 
