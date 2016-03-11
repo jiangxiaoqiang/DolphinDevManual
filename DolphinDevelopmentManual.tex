@@ -2864,10 +2864,28 @@ ASP.NET Web API is an ideal platform for building RESTful applications on the .N
 那么调用是也必须在Url的参数集合中以value=1的形式，名称必须一致。
 GlobalConfiguration.Configuration中GlobalConfiguration类在System.Web.Http.WebHost.dll中。
 
+\section{Web Api帮助文档}
+
+\subsection{Controller分类}
+
+\paragraph{Step 2:继承DefaultHttpControllerSelector}The second part of the solution is to create an implementation of IHttpControllerSelector that actually uses the area name. 
+
+
+
+
+
+\section{Web Api Area支持}
+
+\section{Web Api路由}
+
+请求路径以字符串”api”开头的时候将访问webAPI的函数
+(注：至于为什么用MapHttpRoute而不是MapRoute；
+为什么用routeTemplate而不是用url我们再以后的章节介绍)。
+因为routeTemplate中有了{controller}，
+所以针对api的请求可以自动映射到指定的controller类。
+
+
 \section{参数传递}
-
-\subsection{添加Area支持}
-
 
 
 \subsection{Web Api Json传递}
@@ -7293,7 +7311,7 @@ MVC异常处理一般可以在Action级别处理，
 也就是Application\_Error，如果都不进行处理，
 异常将抛给用户。
 
-\subsubsection{Application\_Error}
+\subsection{Application\_Error}
 
 程序中发生的所有异常，都可以在这里捕获。
 但是有一个不足的地方，那就是，如果我们在这里捕获异常之后，
@@ -7305,40 +7323,36 @@ MVC异常处理一般可以在Action级别处理，
 显示错误页面之后，URL还是不变。因此，在这里处理异常并不能满足这种需求。
 在Global.asax代码片段\ref{code:ApplicationLevelErrorHandler}代码是在程序级别捕获错误。
 
-\begin{lstlisting}[language={[Sharp]C},caption=应用程序级别错误处理,label=code:ApplicationLevelErrorHandler]
+\begin{lstlisting}[language={[Sharp]C},caption=MVC应用程序级别错误处理,label=code:ApplicationLevelErrorHandler]
 void Application_Error(object sender, EventArgs e)
-{
-    //在出现未处理的错误时运行的代码 
-    Exception ex = Server.GetLastError().GetBaseException();
-    StringBuilder str = new StringBuilder();
-    str.Append("\r\n" + DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"));
-    str.Append("\r\n.客户信息：");
+{     
+    var exception = Server.GetLastError().GetBaseException();
+    var errorDetail = new StringBuilder();
+    errorDetail.Append("\r\n" + DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"));
+    errorDetail.Append("\r\n.客户信息：");
     var serverIp = Request.ServerVariables.Get("HTTP_X_FORWARDED_FOR");
     var remoteAddr = Request.ServerVariables.Get("Remote_Addr").Trim();
-    var ip = (serverIp != null) ? serverIp.Trim() : remoteAddr;
-    str.Append("\r\n\tIp:" + ip);
-    str.Append("\r\n\t浏览器:" + Request.Browser.Browser);
-    str.Append("\r\n\t浏览器版本:" + Request.Browser.MajorVersion);
-    str.Append("\r\n\t操作系统:" + Request.Browser.Platform);
-    str.Append("\r\n.错误信息：");
-    str.Append("\r\n\t页面：" + Request.Url);
-    str.Append("\r\n\t错误信息：" + ex.Message);
-    str.Append("\r\n\t错误源：" + ex.Source);
-    str.Append("\r\n\t异常方法：" + ex.TargetSite);
-    str.Append("\r\n\t堆栈信息：" + ex.StackTrace);
-    str.Append("\r\n--------------------------");
-    Logger.Error(str);
+    var ipAddress = (serverIp != null) ? serverIp.Trim() : remoteAddr;
+    errorDetail.Append("\r\n\tIp:" + ipAddress);
+    errorDetail.Append("\r\n\t浏览器:" + Request.Browser.Browser);
+    errorDetail.Append("\r\n\t浏览器版本:" + Request.Browser.MajorVersion);
+    errorDetail.Append("\r\n\t操作系统:" + Request.Browser.Platform);
+    errorDetail.Append("\r\n.错误信息：");
+    errorDetail.Append("\r\n\t页面：" + Request.Url);
+    errorDetail.Append("\r\n\t错误信息：" + exception.Message);
+    errorDetail.Append("\r\n\t错误源：" + exception.Source);
+    errorDetail.Append("\r\n\t异常方法：" + exception.TargetSite);
+    errorDetail.Append("\r\n\t堆栈信息：" + exception.StackTrace);
+    errorDetail.Append("\r\n-------------------------------------------------");
+    PublicAttribute.Logger.Error(errorDetail);
     //处理完及时清理异常 
     Server.ClearError();
     //跳转至友好的出错页面 
-    Response.Redirect(@"~/Error/Index");
+    Response.Redirect(@"~/error/index");
 }
 \end{lstlisting}
 
-
-
-
-\subsubsection{OnException继承HandleErrorAttribute}
+\subsection{OnException继承HandleErrorAttribute}
 
 MVC的特点就是，每一个请求都对应一个Controller，
 当在某个Controller中发生异常时，我们都可以在OnException中捕获。
@@ -12077,7 +12091,7 @@ react-native run-android
 \mbox{}
 \clearpage
 
-\chapter{日志组件}
+\chapter{日志监控组件}
 
 \clearpage
 
@@ -12546,6 +12560,14 @@ log4net在本地可以正常写日志，
 IIS 6.0默认运行在NETWORK SERVICE账户下，
 更改网站或者log目录权限即可。
 
+\section{Opserver}
+
+Opserver是Stack Exchange的一个开源监控系统，基于Net、MVC开发，所以Net程序员可以轻松基于它二次开发。
+
+\subsection{title}
+
+
+
 \section{ELMAH}
 
 ELMAH是Error Logging Modules and Handlers for ASP.NET 的缩写。
@@ -12847,6 +12869,12 @@ GEQ - 大于或等于
 代表正常输出（即所谓的“标准输出”--stdout），2
 代表错误输出（即所谓的“标准错误输出”--stderr），
 它是所谓“标准输入”的标识，数字代号是0。
+
+\subsection{SVN多个.svn隐藏目录}
+
+在1.7.X版本之前，每个目录下面都有个.svn的隐藏文件夹，
+1.7.X之后只是在检出的根目录下有一个.svn，
+这就是Subversion 1.7的新特性。
 
 \section{Git}
 
@@ -13853,6 +13881,69 @@ string tempPath = Application.StartupPath + @"\temp\";
 
 \section{xUnit}
 
+\section{MiniProfiler}
+
+MVC MiniProfiler是Stack Overflow团队设计的一款对ASP.NET MVC的性能分析的小程序。可以对一个页面本身，
+及该页面通过直接引用、Ajax、Iframe形式访问的其它页面进行监控,监控内容包括数据库内容，
+并可以显示数据库访问的SQL（支持EF、EF CodeFirst等 ）。并且以很友好的方式展现在页面上。
+该Profiler的一个特别有用的功能是它与数据库框架的集成。
+除了.NET原生的 DbConnection类，profiler还内置了对实体框架（Entity Framework）以及LINQ to SQL的支持。
+任何执行的Step都会包括当时查询的次数和所花费的时间。
+为了检测常见的错误，如N+1反模式，profiler将检测仅有参数值存在差 异的多个查询。
+MiniProfiler是以Apache License V2.0协议发布的。
+
+
+\subsection{安装}
+
+\begin{lstlisting}[language=Bash]
+#安装Miniprofiler MVC组件
+Install-Package MiniProfiler.Mvc4
+#安装Miniprofiler EF组件
+Install-Package MiniProfiler.EF
+\end{lstlisting}
+
+\subsection{使用}
+
+\paragraph{Step 1}配置Miniprofiler启动和停止，开始请求事Miniprofiler启动，
+结束请求时Miniprofiler结束，启动站点时初始化Miniprofiler，
+如下代码片段所示。
+
+\begin{lstlisting}[language={[Sharp]C}]
+protected void Application_Start()
+{    
+    MiniProfilerEF.Initialize();
+}
+
+void Application_BeginRequest()
+{
+    if (Request.IsLocal)
+    {
+        MiniProfiler.Start();
+    }
+}
+
+void Application_EndRequest()
+{
+    MiniProfiler.Stop();
+}
+\end{lstlisting}
+
+\paragraph{Step 2}在MVC页面中初始化，将如下代码添加到母板页中。
+
+\begin{lstlisting}[language={[Sharp]C}]
+@StackExchange.Profiling.MiniProfiler.RenderIncludes()
+\end{lstlisting}
+
+最终的效果如图\ref{fig:MiniprofilerEffect}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{MiniprofilerEffect.jpg}
+	\caption{Miniprofiler效果}
+	\label{fig:MiniprofilerEffect}
+\end{figure}
+
+
 \section{JustDecompile}
 
 \section{DebugView.exe}
@@ -14709,6 +14800,9 @@ NuGet的命令行管理界面在视图>其他窗口>程序包管理控制台下�
 常用的Nuget命令如下，可以切换当前的默认项目，选择为不同的项目安装相同或不同的组件。
 
 \begin{lstlisting}[language=Bash]
+#搜索可用包
+Get-Package -listavailable -filter MiniProfiler
+
 #安装包
 Install-Package Swashbuckle
 
