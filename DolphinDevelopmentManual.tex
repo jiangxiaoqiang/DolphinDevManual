@@ -4194,8 +4194,6 @@ protocol://hostname[:port]/path/[;parameters][?query-string]\#fragment\\
 包括散列符(\#)加上该文件偏移量相关的位置点名。}
 \end{itemize}
 
-
-
 \subsection{Uri}
 
 URI、URL、URN三者的关系如图\ref{fig:RelationshipOfUriUrlUrn}所示。
@@ -4237,6 +4235,14 @@ SSH为建立在应用层和传输层基础上的安全协议。SSH是目前较�
 几乎所有UNIX平台—包括HP-UX、Linux、AIX、Solaris、Digital UNIX、Irix，以及其他平台，都可运行SSH。
 
 \subsection{Internet Information Service}
+
+IIS运行时使用的3份配置文件如下：
+
+\begin{lstlisting}
+应用程序配置文件: E:\OneDrive\Source Code\Renrenmall\Tour\trunk\RR.Web.CCN.Tour\web.config
+主机配置文件: C:\Windows\Microsoft.NET\Framework64\v4.0.30319\aspnet.config
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\config\machine.config 的计算机配置文件。
+\end{lstlisting}
 
 在IIS 5.x中,存在如下两个方面的问题:
 其一是ISAPI(Internet Server Application Programming Interface)动态链接库被加载到InetInfo.exe进程中,
@@ -4385,6 +4391,26 @@ IIS7会自动将这些账号收入到IIS\_IUSRS组。并且和IUSR账号一样�
 IIS\_IUSRS组也是内置的，
 所以在所有的Windows Server 2008机器上，它总是具有相同的名称和SID，
 这就让ACL以及其它配置在WindowsServer2008(以及WindowsVista)机器之间是完全可迁移的。
+
+\subsubsection{Configuring an ASP.NET 4 Application to Auto-Start}
+
+在IIS更新之后的首次Request会等待较长时间，
+ASP.NET 4中有一个叫“自动启动（auto-start）”的新特性，可以较好地解决这个场景， 
+可以在IIS 7.5（随Windows 7和Windows Server 2008 R2发布）上运行 ASP.NET 4时使用。这个自动启动特性提供了一个可控制的方式来启动一个应用工作进程，
+初始化ASP.NET 应用，然后接受HTTP请求。
+To use the ASP.NET 4 auto-start feature, 
+you first configure the IIS “application pool” worker 
+process that the application runs within to automatically startup when the web-server first loads.  You can do this by opening up the IIS 7.5 applicationHost.config file
+
+\begin{lstlisting}
+C:\Windows\System32\inetsrv\config\applicationHost.config
+\end{lstlisting}
+
+and by adding a startMode=”AlwaysRunning” attribute to the appropriate <applicationPools> entry:
+
+\begin{lstlisting}[language=XML]
+<add name="WebApi" managedRuntimeVersion="v4.0" startMode="AlwaysRunning"/>
+\end{lstlisting}
 
 \subsection{CGI(Common Gateway Interface)}
 
@@ -5303,10 +5329,15 @@ bad request invalid hostname出现这个错误的原因是某个域名绑定到�
 404 Not Found 请求资源不存在（输错了URL）。
 比如在IE中输入一个错误的URL， http://www.cnblogs.com/tesdf.aspx。
 
+\subsubsection{5XX}
+
 5XX  服务器端错误 - 服务器未能实现合法的请求。
 500 Internal Server Error 服务器发生了不可预期的错误。
 503 Server Unavailable 服务器当前不能处理客户端的请求，
 一段时间后可能恢复正常。
+
+\paragraph{503}服务不可用是的一种状态，那么在服务器503错误出现了之后，大家不必担心的， 服务器或许就是正在维护或者暂停了，你可以联系一下服务器空间商。还有的时候cpu占用的频率大导致的。
+查看当前网站属于哪个应用程序，检查应用程序池是否处于停止状态。
 
 \subsection{获取客户端IP}
 
@@ -7009,7 +7040,8 @@ MVC从RouteData(在C:/Windows/Microsoft.NET/Framework/v4.0.30319文件夹下
 private Type GetControllerTypeWithinNamespaces(RouteBase route, string controllerName, HashSet<string> namespaces)
 {
    this.ControllerTypeCache.EnsureInitialized(this.BuildManager);
-   ICollection<Type> controllerTypes = this.ControllerTypeCache.GetControllerTypes(controllerName, namespaces);//由Controller名称和命名空间获取类型实例
+   //由Controller名称和命名空间获取类型实例
+   ICollection<Type> controllerTypes = this.ControllerTypeCache.GetControllerTypes(controllerName, namespaces);
    switch (controllerTypes.Count)
    {
      case 0:
@@ -7658,37 +7690,6 @@ compilation配置节，
 targetFramework指定网站的目标.NET Framework的版本，
 如果省略此特性，则目标版本将由Web.config文件中的其他设置以及与网站相关联的IIS应用程序池确定。
 具体更多内容参见：\url{https://msdn.microsoft.com/zh-cn/library/vstudio/s10awwz0\%28v=VS.100\%29.aspx}。
-另ViewData和ViewBag的简单对比如表\ref{TheDiffOfViewData}所示：
-
-\begin{table}\caption[Caption for LOF]{修改记录}\label{TheDiffOfViewData}					
-	\medskip
-	\centering		
-	\begin{tabular}{|c|c|}
-		\hline
-		\multirow{1}{*}{ViewData}		
-		& \multicolumn{1}{c|}{ViewBag}\\			
-		\cline{1-2}
-		 它是Key/Value字典集合 &  它是dynamic类型对像\\
-		\hline
-		 从ASP.NET MVC 1 就有了 & ASP.NET MVC3才有 \\
-		\hline
-		 基于ASP.NET 3.5 framework & 基于Asp.net 4.0与.net framework\\
-		\hline
-		 ViewData比ViewBag快 & ViewBag比ViewData慢\\
-		\hline
-		 在ViewPage中查询数据时需要转换合适的类型 & 在ViewPage中查询数据时不需要类型转换\\
-		\hline
-		 有一些类型转换代码 & 可读性更好\\
-		 \hline
-	\end{tabular}
-\end{table}
-
-ViewBag和ViewData只在当前Action中有效，等同于View。
-ViewBag是动态类型，使用时直接添加属性赋值即可，如ViewBag.myName。
-ViewData为object型，而ViewBag为dynamic型。
-而dynamic型与object型的区别则是在使用时它会自动根据数据类型转换，
-而object型则需要我们自己去强制转换。比如上面我们遍历ViewBag.Items时，
-它自动根据数据类型转换，而ViewData则需要我们强制转换。
 
 \subsection{指定的转换无效}
 
@@ -7720,6 +7721,11 @@ public static T SaveObject<T>(string relativeUrl, string param)
 
 其中restResult.data为Object类型，使用JsonConvert反序列化为指定类型。
 
+\subsection{未能加载文件或程序集“RR.Web.CCN.Tour”或它的某一个依赖项。试图加载格式不正确的程序。}
+
+检查不能加载的程序集生成选项的目标平台是否是Any CPU，
+在64位程序集直接加载单个的特殊的x86程序集会出现此错误。
+
 \chapter{JavaScript}
 
 \clearpage
@@ -7741,9 +7747,12 @@ JavaScript的主要用途是与用户互动，
 
 \subsection{规范(Specification)}
 
+\paragraph{表示区块起首的大括号，不要另起一行}
+
+Javascript会自动添加句末的分号，导致一些难以察觉的错误。
+
 \begin{enumerate}
 \setcounter{enumi}{0}
-\item{表示区块起首的大括号，不要另起一行}
 \item{调用函数的时候，函数名与左括号之间没有空格}
 \item{函数名与参数序列之间，没有空格}
 \item{所有其他语法元素与左括号之间，都有一个空格}
@@ -8621,21 +8630,21 @@ table就是表格，而不是其他什么（更不能被用来布局和定位）
 这样可以让网站在任何情况下显示的很棒！ 
 
 
-\section{居中}
+\subsection{水平居中}
 
-\subsubsection{把margin设为auto}
+\paragraph{把margin设为auto}
 
 就是把要居中的元素的margin-left和margin-right都设为auto，
 此方法只能进行水平的居中，且对浮动元素或绝对定位元素无效。
 行级元素设置其父元素的text-align center，
 块级元素设置其本身的left和right margins为auto即可。
 
-\subsubsection{使用text-align:center}
+\paragraph{使用text-align:center}
 
 只能对图片，按钮，文字等行内元素(display为inline或inline-block等)进行水平居中。
 但要说明的是在IE6、7这两个奇葩的浏览器中，它是能对任何元素进行水平居中的。
 
-\subsubsection{使用line-height让单行的文字垂直居中}
+\paragraph{使用line-height让单行的文字垂直居中}
 
 把文字的line-height设为文字父容器的高度，适用于只有一行文字的情况。
 
@@ -8679,19 +8688,38 @@ table就是表格，而不是其他什么（更不能被用来布局和定位）
 
 \subsection{竖直居中}
 
-竖着居中的CSS代码如下所示：
+先要设置div元素的祖先元素html和body的高度为100\%（因为他们默认是为0的），
+并且清除默认样式，即把margin和padding设置为0(如果不清除默认样式的话，
+浏览器就会出现滚动条)。竖着居中的CSS代码如下所示：
 
-\begin{lstlisting}
-.login-center {
-    width: 300px;
-    height: 200px;
-    padding: 20px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-left: -170px; /* (width + padding)/2 */
-    margin-top: -120px; /* (height + padding)/2 */
-}
+\begin{lstlisting}[language=HTML]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <style>
+        html,body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        .content {
+            width: 300px;
+            height: 300px;
+            background: orange;
+            margin: 0 auto; /*水平居中*/
+            position: relative; /*脱离文档流*/
+            top: 50%; /*偏移*/
+            margin-top: -150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content"></div>
+</body>
+</html>
 \end{lstlisting}
 
 
@@ -8745,7 +8773,9 @@ W3C组织建议把所有网页上的对像都放 在一个盒(box)中，
  background- image，padding，content，border之间的层次、关系和相互影响。
  这里提供一张盒模型的3D示意图，希望便于你的理解和记忆。
 
-\section{AngularJS}
+\subsection{css !important}
+
+css !important作用是提高指定CSS样式规则的应用优先权。\section{AngularJS}
 
 AngularJS是比较新的技术，版本1.0是在 2012 年发布的。
 AngularJS是由Google的员工Miško Hevery从2009年开始着手开发。
@@ -11137,6 +11167,43 @@ C\#编译器在编译时，会把属性转换成一对GetXXX和SetXXX方法，
 
 Visual Studio在调试的过程中可以修改代码，可以拖动调试断点。
 
+\subsection{常用技巧}
+
+\paragraph{编辑然后继续运行}
+
+在运行一个很复杂的程序和插件时，发现一个错误，但是不想浪费时间去重编译重启动程序。
+很简单，只要在这个位置修改这个bug，然后继续调试。Visual studio会修改这个程序，
+使得你可以继续调试而不需要重启程序。
+
+值得注意的是“编辑然后继续运行”这个功能有几个限制。一，它不能在64位代码上使用。
+如果想使用这个功能，到项目设置里的编译选项，选择”x86”作为目标平台。
+不要担心，这目标平台在reslease配置是和”debug是分离的，也就是说依然是”Any CPU”的设置。二，“编辑然后继续运行”这个功能仅适用于一个函数内部改变。
+如果你想要改变这个函数的声明或者增加新的方法，你只能选择重启程序，
+或者不做任何改变继续。如果修改的方法中包含lambda表达式，
+则意味着修改了编译器自动生成的委托类型，这样会导致编译器停止运行。
+
+\paragraph{运行到光标处(Run to Cursor--Ctrol+F10)}有的时候我们打的断点可能与实际需要关心的代码行有较远的距离，
+当我们需要运行到实际关心的代码行时，如果单击F10/F11就不是最好的选择，
+此时只需要按Ctrl+F10即可。
+
+\paragraph{断点标签(Breakpoint Label)}这是VS2010提供的新特征（feature）。
+用于更好的管理断点。它使得我们能够更好的分组和过滤断点。
+这像是对断点的归类。如果我们添加了与某一功能相关的不同类型的断点，
+我们可以根据需要使能（enable）、取消（disable）、过滤（filter）这些断点。
+断点标签在你调试大量代码，多个工程等情况下非常有用。
+
+\paragraph{Pinned DataTips}Visual Studio 2010 also includes some nice new “DataTip pinning” features that enable you to better see and track variable and expression values when in the debugger. 
+
+Simply hover over a variable or expression within the debugger to expose its DataTip (which is a tooltip that displays its value)  – and then click the new “pin” button on it to make the DataTip always visible:
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{VisualStudioDataPin.jpg}
+	\caption{DataTips Pin}
+	\label{fig:VisualStudioDataPin}
+\end{figure}
+
+
 \subsection{内存泄漏（Memory Leak）}
 
 内存泄漏是指内存空间上产生了不再被实际使用却又不能被分配的内存，
@@ -11146,14 +11213,8 @@ Visual Studio在调试的过程中可以修改代码，可以拖动调试断点�
 .NET的托管堆可能出现内存泄漏现象，
 大对象的频繁分配和释放、不恰当的保留根引用和错误的Finalize方法都可能导致内存泄漏。
 
-\subsection{PDB文件}
 
-微软不公开源代码，调试时会从微软的服务器上下载PDB文件，也叫做符号文件(Symbol File)。
-Visual Studio的PDB文件在本地的缓存路径一般为：
-
-\begin{lstlisting}
-C:\Users\Administrator\AppData\Local\Temp\SymbolCache
-\end{lstlisting}
+一 什么是PDB文件
 
 大部分的开发人员应该都知道PDB文件是用来帮助软件的调试的。
 但是他究竟是如何工作的呢，我们可能并不熟悉。本文描述了PDB文件的存储和内容。
@@ -11177,7 +11238,9 @@ source indexing的作用是将PDB和source关联起来。
 接下来的部分假设有已经设置好了symbol server和source server indexing。
 TFS2010中可以很简单地完成对一个新的build的source indexing 和 symbol server copying。
 
-\paragraph{PDB如何工作}当你加载一个模块到进程的地址空间的时候，debugger用2中信息来找到相应的PDB文件。第一个毫无疑问就是文件的名字，如果加载 zzz.dll,debugger则查找zzz.pdb文件。在文件名字相同的情况下debugger还通过嵌入到PDB和binay的GUID来确保 PDB和binay的真正的匹配。 所以即使没有任何的代码修改，昨天的binay和今天的PDB是不能匹配的。可以使用dempbin.exe来查看binary的GUID。 
+三 PDB如何工作
+
+当你加载一个模块到进程的地址空间的时候，debugger用2中信息来找到相应的PDB文件。第一个毫无疑问就是文件的名字，如果加载 zzz.dll,debugger则查找zzz.pdb文件。在文件名字相同的情况下debugger还通过嵌入到PDB和binay的GUID来确保 PDB和binay的真正的匹配。 所以即使没有任何的代码修改，昨天的binay和今天的PDB是不能匹配的。可以使用dempbin.exe来查看binary的GUID。 
  
 在VisualStudio中的modules窗口的symbol file列可以查看PDB的load顺序。
 第一个搜索的路径是binary所在的路径，如果不在binary所在的路径，
@@ -13368,12 +13431,18 @@ MSBuild Build File是项目文件或者工程文件的名称。
 在“MSBuild Build File”输入框中输入构建脚本的名字：HelloCI.msbuild。
 我们想让Jenkins执行“RunUnitTests”这个Target ，如果你没有把DefaultTargets属性设成RunUnitTests的话，
 可以在“Command Line Arguments”中输入“/t:RunUnitTests”，其中/t是/target的简写。
-然后就是MSBuild的命令行参数了。
+然后就是MSBuild的命令行参数了，示例的命令行参数如下代码片段所示。
+
+\begin{lstlisting}[language=Bash]
+/t:ResolveReferences;Compile /t:_CopyWebApplication /p:VisualStudioVersion=12.0 /p:Configuration=Release /property:TargetFrameworkVersion=v4.0 /p:WebProjectOutputDir=E:\Web\RR.Web.CCN.Tour\1.0.1 /p:OutputPath=E:\JenkinsPublish\Bin
+\end{lstlisting}
 
 \begin{itemize}
 \item{/t:Rebuild 表示每次都重建，不使用增量编译}
 \item{/property:Configuration=Release 表示编译Release版本}
-\item{/property:TargetFrameworkVersion=v4.5表示编译的目标是.NET 4.5}
+\item{/property:TargetFrameworkVersion=v4.0表示编译的目标是.NET 4.0}
+\item{/p:WebProjectOutputDir表示编译的目标文件的输出路径}
+\item{/p:OutputPath表示编译文件的临时目标路径}
 \end{itemize}
 
 保存后，点击左侧Build Now开始测试一次编译。
@@ -13986,19 +14055,6 @@ void Application_EndRequest()
 	\caption{Miniprofiler效果}
 	\label{fig:MiniprofilerEffect}
 \end{figure}
-
-在配置文件中添加Miniprofiler依赖配置：
-
-\begin{lstlisting}[language=XML]
-<dependentAssembly>
-	<assemblyIdentity name="MiniProfiler" publicKeyToken="b44f9351044011a3" culture="neutral" />
-	<bindingRedirect oldVersion="0.0.0.0-3.0.11.0" newVersion="3.0.11.0" />
-</dependentAssembly>
-<dependentAssembly>
-	<assemblyIdentity name="EntityFramework" publicKeyToken="b77a5c561934e089" culture="neutral" />
-	<bindingRedirect oldVersion="0.0.0.0-4.4.0.0" newVersion="4.4.0.0" />
-</dependentAssembly>
-\end{lstlisting}
 
 
 \section{JustDecompile}
@@ -14742,7 +14798,10 @@ Resharper这时帮上你的大忙了。用Ctrl+F11，就弹出一个像右边这
 这里面，按照你的region来显示，这样读你的代码的人也受益了。
 每个方法的参数，返回值都如UML一样列出来。
 
-\subsection{查看dll路径}
+\subsection{清洁代码(Clean Up Code)}
+
+写了一个类之后，什么是最愉快的，就是让它顺便变干净以及变规范，
+这个时候，我们需要右键Cleanup Code（Ctrl + Alt + F）。\subsection{查看dll路径}
 
 \begin{figure}[htbp]
 	\centering
@@ -15074,6 +15133,20 @@ private void btn_ExecuteJob_Click(object sender, EventArgs e)
 那么一段时间后即按照新的触发规则运行。
 
 \clearpage
+
+\part{设计}
+
+\chapter{•}
+
+\section{字体}
+
+\subsection{Museo Sans}
+
+Museo Sans is based on the well-known Museo.
+
+It is a sturdy, low contrast, geometric, highly legible sans serif typeface very well suited for any display and text use.
+
+This OpenType font family offers also support for CE languages and even Esperanto. Besides ligatures, automatic fractions, proportional/tabular lining and old-style figures, numerators, denominators, superiors and inferiors MUSEO also has a ‘case’ feature for case sensitive forms.
 
 \part{走喔热印}
 	
@@ -16554,52 +16627,6 @@ Python最出色的地方在于，它鼓励清晰易读的代码，
 特别适合以渐进开发的方式构造大项目。其缺陷在于效率不高，
 太慢，不但跟编译语言相比慢，就是跟其他脚本语言相比也显得慢。
 
-
-\section{函数库}
-
-\subsection{文件操作}	
-
-\subsubsection{FileOperHelper}
-
-\begin{lstlisting}[language={[Sharp]C}]
-/*判断文件状态*/
-[DllImport("kernel32.dll")]
-private static extern IntPtr _lopen(string lpPathName, int iReadWrite);
-	
-[DllImport("kernel32.dll")]
-private static extern bool CloseHandle(IntPtr hObject);
-	
-private const int OF_READWRITE = 2;
-	
-private const int OF_SHARE_DENY_NONE = 0x40;
-	
-private static readonly IntPtr HFILE_ERROR = new IntPtr(-1);
-	
-public static int FileIsOpen(string fileFullName)
-{
-if (!File.Exists(fileFullName))
-{
-    return -1;
-}
-	
-IntPtr handle = _lopen(fileFullName, OF_READWRITE | OF_SHARE_DENY_NONE);
-	
-if (handle == HFILE_ERROR)
-{
-	     	//被占用
-    return 1;
-}
-	
-CloseHandle(handle);
- //未占用
-return 0;
-}
-\end{lstlisting}
-
-\subsection{网络}
-
-\subsubsection{FTPOperHelper}	
-
 \chapter{经验汇总}
 
 \section{Windows搜索}
@@ -17601,7 +17628,8 @@ RunTime using activator:00:00:00:20
 	\hline
 	40 & \url{http://cn.bing.com/} & 微软必应搜索\\
 	\hline
-	41 & \url{http://www.infoq.com/} & \\				
+	41 & \url{http://www.infoq.com/} & \\
+	\hline				
 \end{tabular}
 
 \begin{figure}[htbp]
@@ -18390,7 +18418,18 @@ console.log(Object.prototype.toString.call(arr));  //[object Array]
 console.log(Object.prototype.toString.call(null));  //[object Null]
 \end{lstlisting}
 
-\subsection{什么是事件}
+\subsection{什么是委托？什么是事件？为什么要用委托?}
+
+C\#中的委托相当于C++中的函数指针（如果之前学过C++就知道函数指针是个什么概念的了），
+函数指针是用指针获取一个函数的入口地址，然后通过这个指针来实现对函数的操作。
+C\#中的委托相当于C++中的函数指针，也就说两者是有区别的：委托是面向对象的，
+类型安全的，是引用类型（开始就说了委托是个类），
+所以在使用委托时首先要 定义——>声明——>实例化——>作为参数传递给方法——>使用委托。
+
+引入委托后，编程人员可以把方法的引用封装在委托对象中（把过程的调用转化为对象的调用，
+充分体现了委托加强了面向对象编程的思想。），然后把委托对象传递给需要引用方法的代码，
+这样在编译的过程中我们并不知道调用了哪个方法，这样一来，
+C\#引入委托机制后，使得方法声明和方法实现的分离，充分体现了面向对象的编程思想。
 
 C\#里面事件就是回调函数,要先声明一个代理（也就是定义一个函数指针说明接受函数的类型，参数列表等等）,
 然后根据这个代理再定义一个事件。但是在.NET里面 一个事件可以对应多个订阅源，
@@ -18401,6 +18440,8 @@ C\#里面事件就是回调函数,要先声明一个代理（也就是定义一�
 \item{事件里面其实就两个方法(即add\_event()和remove\_event())和一个私有的委托变量，这两个方法里面分别是对这个私有的委托变量进行的合并和移除，当调用事件的+=时其实是调用的事件里面的add\_event()方法，同样-=调用的是remove\_event()方法}
 \item{事件只能够从对象外部增加新的响应方法和删除已知的响应方法，而不能主动去触发事件和获取其他注册的响应方法等信息。如果使用公有的delegate则不能做这些限制，也就是说事件对委托做了限制，使委托使用起来更加方便。也有人说事件是对委托的阉割，大概也是这个意思。}
 \end{itemize}
+
+
 
 \subsection{localhost、127.0.0.1、本机IP的区别}
 
@@ -18493,7 +18534,159 @@ Document根节点包含子节点：forms、location、anchors、images、links�
 
 \subsection{foreach和List<T>.Foreach的区别}
 
+List<T>.Foreach允许遍历的元素被修改，其内部是通过for循环来实现，
+ForEach method doesn't use the enumerator, 
+it loops through the items with a for loop。
+List<T>.Foreach会造成可读性上面的混淆不清，
+难于调试，which uses almost exactly the same characters in slightly different order. And yet the second version is harder to understand, harder to debug, and introduces closure semantics, 
+thereby potentially changing object lifetimes in subtle ways.
 
+When we provide two subtly different ways to do exactly the same thing, we produce confusion in the industry, 
+we make it harder for people to read each other’s code, and so on. Sometimes the benefit added by having two different textual representations for one operation (like query expressions versus their underlying method call form, or + versus String.Concat) is so huge that it’s worth the potential confusion. But the compelling benefit of query expressions is their readability; this new form of “foreach” is certainly no more readable than the “normal” form and is arguably worse.
+当需要执行的代码量较短时，比如仅仅调取一个方法，
+使用List<T>.Foreach是非常不错的选择，
+因为代码只有一行而foreach有3行。
+
+
+\subsection{hashtable Hashmap区别}
+
+首先C\#只有Hashtable,Hashtable表示键/值对的集合，
+这些键/值对根据键的哈希代码进行组织。C\#中没有HashMap,
+而HashMap是Java1.2引进的Map interface的一个实现。
+
+\subsection{3种主流Web开发架构}
+
+WEB应用开发中每种技术独有的资源组织形式（包括文件，数据库，HTTP请求处理等)。
+
+\paragraph{基于“WEB页面/文件”}例如CGI和PHP/ASP程序。程序的文件分别存储在不同的目录里，
+与URL相对应。当HTTP请求提交至服务器时，URL直接指向某个文件，然后由该文件来处理请求，并返回响应结果。
+
+\paragraph{基于“动作”(Action)}这是MVC架构的WEB程序所采用的最常见的方式。
+目前主流的WEB框架像Struts、Webwork(Java)，Ruby on Rails(Ruby),
+Zend Framework(PHP)等都采用这种设计。URL映射到控制器(controller)和控制器中的动作(action)，
+由action来处理请求并输出响应结果。这种设计和上面的基于文件的方式一样，都是请求/响应驱动的方案，离不开HTTP。
+
+\paragraph{基于“组件”（Component ，GUI设计也常称控件）、事件驱动的架构}最常见的是微软的.NET。
+基本思想是把程序分成很多组件，每个组件都可以触发事件，
+调用特定的事件处理器来处理（比如在一个HTML按钮上设置onClick事件链接到一个PHP函数）。
+这种设计远离HTTP，HTTP请求完全抽象，映射到一个事件。
+
+事实上这种设计原本最常应用于传统桌面GUI程序的开发，
+例如Delphi，Java Swing等。所有表现层的组件比如窗口，或者HTML表单都可以由IDE来提供，
+我们只需要在IDE里点击或拖动鼠标就能够自动添加一个组件，并且添加一个相应的事件处理器。
+
+\subsection{ViewBag和ViewData的区别}
+
+ViewData和ViewBag的简单对比如表\ref{TheDiffOfViewData}所示：
+
+\begin{table}\caption[Caption for LOF]{修改记录}\label{TheDiffOfViewData}					
+	\medskip
+	\centering		
+	\begin{tabular}{|c|c|}
+		\hline
+		\multirow{1}{*}{ViewData}		
+		& \multicolumn{1}{c|}{ViewBag}\\			
+		\cline{1-2}
+		 它是Key/Value字典集合 &  它是dynamic类型对像\\
+		\hline
+		 从ASP.NET MVC 1 就有了 & ASP.NET MVC3才有 \\
+		\hline
+		 基于ASP.NET 3.5 framework & 基于Asp.net 4.0与.net framework\\
+		\hline
+		 ViewData比ViewBag快 & ViewBag比ViewData慢\\
+		\hline
+		 在ViewPage中查询数据时需要转换合适的类型 & 在ViewPage中查询数据时不需要类型转换\\
+		\hline
+		 有一些类型转换代码 & 可读性更好\\
+		 \hline
+	\end{tabular}
+\end{table}
+
+ViewBag和ViewData只在当前Action中有效，等同于View。
+ViewBag是动态类型，使用时直接添加属性赋值即可，如ViewBag.myName。
+ViewData为object型，而ViewBag为dynamic型。
+而dynamic型与object型的区别则是在使用时它会自动根据数据类型转换，
+而object型则需要我们自己去强制转换。比如上面我们遍历ViewBag.Items时，
+它自动根据数据类型转换，而ViewData则需要我们强制转换。
+
+\subsection{常用数据结构及复杂度}
+
+\paragraph{Array}访问一个数组元素的时间复杂度为 O(1)，
+因此对数组的访问时间是恒定的。也就是说，与数组中包含的元素数量没有直接关系，
+访问一个元素的时间是相同的。
+
+Array (T[])
+
+\paragraph{ArrayList}Array 在存储值类型时是采用未装箱（unboxed）的方式。
+由于 ArrayList 的 Add 方法接受 object 类型的参数，
+导致如果添加值类型的值会发生装箱（boxing）操作。
+这在频繁读写 ArrayList 时会产生额外的开销，导致性能下降。
+
+当元素的数量是固定的，并且需要使用下标时。
+Linked list (LinkedList<T>)
+
+当元素需要能够在列表的两端添加时。否则使用 List<T>。
+Resizable array list (List<T>)
+
+当元素的数量不是固定的，并且需要使用下标时。
+Stack (Stack<T>)
+
+当需要实现 LIFO（Last In First Out）时。
+Queue (Queue<T>)
+
+当需要实现 FIFO（First In First Out）时。
+Hash table (Dictionary<K,T>)
+
+当需要使用键值对（Key-Value）来快速添加和查找，并且元素没有特定的顺序时。
+Tree-based dictionary (SortedDictionary<K,T>)
+
+当需要使用价值对（Key-Value）来快速添加和查找，并且元素根据 Key 来排序时。
+Hash table based set (HashSet<T>)
+
+当需要保存一组唯一的值，并且元素没有特定顺序时。
+Tree based set (SortedSet<T>)
+
+当需要保存一组唯一的值，并且元素需要排序时。
+
+\subsection{进程(Process)与线程(Thread)的区别}
+
+计算机的核心是CPU，它承担了所有的计算任务。它就像一座工厂，时刻在运行。
+假定工厂的电力有限，一次只能供给一个车间使用。也就是说，一个车间开工的时候，
+其他车间都必须停工。背后的含义就是，单个CPU一次只能运行一个任务。
+操作系统的设计，因此可以归结为三点：
+
+\begin{itemize}
+\item{以多进程形式，允许多个任务同时运行}
+\item{以多线程形式，允许单个任务分成不同的部分运行}
+\item{提供协调机制，一方面防止进程之间和线程之间产生冲突，另一方面允许进程之间和线程之间共享资源}
+\end{itemize}
+
+在使用Visual Studio调试网站的时候，打开Visual Studio的进程窗口(调试-->窗口-->进程)，
+也可以使用快捷键Ctrl+D(Debug)+P(Process)打开，
+如图\ref{fig:WebProcess}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{WebProcess.png}
+	\caption{ASP.NET MVC网站运行的进程}
+	\label{fig:WebProcess}
+\end{figure}
+
+可以看到调试进程的ID(PID)为1840，
+在Windwos任务管理器中也可以看到iisexpress进程的ID为1840。
+然后再打开Visual Studio调试的线程窗口(调试-->窗口-->线程)，
+也可以使用快捷键Ctrl+D(Debug)+T(Thread)，
+可以查看当前进程下包含的所有线程，
+如图\ref{fig:IISDebuggingWebThread}所示
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{IISDebuggingWebThread.png}
+	\caption{ASP.NET MVC网站进程中运行的线程}
+	\label{fig:IISDebuggingWebThread}
+\end{figure}
+
+可以看到此时进程包含了46个线程。
 
 \section{非技术类}
 
