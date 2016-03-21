@@ -4392,6 +4392,33 @@ IIS\_IUSRS组也是内置的，
 所以在所有的Windows Server 2008机器上，它总是具有相同的名称和SID，
 这就让ACL以及其它配置在WindowsServer2008(以及WindowsVista)机器之间是完全可迁移的。
 
+\subsection{经典模式和集成模式}
+
+这种经典的托管模式有很多缺点，其一，扩展繁琐，开发人员要自己编写程序运行所需要的ISAPI过滤器，
+但对于一般的程序猿来说这是很困难的时；
+其二，执行效率低，在执行ISAPI过滤时要退出请求管道运行应用程序实现过滤，
+增加了应用程序个数，浪费了内存空间；其三，安全性差。
+其中最主要的是安全问题，它在运行时要退出管道，查找映射，
+如果被影射的DLL文件不存在，则不能向下执行，导致执行出错（常见的错误如：映射出错）。
+虽然这种托管模式已被修改，但是IIS 7.0继续提供了这种模式，主要是考虑到程序兼容性问题，
+如果在集成模式下不能使用，可以迁移到经典模式中。
+
+要想深入理解集成管道模式的好处，首先我们要了解集成的概念，
+集成是说把某一模块能够作为处理的一个步骤加入其中，而且这种集成是非常灵活的，
+开发人员可以任意指定要集成的托管代码，如：ASP.NET、PHP等。
+此时在看集成的优势就会发现，集成模式不仅增强了IIS的灵活性，
+而且使得HTTP请求模式更加安全。其一，集成模块的托管代码可以由开发人员自行制定，
+并且模块可以成为管道的组成部分；其二，它去除了复杂的ISAPI的映射托管过程，
+在请求时可以 直接由相应的编译环境来执行请求，使得编译过程更加安全。
+ASP.NET的性能之所以能够得到改善，也是因为ASP.NET应用程序集成到管道中，
+在请求时不再需要退出管道并加载ISAPI进程来处理ASP.NET代码，
+然后再返回到管道为客户提供响应信息。        
+如果我们把ASP.NET集成到IIS管道中，那么此时ASP.NET就成为IIS7.0的核心。
+可以在管道中处理ASP.NET文件，这样可以在处理过程的任意一个步骤使用ASP.NET代码。
+因为ASP.NET已经成为管道的一部分了。所以，
+诸如身份验证之类的ASP.NET功能也可以用于处理非ASP.NET内容（如：StaticFile、Image、HTML等）。
+每个请求都可以由IIS和ASP.NET进行处理，而不必考虑其所属类型。
+
 \subsubsection{Configuring an ASP.NET 4 Application to Auto-Start}
 
 在IIS更新之后的首次Request会等待较长时间，
@@ -6465,20 +6492,22 @@ HttpContext.Server.TransferRequest("~/Houses/IndexNew");
 在第一个\#后面出现的任何字符，都会被浏览器解读为位置标识符。
 这意味着，这些字符都不会被发送到服务器端\footnote{http://www.ruanyifeng.com/blog/2011/03/url\_hash.html}。
 
-\subsection{技巧（Little Tricks）}
+\section{技巧（Little Tricks）}
 
-\subsubsection{快速查看元素}
+\subsection{查看Cookie登录密码}
 
-在网页右键菜单可直接查看元素，如图\ref{fig:FireDebugBrowerElement}所示。
+在Firefox中可以查看所有网站Cookie保存的密码，
+在Firefox选项-->安全里面，
+如图\ref{firefoxBrowserPassword}所示。
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.8]{FireDebugBrowerElement.jpg}
-	\caption{右键查看元素}
-	\label{fig:FireDebugBrowerElement}
+	\includegraphics[scale=0.8]{firefoxBrowserPassword.png}
+	\caption{在Firefox中查看网站的登录密码}
+	\label{fig:firefoxBrowserPassword}
 \end{figure}
 
-\subsubsection{刷新页面}
+\subsection{刷新页面}
 
 微信开发过程中，由于Android没有刷新按钮，
 每次修改数据需要重新进入页面比较麻烦，
@@ -6742,6 +6771,8 @@ http://www.cnblogs.com/suizhouqiwei/archive/2012/08/15/2637775.html
 
 \paragraph{把CSS放到顶部}
 
+
+
 \subsection{其他}
 
 
@@ -6879,15 +6910,28 @@ public JsonResult SignIn(string input1, string input2)
 2.UrlRouting获取浏览器发起的请求后将RoutData与HttpContext合并成为RequestContext传递到IRoutHandler接口，IRoutHandler接口的实现类MvcRouteHandler接口到RequestContext参数，
 返回一个MvcHandler对象，并且为这个对象赋值RequestContext
 
-3.MvcHandler对象
+\paragraph{MvcHandler对象}
+根据Controller的名字正确的实例化了一个Controller对象后。
+回到MvcHandler(System.Web.Mvc.MvcHandler)的BeginProcessRequest方法，
+可以看到，
+当得到Controller对象之后，首先判断它是不是IAsyncController，
+如果是则会创建委托用来异步执行。通常情况下，我们都是继承自Controller类，
+这不是一个IAsyncController，于是会直接执行Controller的Execute方法。
+Execute方法是在Controller的基类ControllerBase中定义的，
+这个方法除去一些安全检查，
+初始化了ControllerContext（包含了ControllerBase和Request的信息）,
+核心是调用了ExecuteCore(System.Web.Mvc.Controller.ExecuteCore)方法。
+根据RequestContext参数解析出RouteData以及HttpContext，
+根据RouteData来查找出Controller以及对象的Action及其Parameters。
+在每次执行action时(System.Web.Mvc.ControllerActionInvoker类下的InvokeAction方法)都会找出过滤器一并执行，核心语句为：
 
-根据RequestContext参数解析出RouteData以及HttpContext，根据RouteData来查找出Controller以及对象的Action及其Parameters
+\begin{lstlisting}[language={[Sharp]C}]
+FilterInfo filters = this.GetFilters(controllerContext, action);
+\end{lstlisting}
 
-4.MvcHandler .ProcessRequest()方法的处理流程
-
-MvcHandler对象根据工厂方法获取到具体的Controller---->Controller.Execute()--->释放Controller对象，
-这其中最主要的是MvcHandler对象根据传入的RequestContext参数来获取到具体的Controller，
-并执行其Execute()方法
+这就是过滤器的执行时机，在应用程序启动的时候全局注册过滤器，
+在每次Request的时候执行过滤器，对于权限控制，
+日志记录等需要面向切面(AOP:Aspect Oriented Programming)的业务来说是非常合适的。
 
 5.Controller.Execute()方法处理流程：查找Action-->
 获取Action--->调用ActionResult(Abstract方法)的ActionResult.ExecuteResult()方法
@@ -6937,70 +6981,6 @@ It is this module that decides whether the request would be handled by our MVC a
 7）一个视图引擎创建
 
 8) 视图呈现
-
-
-\subsection{MVC控制器对应关系}
-
-在MVC的Views里面新建cshtml页面时，
-页面在浏览器中始终无法预览，
-是由于MVC中视图里面的每个页面都需要相应的ActionResult，
-在MVC的Controllers里面，如下代码所示：
-
-\begin{lstlisting}[language={[Sharp]C}]
-public class UserController : Controller
-{
-    //
-    // GET: /User/
-
-    public ActionResult GetDiscountProductTotalCount()
-    {
-        return View();
-    }
-}
-\end{lstlisting}
-
-其中方法的GetDiscountProductTotalCount需要和视图中相应的cshtml文件名对应。
-UserController中的User需要和cshml上的文件夹名称对应。
-在调试MVC页面时，可设置页面的默认路由，
-在RouteConfig类中，如下代码所示：
-
-\begin{lstlisting}[language={[Sharp]C}]
-public class RouteConfig
-{
-    public static void RegisterRoutes(RouteCollection routes)
-    {
-        routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-        routes.MapRoute(
-            name: "Default",
-            url: "{controller}/{action}/{id}",
-            defaults: new { controller = "ShaPingBa", action = "Lottery", id = UrlParameter.Optional }
-        );
-    }
-}
-\end{lstlisting}
-
-MapRoute中第一个参数为路由的名字，
-第二个参数为URL的模式（URL pattern），即主要的映射关系，
-第三个参数为为默认参数，当映射不匹配时，会根据此默认参数进行Action的匹配。
-其中defaults后即是默认路由配置。
-第四个参数为相关限制条件。
-第五个参数为命名空间，即该路由匹配在那个命名空间下有效。
-第二个参数中， "ABC{category}/{controller}/Page{page}/DEF"，
-路由系统会根据此处的参数，把用户请求的URL和这里的参数进行匹配，有两种映射匹配方式：
-动态匹配，放在{}里的，即为要匹配的参数名，
-比如category，controller，page，URL中，
-在ABC之后，第一个/之前的内容均会被匹配并”赋值“给category参数。
-同理，第二个/到第三个/之间的内容会被匹配为controler参数的值，
-即到此controller里需找对应的ActionMethod。
-静态匹配，放在{}以外的内容，会将此处每一个字符同URL进行比较，
-比如ABC.../.../PAGE..../DEF
-如果URL和该参数的动态匹配和静态匹配两种比较方式比均均匹配成功，
-则为完全匹配成功，按URL进行相应的Controller和Action进行匹配，
-否则，未匹配成 功的项：比如page，会按默认的参数去匹配Action，
-如果默认参数匹配不成功，则抛出异常
-当注册了多个RouteMap时，会按其注册的顺序，从上到下进行匹配，
-匹配成功后不会再查找后面的匹配。
-在设计路由匹配时要注意匹配的前后顺序。
 
 \subsection{路由忽略}
 
@@ -10749,7 +10729,7 @@ PE loader通过查找CLR头发现该目录不为空，则自动将mscoree.dll载
 mscoree.dll一定是唯一的，且总是处于系统目录的system32下，
 例如我的机器为C:/WINDOWS/system32目录下。.net 2.0的mscoree.dll的大小只有256k左右，
 这个dll被叫做shim，它的作用是连接PE文件和CLR之间的一个桥梁。
-PE文件的结构如下图所示：
+PE文件的结构如图\ref{fig:PEFileStructure}所示：
 
 \begin{figure}[htbp]
 	\centering
@@ -10777,8 +10757,14 @@ CLR加载后, 先初始化CLR需要的各种功能, 比如必要的全局变量,
 
 \paragraph{PE Signature}DWORD类型，PE文件签名，用来表示这是个PE文件，用ASCII码表示；
 
-\paragraph{File Header}包含PE文件最基本信息，通过dumpbin可以看到，
-如图\ref{fig:DumpbinToCheckPEHeader}所示。从这里可以看到：CPU类型为14c，
+\paragraph{File Header}包含PE文件最基本信息，通过dumpbin工具可以看到，
+打开Visual Studio命令调试窗口，输入命令：
+
+\begin{lstlisting}[language=Bash]
+dumpbin -all "E:\OneDrive\Source Code\Dolphin\GitHubFosc\Fosc\Fosc.Dolphin.UI\Fosc.Dolphin.UI\bin\x64\Debug\Fosc.Dolphin.UI.exe" >>C:\dump.txt
+\end{lstlisting}
+
+结果如图\ref{fig:DumpbinToCheckPEHeader}所示。从这里可以看到：CPU类型为14c，
 是Intel I386、I486或者I586；section的数量为2；链接器产生这个文件的日期；
 COFF符号表的文件偏移量，为0；COFF符号表的符号数目，为0；Optional Header的大小。
 
@@ -10788,6 +10774,14 @@ COFF符号表的文件偏移量，为0；COFF符号表的符号数目，为0；O
 	\caption{PE文件File Header}
 	\label{fig:DumpbinToCheckPEHeader}
 \end{figure}
+
+COFF –通用对象文件格式（Common Object File Format），
+是一种很流行的对象文件格式（注意：这里不说它是“目标”文件，
+是为了和编译器产生的目标文件（*.o/*.obj）相区别，因为这种格式不只用于目标文件，
+库文件、可执行文件也经常是这种格式）。大家可能会经常使用VC吧？
+它所产生的目标文件（*.obj）就是这种格式。其它的编译器，
+如GCC（GNU Compiler Collection）、ICL（Intel C/C++ Compiler）、VectorC，也使用这种格式的目标文件。
+不仅仅是C/C++，很多其它语言也使用这种格式的对象文件。
 
 3、PE loader接着会找到Entry Point，例如本例中图\ref{fig:PEFileEntryPoint}所示。
 
@@ -11166,6 +11160,52 @@ C\#编译器在编译时，会把属性转换成一对GetXXX和SetXXX方法，
 \section{调试(Debug)}
 
 Visual Studio在调试的过程中可以修改代码，可以拖动调试断点。
+调试器可以采用三种模式来调试被调试程序（在下文中，如果没有特别说明的话，简称程序）：
+
+直接调试模式，即直接从调试器里面启动程序，就如同我们在Visual Studio里面按下F5就可以调试程序那样。
+
+附加（attach）模式，即你可以在程序已经启动的情况下，把你的调试器附加到程序上，
+进行调试。这种模式通常在调试服务（Service）程序非常有用，
+例如你的ASP.NET网站可能会存在这样一种bug，在网站运行的过程当中，
+有一个异常不知道从那个角落里面抛了出来，这时你可以使用附加模式来调试你的网站。
+
+验尸（post-mortem）调试，这种调试模式允许你调试在客户机器上出错的程序。
+也就是说，当你的程序发布给客户以后，客户在使用程序的过程中，
+可能会碰到一些很难重现的错误（bug）。这时操作系统可以将出错的程序的内存保存到一个文件里面，
+然后你可以在自己的开发机上调试这个文件，找到程序错误的原因。
+
+\subsection{符号文件}
+
+其实调试器所做的一系列的魔术，都是和符号文件分不开的。
+微软的Visual Studio的符号文件以.pdb为后缀名，当你在Visual Studio当中编译好解决方案后，
+可以在与编译出来的程序的相同文件夹里找到其对应的符号文件，默认情况下，文件名和程序名相同。
+
+符号文件其实是编译器生成的，因此你也可以使用C\#的编译器csc为你的程序生成符号文件。
+Csc程序的/debug开关可以用来控制符号文件的生成，
+如下表所示：
+
+\begin{tabular}{lp{10cm}}
+	\hline
+	\multirow{1}{*}{\textbf{编译选项}}			
+	& \multicolumn{1}{c}{\textbf{说明}}\\
+	\hline
+	/debug:pdbonly & 使用这个开关，生成的符号文件允许你在直接调试模式当中获得源代码级别的调试支持，
+	但是在附加模式当中，调试器只会显示汇编代码。\\
+	/debug:full & 这个开关生成的符号文件，在三种调试模式当中，都支持源代码级别的调试。
+	因此我推荐读者在编译程序的时候，总是打开这个开关。\\		
+	\hline					
+\end{tabular}
+
+具体的设置在Visual Studio项目属性的生成选项卡高级生成设置的属性中。
+
+\subsection{符号文件服务器}
+
+由于符号文件包含了二进制程序和源代码文件之间的对应关系，
+因此每次程序升级以后， 你可能会同时有多个版本的程序在不同的客户机上运行。
+而在调试的时候，手工寻找正确版本的符号文件肯定是一个非常费力的事情。
+因此就有了符号文件服务器软件的出生，符号文件服务器的工作就是，
+当你在调试程序的时候，调试器会自动和符号文件服务器交互，获取正确版本的符号文件。
+在后面的章节里面，会介绍如何创建一个符号文件服务器，以及如何使用符号文件服务器。
 
 \subsection{常用技巧}
 
@@ -11201,6 +11241,26 @@ Simply hover over a variable or expression within the debugger to expose its Dat
 	\includegraphics[scale=0.8]{VisualStudioDataPin.jpg}
 	\caption{DataTips Pin}
 	\label{fig:VisualStudioDataPin}
+\end{figure}
+
+\subsection{不能设置断点的检查步骤}
+
+如果确定是符号文件没有加载正确，
+单击“调试”-- >“窗口”-- >“模块”列出程序加载的所有DLL文件，
+模块窗口还会列出每一个DLL文件的符号文件加载信息，
+每个文件的加载路径，从加载路径可以看出IIS所加载的实际的dll在	
+
+\begin{lstlisting}
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\fa41332c\c10b2499\assembly\dl3\5e331c01\f4a72a2a_807ad101\DBTour.Model.dll
+\end{lstlisting}		
+
+路径下，而不是应用程序的bin目录，如图\ref{fig:VisualStudioLoadModual}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{VisualStudioLoadModual.png}
+	\caption{DataTips Pin}
+	\label{fig:VisualStudioLoadModual}
 \end{figure}
 
 
@@ -13092,6 +13152,15 @@ ssh-agent bash
 #将远程代码库克隆到本地
 git clone https://github.com/jiangxiaoqiang/DolphinDevManual.git
 
+#初始化
+git init
+
+#fetch主干分支
+git fetch origin master
+
+#pull分支 
+git pull https://github.com/jiangxiaoqiang/XiaoqiangResume.git
+
 #将本地文件添加到git仓库中
 git add [file1]
 
@@ -13102,6 +13171,13 @@ git push origin master
 注意每次提交都需要执行git add命令，
 git add与svn中的add有明显的区别，
 修改过的文件也要执行git add后才能够提交。
+git fetch从远程仓储导入commit到你的本地仓储. 
+这些fetch到的commit是做为一个远程分支存储在你本地的. 
+这样你可以在集成这些commit到你的项目前先看看都有些什么修改.
+当你想看看其他人都做了些什么工作的时候你可以使用fetch. 
+因为fetch到的内容是做为一个remote分支的形式展现出来的, 
+所以不会对你的本地开发有什么影响. 因此fetch是在你想merge远程的commit前, 
+先来查看查看这些commit的一个安全的办法. 不强迫你merge.
 
 \subsection{Git配置}
 
@@ -13669,7 +13745,7 @@ Fiddler暂时没有找到暂停抓包的选项，
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.8]{HideAllProcessCapture.jpg}
+	\includegraphics[scale=0.5]{HideAllProcessCapture.jpg}
 	\caption{Fiddler隐藏所有进程数据流向}
 	\label{fig:HideAllProcessCapture}
 \end{figure}
@@ -13682,10 +13758,17 @@ Fiddler暂时没有找到暂停抓包的选项，
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.7]{BrandwithProxySetting.jpg}
+	\includegraphics[scale=0.5]{BrandwithProxySetting.jpg}
 	\caption{Fiddler宽带连接代理设置}
 	\label{fig:BrandwithProxySetting}
 \end{figure}
+
+有时设置好后会发现Fiddler可以捕获Firefox浏览器的HTTP的请求，
+但是却无法捕获HTTPS请求，
+而Fiddler的Options中已经勾选了解析HTTPS流量的选项，
+是因为此时Firefox浏览器仅仅设置了HTTP使用本地Fiddler代理，
+而未设置HTTPS同样也使用本地的Fiddler代理，
+解决此问题可在Firefox浏览器的高级-->网络-->连接设置中设置“为所有协议使用相同代理”。
 
 \subsection{Fiddler捕获HTTPS}
 
@@ -13712,6 +13795,84 @@ Fiddler2 使用man-in-the-middle(中间人)攻击的方式来截取HTTPS流量�
 在Web浏览器面前Fiddler2假装成一个HTTPS服务器，
 而在真正的HTTPS服务器面前Fiddler2假装成浏览器。
 Fiddler2会动态地生成HTTPS证书来伪装服务器。
+
+\subsection{Fiddler应对HSTS}
+
+\paragraph{HSTS是什么}HSTS(HTTP Strict Transport Security)国际互联网工程组织IETE正在推行一种新的Web安全协议，
+HSTS的作用是强制客户端（如浏览器）使用HTTPS与服务器创建连接。
+HTTP严格传输安全(HSTS)功能使Web服务器告知浏览器绝不使用HTTP访问，
+在浏览器端自动将所有到该站点的HTTP访问替换为HTTPS访问。
+如果一个 web 服务器支持 HTTP 访问，并将其重定向到 HTTPS 访问的话，
+那么访问者在重定向前的初始会话是非加密的。
+举个例子，比如访问者输入http://www.foo.com/或直接输入foo.com 时。
+这就给了中间人攻击的一个机会，重定向可能会被破坏，
+从而定向到一个恶意站点而不是应该访问的加密页面。
+HTTP 严格传输安全（HSTS）功能使 Web 服务器告知浏览器绝不使用 HTTP 访问，
+在浏览器端自动将所有到该站点的HTTP访问替换为HTTPS访问。
+
+HSTS 可以用来抵御 SSL 剥离攻击。SSL 剥离攻击是中间人攻击的一种，
+由 Moxie Marlinspike 于2009年发明。
+他在当年的黑帽大会上发表的题为 “New Tricks For Defeating SSL In Practice” 的演讲中将这种攻击方式公开。
+SSL剥离的实施方法是阻止浏览器与服务器创建HTTPS连接。
+它的前提是用户很少直接在地址栏输入https://，用户总是通过点击链接或3xx重定向，
+从HTTP页面进入HTTPS页面。所以攻击者可以在用户访问HTTP页面时替换所有https://开头的链接为http://，
+达到阻止HTTPS的目的。
+
+HSTS可以很大程度上解决SSL剥离攻击，因为只要浏览器曾经与服务器创建过一次安全连接，
+之后浏览器会强制使用HTTPS，即使链接被换成了HTTP。
+
+另外，如果中间人使用自己的自签名证书来进行攻击，浏览器会给出警告，
+但是许多用户会忽略警告。HSTS解决了这一问题，一旦服务器发送了HSTS字段，
+用户将不再允许忽略警告。
+
+当你通过一个无线路由器的免费 WiFi 访问你的网银时，很不幸的，这个免费 WiFi 也许就是由黑客的笔记本所提供的，他们会劫持你的原始请求，
+并将其重定向到克隆的网银站点，然后，你的所有的隐私数据都曝光在黑客眼下。
+
+严格传输安全可以解决这个问题。如果你之前使用 HTTPS 访问过你的网银，
+而且网银的站点支持 HSTS，那么你的浏览器就知道应该只使用 HTTPS，
+无论你是否输入了 HTTPS。这样就防范了中间人劫持攻击。
+
+\paragraph{使Fiddler可应对HSTS} 而Fiddler捕获HTTPS是正是通过中间人攻击的方式来实现的，
+如果首次访问过支持HSTS的网站比如淘宝，
+那么以后所有的连接都会强制使用HTTPS连接，
+反正Fiddler无法捕获，浏览器也会因为安全原因也无法访问淘宝站点，
+应对的办法就是将浏览器的第一次得到就行了，让HSTS始终无法生效即可。
+如果以前访问过淘宝，那么将来所有的请求都会使用HTTPS连接，
+要想使用HTTP需要删除HSTS设置，
+在Chrome中键入：
+
+\begin{lstlisting}[language=HTML]
+chrome://net-internals/#hsts
+\end{lstlisting}
+
+删除HSTS设定，如图所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.7]{DeleteChromeHSTSSetting.jpg}
+	\caption{查询HSTS设定}
+	\label{fig:DeleteChromeHSTSSetting}
+\end{figure}
+
+将关键字链接放入Delete Domain中进行删除即可，
+如果你之前没有使用 HTTPS 访问过该站点，那么 HSTS 是不奏效的。
+网站需要通过 HTTPS 协议告诉你的浏览器它支持 HSTS。
+服务器开启 HSTS 的方法是，当客户端通过HTTPS发出请求时，
+在服务器返回的 HTTP 响应头中包含Strict-Transport-Security字段，
+如图\ref{fig:HSTSResponseHeaderSecurity}示。
+非加密传输时设置的HSTS字段无效。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.7]{HSTSResponseHeaderSecurity.jpg}
+	\caption{响应头中Strict-Transport-Security字段}
+	\label{fig:HSTSResponseHeaderSecurity}
+\end{figure}
+
+从图中可以看出服务断设置Strict-Transport-Security的值为：max-age=31536000，
+此值正好是365天即1年经过的秒数，不过由于第一次即通过Fiddler代理，
+HSTS此时已经无法生效了，从Fiddler捕获的请求可以看出，
+以后的请求都使用的是普通的未加密的HTTP。
 
 \subsection{Fiddler移动端Capture}
 
@@ -13830,6 +13991,8 @@ Cookies标签可以看到请求的cookie和响应的set-cookie头信息。
 	\label{fig:RequestBodyUserPassword}
 \end{figure}
 
+一般使用HTTPS进行登录的网站会直接明文使用SSL加密，
+能够解密SSL流量，即可以看到明文密码。
 在QQ发送接收离线文件时也是通过HTTP进行传输，
 且未加密，可以通过Fiddler看到部分发送的文件的内容。
 
@@ -14056,6 +14219,9 @@ void Application_EndRequest()
 	\label{fig:MiniprofilerEffect}
 \end{figure}
 
+\subsection{dotTrace}
+
+一款性能测试工具，能够记录程序执行过程中各个方法的调用情况及所花时间等。
 
 \section{JustDecompile}
 
@@ -14091,7 +14257,7 @@ SoapUI provides complete test coverage and supports all the standard protocols
 and technologies. There are simply no limits to what you can do with your tests. 
 Meet SoapUI, the world's most complete testing tool!
 
-\chapter{辅助软件}
+\chapter{辅助组件}
 
 \clearpage
 
@@ -15876,63 +16042,6 @@ public void SendPrintEndSingal(object seconds)
 #endregion
 \end{lstlisting}
 
-
-
-\subsection{启动信息展示}
-
-将程序启动的后台信息展示到前端，当程序出现问题时，便于问题的及时展现。
-加入启动信息展示界面后程序的
-启动流程如下所示：
-
-\begin{itemize}
-\item{启动主窗体PrintApp}
-\item{启动启动界面frmStartUI}~~启动StartUI界面在PrintApp窗体激活后（窗体的Active事件在窗体初始化完毕后触发），
-即初始化完成后。
-\item{关闭启动界面}~~关闭StartUI界面时程序提示错误：\textbf{线程间操作无效，从不是创建控件“XXX”的线程访问它。}
-访问Windows窗体控件本质上不是线程安全的。如果有两个或多个线程操作某一控件的状态，
-则可能会迫使该控件进入一种不一致的状态。还可能出现其他与线程相关的bug，包括争用情况和死锁。
-确保以线程安全方式访问控件非常重要，此处通过委托\footnote{委托是一种定义方法签名的类型。当实例化委托时，
-可以将其实例与任何具有兼容签名的方法相关联。委托的优势：相当于方法作为另一方法的参数；在两个不能直接调用的方法中作为
-桥梁，如：在多线程中的跨线程的方法调用就得用委托；当不知道方法具体实现什么的时候使用委托，如：事件中使用委托}的方式关闭窗体，委托的类型安全性非常高，
-委托仅仅包含一个或多个方法的地址。
-
-声明委托：
-\begin{lstlisting}
-delegate void CloseStartUIForm(string functionName);
-\end{lstlisting}
-
-此委托说明调用的方法返回void类型，该方法接受一个字符串类型的参数。委托调用关闭窗体方法，调用方式为CloseOpenForm("frmStartUI")，frmStartUI为窗体的名称：
-\begin{lstlisting}
-#region 关闭StartUI界面
-public void CloseOpenForm(string formName)
-{
-    FormCollection frmCollection = Application.OpenForms;
-    foreach (Form frm in frmCollection)
-    {
-        if (frm.Name.ToLower() == formName.ToLower())
-        {
-            if (frm.InvokeRequired)
-            {
-                CloseStartUIForm closeOpenFormInvoke = new CloseStartUIForm(CloseOpenForm);
-                this.Invoke(closeOpenFormInvoke, new object[] { formName });
-            }
-            else
-            {
-                frm.Close();
-            }
-        }
-    }
-}
-#endregion
-\end{lstlisting}
-
-InvokeRequired获取一个值，该值指示调用方在对控件进行方法调用时是否必须调用Invoke方法，
-因为调用方位于创建控件所在的线程以外的线程中。 如果控件的Handle是在与调用线程不同的线程上
-创建的（说明您必须通过Invoke方法对控件进行调用），则为true；否则为false。
-
-\item{启动Node-Webkit界面}
-\end{itemize}
-
 \subsection{获取机器Mac地址}
 
 \begin{lstlisting}[language={[Sharp]C}]
@@ -16102,11 +16211,6 @@ key不能为空。
 
 加密后的微信号，每个用户对每个公众号的OpenID是唯一的。
 对于不同公众号，同一用户的openid不同。
-
-
-
-
-
 
 \subsection{UnionID}
 
@@ -16457,7 +16561,8 @@ public static void Cut(Stream fromFile, string fileSaveUrl, int xPosition, int y
 	GPG & GNU Privacy Guard\\
 	聚合 & Mashup\\
 	PV(页面浏览量) & Page View\\
-	UV(独立访客量) & Unique Visitor\\					
+	UV(独立访客量) & Unique Visitor\\
+	QPS(每秒查询率) & Query Per Second\\					
 \end{tabular}
 
 \footnotetext[1]{二维码的一种类型之一，具体参见http://en.wikipedia.org/wiki/Barcode}
@@ -16465,7 +16570,7 @@ public static void Cut(Stream fromFile, string fileSaveUrl, int xPosition, int y
 \footnotetext[3]{RFC1738，发布于 1994 年 12 月, 被称为“Uniform Resource Locators”。它是一个 Proposed Standard —— 也就是说，它是一个共识过程的结果，虽然它还没有经过测试，并成熟到足以成为一个完整的 Internet Standard。}
 \footnotetext[4]{RFC1737，发布于 1994 年 12 月，被称为“Functional Requirements for Uniform Resource Names”。1997 年，紧随 Proposed Standard RFC2141（即 URN Syntax）之后发布了 RFC1737，它指定了另一个方案 —— urn: —— 来加入 http:、ftp:和其他协议中。}	
 
-\begin{tabular}{ll}
+\begin{tabular}{lp{8cm}}
 	\multirow{1}{*}{}			
 	& \multicolumn{1}{c}{}\\
 	语法糖 & Syntactic Sugar\footnotemark[5]\\
@@ -16491,6 +16596,7 @@ public static void Cut(Stream fromFile, string fileSaveUrl, int xPosition, int y
 	Disposable items & 一次性用品\\
 	bible & 有权威的书\\
 	swagger & 昂首阔步; 夸耀，炫耀\\
+	PR(PR on line or Public Relations) & 线上公关或e公关\\
 \end{tabular}
 
 \footnotetext[5]{In computer science, syntactic sugar is syntax within a 
@@ -17609,9 +17715,11 @@ RunTime using activator:00:00:00:20
 	\hline
 	36 & \url{http://wooyun.org/} & 2015-11-20 & 乌云安全平台\\
 	\hline
+	37 & \url{http://nickcraver.com/} & 2015-11-20 & Nick Craver的博客(StackOverflow)\\
+	\hline
+	38 & \url{http://www.jobbole.com/} & 2015-11-20 & 伯乐在线\\
+	\hline
 \end{tabular}
-
-
 
 \begin{tabular}{|c|c|c|c|c|}
 	\hline
