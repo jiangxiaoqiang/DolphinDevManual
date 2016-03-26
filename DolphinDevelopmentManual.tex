@@ -8024,7 +8024,7 @@ function contains2(mutexArr, checkedArr) {
 
 以span元素为例，获取元素文本（此处是aaaa）可使用如下方式。
 
-\begin{lstlisting}[language=VBScript]
+\begin{lstlisting}[language=HTML]
 <span id="testid">aaaa</span>
 
 /*方式1：从起始位置到终止位置的内容, 但它去除Html标签*/ 
@@ -8035,6 +8035,7 @@ var x2 = document.getElementById("testid").innerHTML;
 
 /*jQuery写法*/ 
 var x3 = $("#testid").text();
+var x4 = $("#testid").val();
 \end{lstlisting}
 
 innerHTML会包含HTML页面中的换行符等，如果标签写法如下
@@ -8520,7 +8521,7 @@ People who use it normally do so because they want to dangle JavaScript off it.
 
 void是一个操作符，这个操作符指定要计算一个表达式但是不返回值。
 如果在void中写入0(void(0))，则什么也不执行，从而也就形成了一个空链接。
-
+target为blank表示点击这个链接时跳转到一个空的页面。
 \subsection{Meta}
 
 META（Metadata）元素通常用于指定网页的描述，关键词，的文件的最后修改，作者，和其他元数据。
@@ -8835,6 +8836,10 @@ testability, maintainability and boiler-plate reduction.
 
 
 \chapter{数据库}
+
+\section{SQLite}
+
+
 
 \section{数据恢复}
 
@@ -11300,17 +11305,20 @@ Csc程序的/debug开关可以用来控制符号文件的生成，
 \paragraph{编辑然后继续运行}
 
 在运行一个很复杂的程序和插件时，发现一个错误，但是不想浪费时间去重编译重启动程序。
-很简单，只要在这个位置修改这个bug，然后继续调试。Visual studio会修改这个程序，
+只要在这个位置修改这个bug，然后继续调试。Visual studio会修改这个程序，
 使得你可以继续调试而不需要重启程序。
-
+开启很简单，打开“工具”—》“调试”—》“编辑并继续”—》勾选 启用“编辑并继续” 即可。
 值得注意的是“编辑然后继续运行”这个功能有几个限制。一，它不能在64位代码上使用。
-如果想使用这个功能，到项目设置里的编译选项，选择”x86”作为目标平台。
-不要担心，这目标平台在reslease配置是和”debug是分离的，也就是说依然是”Any CPU”的设置。二，“编辑然后继续运行”这个功能仅适用于一个函数内部改变。
+如果想使用这个功能，到项目设置里的编译选项，选择x86作为目标平台。
+不要担心，这目标平台在reslease配置是和debug是分离的，也就是说依然是Any CPU的设置。二，“编辑然后继续运行”这个功能仅适用于一个函数内部改变。
 如果你想要改变这个函数的声明或者增加新的方法，你只能选择重启程序，
 或者不做任何改变继续。如果修改的方法中包含lambda表达式，
 则意味着修改了编译器自动生成的委托类型，这样会导致编译器停止运行。
+在调试时修改源代码提示：“启用非托管调试时不允许更改”，
+检查项目设置-->Web-->调试器选择项中是否勾选了“本机代码选项”，
+如果已经勾选，则将之去掉。
 
-\paragraph{运行到光标处(Run to Cursor--Ctrol+F10)}有的时候我们打的断点可能与实际需要关心的代码行有较远的距离，
+\paragraph{运行到光标处(Run to Cursor--Ctrl+F10)}有的时候我们打的断点可能与实际需要关心的代码行有较远的距离，
 当我们需要运行到实际关心的代码行时，如果单击F10/F11就不是最好的选择，
 此时只需要按Ctrl+F10即可。
 
@@ -11366,7 +11374,7 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\fa413
 大对象的频繁分配和释放、不恰当的保留根引用和错误的Finalize方法都可能导致内存泄漏。
 
 
-一 什么是PDB文件
+\subsection{PDB文件}
 
 大部分的开发人员应该都知道PDB文件是用来帮助软件的调试的。
 但是他究竟是如何工作的呢，我们可能并不熟悉。本文描述了PDB文件的存储和内容。
@@ -11417,8 +11425,8 @@ This implementation builds and runs on Windows XP.
 \begin{tabular}{ll}
 	\multirow{1}{*}{键}			
 	& \multicolumn{1}{c}{动作}\\
-	Ctrl+Alt+L & 显式Solution\\
-	Ctrl+Alt+B & 生成项目 \\ 
+	Ctrl+Alt+L & 显示Solution\\
+	Ctrl+Shift+B & 生成项目 \\ 
 	Shift + Alt+ C & 添加新类\\
 	Alt + Shift +箭头键(←,↑,↓,→) & 选择代码的自定义部分\\
 	Ctrl + H & 显示替换对话框\\					
@@ -13840,6 +13848,15 @@ Fiddler暂时没有找到暂停抓包的选项，
 而未设置HTTPS同样也使用本地的Fiddler代理，
 解决此问题可在Firefox浏览器的高级-->网络-->连接设置中设置“为所有协议使用相同代理”。
 
+有时我们需要一张网页的原始码，
+但是无法通过浏览器直接获取，
+例如有的微信开发的网页，由于带有微信认证，
+所以只能在微信浏览器中打开，
+而微信浏览器到目前为止是不允许查看网页源代码的，
+此时就可以在微信浏览器中打开网页，
+在Fiddler中去捕获相应的网页响应数据包，
+即可以获得网页的源代码。
+
 \subsection{Fiddler捕获HTTPS}
 
 要抓取走HTTPS的JS内容，Fiddler必须解密HTTPS流量。
@@ -13997,7 +14014,7 @@ Fiddler Composer的功能就是用来创建HTTP Request然后发送。
 甚至可以在Web会话列表中拖拽一个已有的Request. 来创建一个新的HTTP Request.
 能创建发送HTTP Request的工具很多很多。 但是Fiddler的功能有如下的优势。
 
-1. 能从"Web会话列表"中拖拽一个先前捕获到的Request, 然后稍微修改一下
+1. 能从“Web会话列表”中拖拽一个先前捕获到的Request, 然后稍微修改一下
 
 2. 发送Request后，还能设置断点，继续修改Request.
 
