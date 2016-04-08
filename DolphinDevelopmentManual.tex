@@ -274,6 +274,9 @@ they strive to achieve a balance between quality and speed of execution.}
 
 \chapter{规范准则}
 
+集群、负载均衡、排队、分库分表、锁、缓存
+
+
 \clearpage
 
 \section{程序设计原则}
@@ -388,6 +391,35 @@ YAGNI原则指的是只需要将应用程序必需的功能包含进来，
 
 尽量使用合成/聚合，尽量不要使用继承。
 
+\subsection{读写分离}
+
+
+
+\subsection{动静分离}
+
+
+
+\subsection{主从分离}
+
+
+\subsection{技术选型}
+
+淘宝的黄裳讲解淘宝网站架构发展的时候，说起2004年底淘宝为何从PHP 向 Java 转移的事情。
+为何转换，他阐述了几个理由，其中一个是非常有趣的：当时的 PHP 缺少一个 IDE。
+而合适的 IDE 能够有效提升规模化软件开发的效率。
+
+我们知道eBay在2002年的时候也在Sun技术团队的帮助下，将整个应用架构从C++迁移到J2EE。
+也就是 eBay 内部所说的 V3 版本。
+
+选 Windows和选Linux有没有哪个更好，我想说的是，都还不错，
+不要以为选Windows就不好（StackOverflow就是.NET平台）。
+
+很多金融机构都是用Windows的平台（你可能会和我争吵国内的银行都不是Windows的平台，
+都是Unix的平台，是的，我也是在银行里做过的，中国的银行几乎都是IBM/SUN/ORACLE的领地，
+所以，那里都是AIX、RISC600，Solaris，Java，C/C++的地方），
+但是国外很多金融机构却更多用的是Windows。
+
+
 \section{编码规范(Programming Specification)/编程风格(Programming Style)}
 
 编程规范就是为了便于自己和他人阅读理解源程序,而制定的一个规范。
@@ -500,30 +532,31 @@ YAGNI原则指的是只需要将应用程序必需的功能包含进来，
 \subsection{类（Class）注释规范}\label{ClassNamingSpecification}
 
 \begin{lstlisting}[language={[Sharp]C}]
-//-----------------------------------------
-// <copyright file="Class1.cs" company="RRMall">
-// Copyright (c) RRMall.All Rights Reserved.
-// </copyright>
-// <CLRVersion>4.0.30319.18444</CLRVersion>
-// <MachineName>53E31M9PG6NDF5M</MachineName>
-// <NameSpace>RRMall.WxPrint.Common.Cmd</NameSpace>  
-// <Author>Administrator</Author>
-// <Email>jiangxiaoqiang@renrenmall.com</Email>
-// <CreateDate>2015/5/16 12:52:30</CreateDate> 
-// <Stamp>1b56cff1-0d28-47be-b211-8057c65ca458</Stamp>
-// <UserDomain>53E31M9PG6NDF5M</UserDomain> 
-// <Modifier></Modifier>
-// <ModifyDate></ModifyDate>
-// <ModifyDescription></ModifyDescription>
-//-----------------------------------------
-namespace RRMall.WxPrint.Common.Cmd
-{
-    using System;
+/*------------------------------------------------
+<copyright file="$safeitemrootname$.cs" company="RRMall">
+Copyright (c) RRMall.All Rights Reserved.
+</copyright>
+CLRVersion:$clrversion$
+NameSpace:$rootnamespace$ 
+Author:$username$
+Email:jiangxiaoqiang@renrenmall.com
+CreateDate:$time$
+Stamp:$guid10$
+UserDomain:$userdomain$
 
-    /// <summary>
+---------------------------
+Modifier:
+ModifyDate:
+ModifyDescription:
+-----------------------------------------------*/
+namespace $rootnamespace$
+{
+	using System;
+	
+	/// <summary>
     /// Write the class summary. 
     /// </summary>
-    public class Class1
+    public class $safeitemrootname$
     {
     }
 }		
@@ -729,7 +762,20 @@ if (requestUrlObj != null)
 
 \subsection{字段}
 
-\subsubsection{表的主键（ID、PKID）应当不具有任何业务含义}
+\paragraph{表中应该避免可为空的列}虽然表中允许空列，但是，
+空字段是一种比较特殊的数据类型。数据库在处理的时候，
+需要进行特殊的处理。如此的话，就会增加数据库处理记录的复杂性。
+当表中有比较多的空字段时，在同等条件下，数据库处理的性能会降低许多。
+
+要求二：表不应该有重复的值或者列。
+
+要求三：表中记录应该有一个唯一的标识符。
+
+要求四：数据库对象要有统一的前缀名。
+
+要求五：尽量只存储单一实体类型的数据。
+
+\paragraph{表的主键（ID、PKID）应当不具有任何业务含义}
 
 表通过主键来保证每条记录的唯一性，表的主键应当不具有任何业务含义，
 因为任何有业务含义的列都有改变的可能性。
@@ -832,7 +878,10 @@ and not interpreters (step-by-step executors of source code, where no pre-runtim
 	VS代码缩进提示插件 & Indent Guids & \\
 	代码性能分析 & PerfView & 1.8.0.0  \\ 
 	HTTP调试 &  Fiddler & 4.6.1.4\\		
-    网页性能优化 & YSlow & 3.1.8.1\\		
+    网页性能优化 & MiniProfiler & latest\\
+    后端性能优化 & dotTrace & 10.0.0.2(Commercial)\\
+    内存泄漏检测 & dotMemory & 10.0.0.2(Commercial)\\
+    Rest客户端 & RestSharp & latest\\		
     \end{tabular}
 
 \subsection{Web Server}
@@ -883,7 +932,6 @@ Tengine是由淘宝网发起的Web服务器项目。
 	WSIC & Windows & Microsoft SQL Server & IIS & C\#\\ 　  			
 \end{tabular}
 
-
 \subsection{主流平台}
 
 \begin{itemize}
@@ -894,23 +942,21 @@ Tengine是由淘宝网发起的Web服务器项目。
 \item{Django}
 \end{itemize}
 
+%\subsection{项目结构}
 
-\subsection{项目结构}
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.5]{ProjectCollabarate.png}
-	\caption{项目整体结构}
-	\label{ProjectCollabarate}
-\end{figure}
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.35]{ProductRelation.png}
-	\caption{产品关系}
-	\label{ProductRelation}
-\end{figure}
-
+%	\begin{figure}[htbp]
+%	\centering
+%	\includegraphics[scale=0.5]{ProjectCollabarate.png}
+%	\caption{项目整体结构}
+%	\label{ProjectCollabarate}
+%	\end{figure}
+%	
+%	\begin{figure}[htbp]
+%	\centering
+%	\includegraphics[scale=0.35]{ProductRelation.png}
+%	\caption{产品关系}
+%	\label{ProductRelation}
+%	\end{figure}
 
 \clearpage
 \mbox{}         
@@ -8082,7 +8128,7 @@ ECMA JavaScript 2.0标准化委员会委员。
 被JavaScript之父Brendan Eich称为JavaScript的大宗师（Yoda），
 是JSON、JSLint、JSMin和ADSafe的创造者。
 
-在数据传输流程中，json是以文本，即字符串的形式传递的，
+在数据传输流程中，Json是以文本，即字符串的形式传递的，
 而JS操作的是JSON对象，所以，JSON对象和JSON字符串之间的相互转换是关键，
 如下代码片段由Json字符串转化为Json对象。
 
@@ -8670,6 +8716,12 @@ table就是表格，而不是其他什么（更不能被用来布局和定位）
 \paragraph{把margin设为auto}
 
 就是把要居中的元素的margin-left和margin-right都设为auto，
+如下代码所示：
+
+\begin{lstlisting}
+margin:0 auto;
+\end{lstlisting}
+
 此方法只能进行水平的居中，且对浮动元素或绝对定位元素无效。
 行级元素设置其父元素的text-align center，
 块级元素设置其本身的left和right margins为auto即可。
@@ -8839,7 +8891,27 @@ testability, maintainability and boiler-plate reduction.
 
 \section{SQLite}
 
+\subsection{SQLite连接}
 
+The System.Data.Common namespace provides 
+classes for creating DbProviderFactory instances to work with specific data sources.
+When you create a DbProviderFactory instance and 
+pass it information about the data provider, 
+the DbProviderFactory can determine the correct, 
+strongly typed connection object to return based on the information it has been provided.
+
+\begin{lstlisting}[language={[Sharp]C}]
+public SqliteOperateHelper(DbProviderFactory factory, string connectionString)
+{
+    _dbConnection = factory.CreateConnection();
+    if (_dbConnection == null) return;
+    _dbConnection.ConnectionString = connectionString;
+    var cnnstring = factory.CreateConnectionStringBuilder();
+    if (cnnstring == null) return;
+    cnnstring.ConnectionString = connectionString;
+    _dbConnection.Open();
+}
+\end{lstlisting}
 
 \section{数据恢复}
 
@@ -9449,6 +9521,45 @@ ToBase64String方法会将这个数组分成2个数组，
 CSRF主要是黑客将伪造的请求URL放到一个图片或者其他静态资源里，这种成本极低，且传播性和形象力非常大。
 举例：Qzone的签名的修改地址是：http://qzone.qq.com/cgi-bin/modify?nick=123
 
+\subsection{Google Chrome Cookie读取}
+
+Chrome浏览器版本33以上对Cookies进行了加密，
+用SQLite Developer打开Chrome的Cookies文件就会发现，
+原来的value字段已经为空，取而代之的是加密的encrypted\_value。
+Chrome浏览器已保存的密码都保存在一个sqlite3数据库文件中，
+和Cookies数据库在同一个文件夹。C\#中使用UnprotectData函数解密数据库中的密码字段，
+即可还原密码。
+
+\begin{lstlisting}[language={[Sharp]C},caption=解密Cookie]
+byte[] sAditionalEntropy = { };
+var passwordValueArray = (byte[])reader[i];
+//var decryptArray = DataProtection.UnprotectData(passwordValueArray);
+var decryptArray = ProtectedData.Unprotect(passwordValueArray, sAditionalEntropy, DataProtectionScope.LocalMachine);
+var decryptResult = Encoding.Default.GetString(decryptArray);
+row[i] = decryptResult;
+\end{lstlisting}
+
+基于ProtectedData实现的加密解密字符串，可以跨Windows用户使用，但是不能跨计算机使用。
+所以在一台计算机上面加密的信息，不能在另一台计算机上面解密。
+ProtectedData在System.Security.dll的命名空间System.Security.Cryptography下，
+This method can be used to encrypt data such as passwords, 
+keys, or connection strings. 
+The optionalEntropy parameter enables you to add data to 
+increase the complexity of the encryption; 
+specify null for no additional complexity.
+另外如果网站选择了“记住密码”选项，
+Google Chrome在再次访问此网站时，
+会在右上角显示一把钥匙图标，
+点击钥匙图标会进入Google Chrome的Cookie密码浏览界面。
+在这里也可以查看所有登录网站的密码，
+不过需要输入Windows的登录密码。
+也可以访问一下的链接进入Cookie密码管理界面：
+
+\begin{lstlisting}[language=HTML]
+chrome://settings/passwords
+\end{lstlisting}
+
+
 \section{Session劫持(Session Hijacking)}
 
 咖啡馆的免费WiFi，就是一个很理想的劫持环境，因为两个原因：
@@ -9569,9 +9680,13 @@ SQL Injection为网络安全中漏洞中，发生次数最多的漏洞。
 
 \subsubsection{替换特殊字符}
 
+\subsection{Sqlmap}
+
+
+
 \section{Nmap(GNU General Public License)}
 
-Nmap(“Network Mapper(网络映射器)”)是一款开放源代码的网络探测和安全审核的工具。
+Nmap(Network Mapper)，网络映射器，是一款开放源代码的网络探测和安全审核的工具。
 它的设计目标是快速地扫描大型网络，当然用它扫描单个主机也没有问题。
 Nmap以新颖的方式使用原始IP报文来发现网络上有哪些主机，
 那些主机提供什么服务(应用程序名和版本)，那些服务运行在什么操作系统(包括版本信息)，
@@ -10765,6 +10880,178 @@ HKLM/System/CurrentControlSet/SessionManager/SafeDllSearchMode。
 根目录下面，与被引用程序集同名的子目录
 根目录下面被明确定义为私有目录的子目录
 
+\section{PE文件}
+
+一个PE文件至少需要两个Section,一个是存放代码，一个存放数据。
+NT上的PE文件基本上有9个预定义的Section。
+分别是：.text, .bss, .rdata, .data, .rsrc, .edata, .idata, .pdata, 和 .debug。
+一些PE文件中只需要其中的一部分Section.以下是通常的分类：
+
+\begin{enumerate}
+\setcounter{enumi}{0}
+\item{执行代码Section , 通常命名为： .text (MS) or CODE (Borland)}
+\item{数据Section, 通常命名为：.data, .rdata, 或 .bss(MS) 或 DATA(Borland)}
+\item{资源Section, 通常命名为：.edata}
+\item{输入数据Section, 通常命名为：.idata}
+\item{调试信息Section，通常命名为：.debug}
+\end{enumerate}
+
+这些只是命名方式，便于识别。通常与系统并无直接关系。
+通常，一个PE文件在磁盘上的映像跟内存中的基本一致。
+但并不是完全的拷贝。Windows加载器会决定加载哪些部分，
+哪些部分不需要加载。而且由于磁盘对齐与内存对齐的不一致，
+加载到内存的PE文件与磁盘上的PE文件各个部分的分布都会有差异。
+PE文件的结构如图\ref{fig:PEFileFullStructure}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{PEFileFullStructure.jpg}
+	\caption{PE文件结构}
+	\label{fig:PEFileFullStructure}
+\end{figure}
+
+最开头的是部分是DOS部首，DOS部首由两部分组成：
+DOS的MZ文件标志和DOS stub(DOS存根程序)。
+之所以设置DOS部首是微软为了兼容原有的DOS系统下的程序而设立的。
+紧接着的是真正的PE文件头。值得注意的是PE文件头中的IMAGE\_OPTIONAL\_HEADER32是一个非常重要的结构，
+PE文件中的导入表、导出表、资源、重定位表等数据的位置和长度都保存在这个结构里。
+
+\subsection{.reloc}
+
+代码里call的地址是一个模块内的地址，而且是一个VA，
+那么如果模块基地址发生了变化，这个地址岂不是就无效了？这个问题如何解决？
+
+答案是：Windows使用重定位机制保证以上代码无论模块加载到哪个基址都能正确被调用。
+听起来很神奇，是怎么做到的呢？其实原理并不很复杂，这个过程分三步：
+
+1.编译的时候由编译器识别出哪些项使用了模块内的直接VA，
+比如push一个全局变量、函数地址，这些指令的操作数在模块加载的时候就需要被重定位。
+
+2.链接器生成PE文件的时候将编译器识别的重定位的项纪录在一张表里，
+这张表就是重定位表，保存在DataDirectory中，序号是 IMAGE\_DIRECTORY\_ENTRY\_BASERELOC。
+
+3.PE文件加载时，PE 加载器分析重定位表，将其中每一项按照现在的模块基址进行重定位。
+
+\subsection{Dos stub}DOS头，如果电脑安装有Windows SDK，
+则在路径:
+
+\begin{lstlisting}[language=Bash]
+C:\Program Files\Microsoft SDKs\Windows\v7.1\Include
+\end{lstlisting}
+
+下的文件WinNT.h中可以找到对于PE文件中对于DOS头的结构定义。
+结构体对于头文件的定义如下：
+
+\begin{lstlisting}[language=C]
+typedef struct _IMAGE_DOS_HEADER {      // DOS .EXE header
+	WORD   e_magic;                     // Magic number
+	WORD   e_cblp;                      // Bytes on last page of file
+	WORD   e_cp;                        // Pages in file
+	WORD   e_crlc;                      // Relocations
+	WORD   e_cparhdr;                   // Size of header in paragraphs
+	WORD   e_minalloc;                  // Minimum extra paragraphs needed
+	WORD   e_maxalloc;                  // Maximum extra paragraphs needed
+	WORD   e_ss;                        // Initial (relative) SS value
+	WORD   e_sp;                        // Initial SP value
+	WORD   e_csum;                      // Checksum
+	WORD   e_ip;                        // Initial IP value
+	WORD   e_cs;                        // Initial (relative) CS value
+	WORD   e_lfarlc;                    // File address of relocation table
+	WORD   e_ovno;                      // Overlay number
+	WORD   e_res[4];                    // Reserved words
+	WORD   e_oemid;                     // OEM identifier (for e\_oeminfo)
+	WORD   e_oeminfo;                   // OEM information; e\_oemid specific
+	WORD   e_res2[10];                  // Reserved words
+	LONG   e_lfanew;                    // File address of new exe header
+} IMAGE_DOS_HEADER, *PIMAGE_DOS_HEADER;
+\end{lstlisting}
+
+由100个左右的字节所组成，用来输出类似“这个程序不能在DOS下运行！”这样的错误信息；
+DOS头的作用是兼容MS-DOS操作系统中的可执行文件，对于32位PE文件来说，
+DOS所起的作用就是显示一行文字，提示用户：我需要在32位Windows上才可以运行。
+MS-DOC MZ Header和MS-DOS Stub是为了兼容DOS系统存在的，
+目的是使这个exe在DOS下执行时弹出一个提示"This program cannot be run in DOS mode"。
+
+\subsection{NT Header}
+
+顺着DOS头中的e\_lfanew，我们很容易可以找到NT头，这个才是32位PE文件中最有用的头，定义如下:
+
+\begin{lstlisting}[language=C]
+typedef struct _IMAGE_NT_HEADERS {  
+    DWORD Signature;  
+    IMAGE_FILE_HEADER FileHeader;  
+    IMAGE_OPTIONAL_HEADER32 OptionalHeader;  
+} IMAGE_NT_HEADERS32, *PIMAGE_NT_HEADERS32; 
+\end{lstlisting}
+
+NT头与File Header、Signature、Optional  Header的关系如图\ref{fig:PEFileStructureWithNTHeader}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=1]{PEFileStructureWithNTHeader.jpg}
+	\caption{PE文件的结构(NT Header)}
+	\label{fig:PEFileStructureWithNTHeader}
+\end{figure}
+
+\paragraph{PE Signature}DWORD类型，PE文件签名，用来表示这是个PE文件，用ASCII码表示；
+
+\paragraph{File Header}包含PE文件最基本信息，
+如：文件创建日期，文件类型，Section的数量，Optional Header的大小等等。详细可以参考Winnt.h里的结构\_IMAGE\_FILE\_HEADER。
+通过dumpbin工具可以看到，
+打开Visual Studio命令调试窗口，输入命令：
+
+\begin{lstlisting}[language=Bash]
+dumpbin -all "E:\OneDrive\Source Code\Dolphin\GitHubFosc\Fosc\Fosc.Dolphin.UI\Fosc.Dolphin.UI\bin\x64\Debug\Fosc.Dolphin.UI.exe" >>C:\dump.txt
+\end{lstlisting}
+
+结果如图\ref{fig:DumpbinToCheckPEHeader}所示。从这里可以看到：CPU类型为14c，
+是Intel I386、I486或者I586；section的数量为2；链接器产生这个文件的日期；
+COFF符号表的文件偏移量，为0；COFF符号表的符号数目，为0；Optional Header的大小。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{DumpbinToCheckPEHeader.jpg}
+	\caption{PE文件File Header}
+	\label{fig:DumpbinToCheckPEHeader}
+\end{figure}
+
+COFF –通用对象文件格式(Common Object File Format)，
+是一种很流行的对象文件格式（注意：这里不说它是“目标”文件，
+是为了和编译器产生的目标文件(*.o/*.obj)相区别，因为这种格式不只用于目标文件，
+库文件、可执行文件也经常是这种格式）。大家可能会经常使用VC吧？
+它所产生的目标文件(*.obj)就是这种格式。其它的编译器，
+如GCC（GNU Compiler Collection）、ICL（Intel C/C++ Compiler）、VectorC，也使用这种格式的目标文件。
+不仅仅是C/C++，很多其它语言也使用这种格式的对象文件。
+
+3、PE loader接着会找到Entry Point，例如本例中图\ref{fig:PEFileEntryPoint}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{PEFileEntryPoint.jpg}
+	\caption{PE文件Entry Point}
+	\label{fig:PEFileEntryPoint}
+\end{figure}
+
+这个PE文件的入口点地址为00407FAE，然后通过这个地址来查找.text section的原始数据表，
+由图6所示，
+0040251E这个地址开始的6个字节的内容为【FF 25 00 20 40 00】，
+这个内容就是由编译器写入PE文件的.text section的重要信息，
+FF在x86汇编语言与机器码对照表中代表无条件转移指令Jmp，
+这条指令的作用是无条件跳转到00402000地址处，
+从图3可以看到image base 是00400000，2000是import address table的RVA地址，
+由图7可以看到，此时程序会跳转到00402000这个地址所引用的mscoree.dll的\_CorExeMain(\_CorExeMain为mscoree.dll的入口方法)方法，
+所有的托管应用都会通过上述过程找到并执行\_CorExeMain方法；
+
+\paragraph{Optional Header}PE Optional Header则包含了文件的版本号以及重要的基地址
+和AddressOfEntryPoint（RVA-Relative Virtual Address)，
+这是程序执行的入口地址，双击exe后就从这里开始执行。
+对C\#程序来说，这里指向的是.NET的核心库MsCorEE.dll的\_CorExeMain()函数。
+当然这是针对XP系统的，XP以后的系统，
+OS Loader已经可以判断出这个PE是否包含CLR头来决定是否运行MsCorEE.dll的\_CorExeMain()函数。
+
+\subsection{Section}Section有很多，包括代码节，数据节等，
+C\#程序会把CLR头，元数据，IL放在这里面。
+
 \section{CLR(MIT Licence)加载过程}
 
 CLR是托管程序运行的环境，就像Windows是普通的PE程序的运行环境一样。
@@ -10812,54 +11099,7 @@ CLR加载后, 先初始化CLR需要的各种功能, 比如必要的全局变量,
 当CLR引擎初始化完成后, CLR会找到当前exe的元数据, 然后找到Main函数, 编译Main函数, 
 执行Main函数.
 
-\paragraph{Dos stub}由100个左右的字节所组成，用来输出类似“这个程序不能在DOS下运行！”这样的错误信息；
 
-\paragraph{PE Signature}DWORD类型，PE文件签名，用来表示这是个PE文件，用ASCII码表示；
-
-\paragraph{File Header}包含PE文件最基本信息，通过dumpbin工具可以看到，
-打开Visual Studio命令调试窗口，输入命令：
-
-\begin{lstlisting}[language=Bash]
-dumpbin -all "E:\OneDrive\Source Code\Dolphin\GitHubFosc\Fosc\Fosc.Dolphin.UI\Fosc.Dolphin.UI\bin\x64\Debug\Fosc.Dolphin.UI.exe" >>C:\dump.txt
-\end{lstlisting}
-
-结果如图\ref{fig:DumpbinToCheckPEHeader}所示。从这里可以看到：CPU类型为14c，
-是Intel I386、I486或者I586；section的数量为2；链接器产生这个文件的日期；
-COFF符号表的文件偏移量，为0；COFF符号表的符号数目，为0；Optional Header的大小。
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.8]{DumpbinToCheckPEHeader.jpg}
-	\caption{PE文件File Header}
-	\label{fig:DumpbinToCheckPEHeader}
-\end{figure}
-
-COFF –通用对象文件格式（Common Object File Format），
-是一种很流行的对象文件格式（注意：这里不说它是“目标”文件，
-是为了和编译器产生的目标文件（*.o/*.obj）相区别，因为这种格式不只用于目标文件，
-库文件、可执行文件也经常是这种格式）。大家可能会经常使用VC吧？
-它所产生的目标文件（*.obj）就是这种格式。其它的编译器，
-如GCC（GNU Compiler Collection）、ICL（Intel C/C++ Compiler）、VectorC，也使用这种格式的目标文件。
-不仅仅是C/C++，很多其它语言也使用这种格式的对象文件。
-
-3、PE loader接着会找到Entry Point，例如本例中图\ref{fig:PEFileEntryPoint}所示。
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.8]{PEFileEntryPoint.jpg}
-	\caption{PE文件Entry Point}
-	\label{fig:PEFileEntryPoint}
-\end{figure}
-
-这个PE文件的入口点地址为00407FAE，然后通过这个地址来查找.text section的原始数据表，
-由图6所示，
-0040251E这个地址开始的6个字节的内容为【FF 25 00 20 40 00】，
-这个内容就是由编译器写入PE文件的.text section的重要信息，
-FF在x86汇编语言与机器码对照表中代表无条件转移指令Jmp，
-这条指令的作用是无条件跳转到00402000地址处，
-从图3可以看到image base 是00400000，2000是import address table的RVA地址，
-由图7可以看到，此时程序会跳转到00402000这个地址所引用的mscoree.dll的\_CorExeMain(\_CorExeMain为mscoree.dll的入口方法)方法，
-所有的托管应用都会通过上述过程找到并执行\_CorExeMain方法；
 
 \subsection{启动CLR服务}
 
@@ -10873,12 +11113,12 @@ C:\Windows\Microsoft.NET\Framework64\v2.0.50727
 
 mscorwks.dll是dotNet的核心文件，尤其是在net2.0中，
 以前分散的功能都集中到了这个dll中。 
-net 1.1中，还有一个文件mscorsvr.dll和mscorwks.dll 是同等地位的。 
+NET 1.1中，还有一个文件mscorsvr.dll和mscorwks.dll 是同等地位的。 
 它们分别对应于Windows Service程序以及desktop程序。 
-在net 2.0中，它们都统一到了 mscorwks.dll中。 
-同时在net 2.0中mscorsn.dll的功能也合并到了mscorwks.dll中。 
-它就是dotnet运行库的核心。 
-DotNet的执行引擎(ee),内部对象的实现都在这个dll里面。 
+在NET 2.0中，它们都统一到了mscorwks.dll中。 
+同时在NET 2.0中mscorsn.dll的功能也合并到了mscorwks.dll中。 
+它就是DotNet运行库的核心。 
+DotNet的执行引擎(Execute Engine),内部对象的实现都在这个dll里面。 
    
 在我们用reflector查看dotnet类库源代码时经常会遇到一些函数看不到源代码，
 只是标记成内部实现。这些函数基本上实际实现的代码就在这个dll里面，
@@ -11105,12 +11345,13 @@ GC的全称为“Garbage Collector”,顾名思义就是垃圾回收器，
 那么对于程序资源来说，我们应该做些什么，以及如何去做，才能使程序效率最高，
 同时占用资源能尽快的释放。前面也说了，资源分为两种，托管的内存资源，
 这是不需要我们操心的，系统已经为我们进行管理了；那么对于非托管的资源，
-这里再重申一下，就是Stream，数据库的连接，GDI+的相关对象，还有Com对象等等这些资源，需要我们手动去释放。
+这里再重申一下，就是Stream，数据库的连接，GDI+的相关对象，
+还有Com对象等等这些资源，需要我们手动去释放。
 
 如何去释放，应该把这些操作放到哪里比较好呢。.Net提供了三种方法，也是最常见的三种，大致如下：
-<!--[if !supportLists]-->1．  <!--[endif]-->析构函数；
-<!--[if !supportLists]-->2．  <!--[endif]-->继承IDisposable接口，实现Dispose方法；
-<!--[if !supportLists]-->3．  <!--[endif]-->提供Close方法。
+1.析构函数；
+2．继承IDisposable接口，实现Dispose方法；
+3．提供Close方法。
 
 经过前面的介绍，可以知道析构函数只能被GC来调用的，那么无法确定它什么时候被调用，
 因此用它作为资源的释放并不是很合理，因为资源释放不及时；但是为了防止资源泄漏，
@@ -11132,7 +11373,18 @@ GC会先试着在属于Generation 0的对象中回收，因为这些是最新的
 \section{IL(Intermediate Language)}
 
 MSIL是将.NET程序编译成机器语言的一种过程。编译成的代码不专用于任何一种操作系统，
-它是一种介于高级语言和基于Inter的汇编语言。每当编译程序，编译器将源代码翻译成MSIL，
+它是一种介于高级语言和基于Intel的汇编语言。
+查看IL代码可以通过工具IL Disassembler(IL DASM)进行，
+图标含义如图\ref{fig:ILDasmblerIcon}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{ILDasmblerIcon.png}
+	\caption{使用IL DASM查看IL}
+	\label{fig:ILDasmblerIcon}
+\end{figure}
+
+每当编译程序，编译器将源代码翻译成MSIL，
 它是一组可以有效地转换为本机代码且独立于CPU指令。当执行这些指令时JIT将它转换为CPU的特定代码。
 由于MSIL支持多种JIT，所以同一MSIL代码可以被编译运行在不同的结构上。
 MSIL包括用于加载、存储和初始化对象以及对对象调用方法的指令，
@@ -11142,8 +11394,7 @@ MSIL包括用于加载、存储和初始化对象以及对对象调用方法的�
 但却与解释性编译有很大不同，就在于会重用先前编译的本地代码，
 在每一次执行代码均会查看是否已经编译过，若没有编译成本地代码，
 则执行一次编译，若编译过，则重用先前的本地代码。
-
-部分CIL 操作码
+部分CIL操作码如下(参考这里：http://www.cnblogs.com/zery/p/3368460.html):
 
 \begin{tabular}{l|p{10cm}}
 	\multirow{1}{*}{}			
@@ -11248,7 +11499,7 @@ ILAsm (IL Assembler) generates a portable executable (PE) file from Common Inter
 ilasm.exe /dll /output=E:\dll\a.dll /Resource=E:\dll\b.res E:\dll\b.il
 \end{lstlisting}
 
-dll参数表示编译成dll文件，默认编译成exe文件。
+dll参数表示编译成dll文件，如果不指定参数，默认编译成exe文件。
 
 \section{调试(Debug)}
 
@@ -11300,9 +11551,9 @@ Csc程序的/debug开关可以用来控制符号文件的生成，
 当你在调试程序的时候，调试器会自动和符号文件服务器交互，获取正确版本的符号文件。
 在后面的章节里面，会介绍如何创建一个符号文件服务器，以及如何使用符号文件服务器。
 
-\subsection{常用技巧}
+\subsection{常用调试技巧}
 
-\paragraph{编辑然后继续运行}
+\paragraph{编辑然后继续运行(Edit and Continue)}
 
 在运行一个很复杂的程序和插件时，发现一个错误，但是不想浪费时间去重编译重启动程序。
 只要在这个位置修改这个bug，然后继续调试。Visual studio会修改这个程序，
@@ -11322,11 +11573,30 @@ Csc程序的/debug开关可以用来控制符号文件的生成，
 当我们需要运行到实际关心的代码行时，如果单击F10/F11就不是最好的选择，
 此时只需要按Ctrl+F10即可。
 
-\paragraph{断点标签(Breakpoint Label)}这是VS2010提供的新特征（feature）。
+\paragraph{断点标签(Breakpoint Label)}这是VS2010提供的新特征(feature)。
 用于更好的管理断点。它使得我们能够更好的分组和过滤断点。
 这像是对断点的归类。如果我们添加了与某一功能相关的不同类型的断点，
 我们可以根据需要使能（enable）、取消（disable）、过滤（filter）这些断点。
 断点标签在你调试大量代码，多个工程等情况下非常有用。
+
+\paragraph{设置下一语句(Set Next Statement)}这是一个非常有趣的特性。
+设置下一语句允许你在调试的时候改变程序的执行路径。
+如果你的程序在某一行处暂停而且你想改变执行路径，跳到指定行，
+在这一行上右击，在右击菜单中选择“设置下一语句”。
+这样程序就会转到哪一行执行而不执行先前的代码。
+这在如下情况中非常有用：当你发现代码中某些行可能会导致程序的中断(break)而你不想让程序在那个时候中断。
+快捷键是Ctrl + Shift + F10，将光标移动到需要跳转到的行上，
+按下快捷键即可。
+也可以直接拖动左侧的黄色箭头到指定行，
+也可以达到同样的效果。
+
+\paragraph{显示下一语句(Show Next Statement[Ctrl+*])}
+这一行用黄色箭头标记。这行是程序继续执行时下一条将执行的语句。
+例如此时已经切换到另外的代码视图检视了部分源码，
+但是不记得当前断点运行到哪里了，
+可以使用显示下一语句的功能回到当前调试的位置，
+当然也可以直接按F10回到调试位置，
+除了这个用处，实在想不出显示下一语句有什么用途。
 
 \paragraph{Pinned DataTips}Visual Studio 2010 also includes some nice new “DataTip pinning” features that enable you to better see and track variable and expression values when in the debugger. 
 
@@ -11339,6 +11609,17 @@ Simply hover over a variable or expression within the debugger to expose its Dat
 	\label{fig:VisualStudioDataPin}
 \end{figure}
 
+\paragraph{启用非托管代码调试}Visual Studio作为一种强大的开发平台，已经提供了非常多的调试手段。
+但这些调试手段相对来说还是停留在表面上，无非是设置断点、变量查看以及调用堆栈列表等。
+某些时候 我们希望了解更多的东西，尤其是那些被隐藏到背后和运行期的东西，
+诸如对象运行状态、内存分布等等，这些相对底层的知识可以让我们更好地理解.NET CLR/JIT的一些行为。
+当然，并不是所有人都需要了解这些知识，毕竟汇编和高级调试器使用起来还是非常麻烦的。
+SOS.dll是Microsoft提供的一种调试扩展，全称是Son of Strike，
+可用来调试托管代码。SOS.dll拥有非常强大的功能，
+包括 Cracker 常用的内存脱壳等。目的并不是研究如何破解，
+而是如何使用SOS.dll来协助我们学习.NET CLR/JIT的一些知识。
+启用非托管代码调试后，不能使用Visual Studio的编辑并继续功能，这点需要注意。
+
 \subsection{不能设置断点的检查步骤}
 
 当Visual Studio提示：“当前不会命中断点，还没有为该文档加载任何符号”时，
@@ -11348,18 +11629,18 @@ Simply hover over a variable or expression within the debugger to expose its Dat
 模块窗口还会列出每一个DLL文件的符号文件加载信息，
 找到不能设置断点的dll，右键单击，选择“加载符号”选项单击即可，
 此时会自动为未加载符号的dll加载符号，加载完毕之后即可进入调试，
-还可查看每个文件的加载路径，从加载路径可以看出IIS所加载的实际的dll在	
+还可查看每个文件的加载路径，从加载路径可以看出调试时IIS所加载的实际的dll路径为：	
 
 \begin{lstlisting}
 C:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\fa41332c\c10b2499\assembly\dl3\5e331c01\f4a72a2a_807ad101\DBTour.Model.dll
 \end{lstlisting}		
 
-路径下，而不是应用程序的bin目录，如图\ref{fig:VisualStudioLoadModual}所示：
+而不是应用程序的bin目录，如图\ref{fig:VisualStudioLoadModual}所示：
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[scale=0.8]{VisualStudioLoadModual.png}
-	\caption{DataTips Pin}
+	\caption{查看调试时加载的模块}
 	\label{fig:VisualStudioLoadModual}
 \end{figure}
 
@@ -11373,36 +11654,43 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\fa413
 .NET的托管堆可能出现内存泄漏现象，
 大对象的频繁分配和释放、不恰当的保留根引用和错误的Finalize方法都可能导致内存泄漏。
 
-
 \subsection{PDB文件}
 
 大部分的开发人员应该都知道PDB文件是用来帮助软件的调试的。
-但是他究竟是如何工作的呢，我们可能并不熟悉。本文描述了PDB文件的存储和内容。
-同时还描 述了debugger如何找到binay相应的PDB文件，
-以及debugger如何找到与binay对应的源代码文件。
-本文适用于所有的Native和 Managed的开发人员。 
+但是他究竟是如何工作的呢，我们可能并不熟悉。PDB文件的存储和内容是什么？
+debugger如何找到binay相应的PDB文件？
+debugger如何找到与binay对应的源代码文件？ 
 
 在开始前，我们先定义2个术语：private build， 
 用来表示在开发人员自己机器上生成的build；public build，
 表示在公用的build机器上生成的build。private build相对来说比较简单，
 因为PDB和binay在相同的地方，通常地我们遇到的问题都是关于public build。  
  
-所有的的开发人员需要知道的最重要的事情是”PDB文件跟源代码同样的重要“， 
+所有的的开发人员需要知道的最重要的事情是“PDB文件跟源代码同样的重要”， 
 没有PDB文件，你甚至不能debugging。对于public build，
 需要symbol server存储所有的PDB，然后当用户报告错误的时候，
 debugger才可以自动地找到binay相应的PDB文件， 
-visual studio 和 windbg都知道如何访问symbol server。
+visual studio和WinDbg都知道如何访问symbol server。
 在将PDB和binay存储到symbol server前，还需要对PDB运行进行source indexing， 
 source indexing的作用是将PDB和source关联起来。  
  
 接下来的部分假设有已经设置好了symbol server和source server indexing。
 TFS2010中可以很简单地完成对一个新的build的source indexing 和 symbol server copying。
 
-三 PDB如何工作
+PDB是如何工作的呢？
+当你加载一个模块到进程的地址空间的时候，debugger用2中信息来找到相应的PDB文件。
+第一个毫无疑问就是文件的名字，如果加载zzz.dll,debugger则查找zzz.pdb文件。
+在文件名字相同的情况下debugger还通过嵌入到PDB和binay的GUID来确保PDB和binay的真正的匹配。
+所以即使没有任何的代码修改，昨天的binay和今天的PDB是不能匹配的。
+可以使用dumpbin.exe来查看binary的GUID以及PDB文件的路径，
+查看如下代码片断所示。 
 
-当你加载一个模块到进程的地址空间的时候，debugger用2中信息来找到相应的PDB文件。第一个毫无疑问就是文件的名字，如果加载 zzz.dll,debugger则查找zzz.pdb文件。在文件名字相同的情况下debugger还通过嵌入到PDB和binay的GUID来确保 PDB和binay的真正的匹配。 所以即使没有任何的代码修改，昨天的binay和今天的PDB是不能匹配的。可以使用dempbin.exe来查看binary的GUID。 
- 
-在VisualStudio中的modules窗口的symbol file列可以查看PDB的load顺序。
+\begin{lstlisting}[language=Bash]
+dumpbin.exe /headers "C:\Fosc.Dolphin.UI.exe"
+\end{lstlisting}
+
+输出的内容中有Debug Directory，会展示当前Debug GUID和PDB文件的路径。 
+在Visual Studio中的modules窗口的symbol file列可以查看PDB的load顺序。
 第一个搜索的路径是binary所在的路径，如果不在binary所在的路径，
 则查找binary中hardcode记录的build目录，
 例如obj\textbackslash debug\textbackslash *.pdb, 
@@ -11691,10 +11979,6 @@ and, in some cases, security issues.
 
 \subsection{.NET索引器}
 
-\subsection{当前不会命中断点，还没有为当前文档加载任何符号}
-
-在项目的属性选项卡的生成选项中确认配置编译生成的dll路径为当前调试使用的dll路径。
-
 \section{正则表达式（Regular Expression）}
 
 \subsection{元字符(Metacharacter)}
@@ -11753,7 +12037,7 @@ C\#中没有传统意义上的全局变量，
 但是可以使用公共静态变量定义一个全局可见的变量。
 公共静态变量必须属于某个类型，
 对静态变量的访问也需要通过该类型实现。
-全局变量咋ASP.NET中可以使用Application对象，
+全局变量在ASP.NET中可以使用Application对象，
 或者使用应用程序配置文件存储可配置数据。
 从Application这个单词上大致可以看出Application状态是整个应用程序全局的。
 在ASP时代我们通常会在Application中存储一些公共数据，
@@ -11789,7 +12073,7 @@ C\#中没有传统意义上的全局变量，
 2个环境所用的Web.config需要各自定义。
 在配置管理器添加完毕配置转换后，
 可在项目的Web.config中点击右键“添加配置转换”，
-如图所示。
+如图\ref{fig:VisualStudioAddConfigurationConvert}所示。
 
 \begin{figure}[htbp]
 	\centering
@@ -11862,15 +12146,14 @@ IOC意味着将你设计好的类交给系统去控制，
 \subsection{Spring.NET}
 
 Spring.NET is an open source application framework 
-that makes building  enterprise .NET applications easier.   
-
+that makes building  enterprise .NET applications easier.
 Providing components based on proven design patterns 
 that can be integrated into all tiers of your application architecture, 
 Spring helps increase development productivity and improve application 
 quality and performance.
 
 Spring解决了的最核心的问题就是把对象之间的依赖关系转为用配置文件来管理，
-也就是Spring的依赖注入机制。这个注入机制是在Ioc容器中进行管理的。
+也就是Spring的依赖注入机制。这个注入机制是在IoC容器中进行管理的。
 从Spring.NET的官方网站（\url{http://www.springframework.net/index.html}）上下载项目文件，
 选择合适的版本（这里是1.3.1）和文件（.NET Framework 4.0）引入到项目中，
 主要引入Spring.Core.dll、Common.Logging.dll和Spring.Data.dll文件。
@@ -12073,7 +12356,7 @@ csc.exe /out:a.exe a.cs
 
 \section{AOP(Aspect-Oriented Programming)}
 
-AOP（Aspect-Oriented Programming），面向切面编程，看着是跟OOP（面向对象编程）挺相近的，
+AOP(Aspect-Oriented Programming)面向切面编程，看着是跟OOP（面向对象编程）挺相近的，
 但实际上又有什么区别呢？OOP具有封装，继承，多态等东西来定义从上到下这种层次关系，
 但要想实现从左到右的关系的话就开始有点水土不服了，例如用户的权限控制，操作日志等，
 这些与我们要实现的核心功能不大有关系的东西散布在我们代码的周边，显示十分不好看。
@@ -12171,7 +12454,6 @@ while True:
 
 \section{解释器和编译器(Compiler)}
 
-http://blog.jobbole.com/88152/
 首先编译器进行语法分析，也就是要把那些字符串分离出来。
 然后进行语义分析，就是把各个由语法分析分析出的语法单元的意义搞清楚。
 最后生成的是目标文件，也称为obj文件。
@@ -13896,6 +14178,8 @@ HTTP严格传输安全(HSTS)功能使Web服务器告知浏览器绝不使用HTTP
 从而定向到一个恶意站点而不是应该访问的加密页面。
 HTTP 严格传输安全（HSTS）功能使 Web 服务器告知浏览器绝不使用 HTTP 访问，
 在浏览器端自动将所有到该站点的HTTP访问替换为HTTPS访问。
+HSTS是一个被当前大多数Web浏览器所支持的Web安全策略，
+它可以帮助Web管理员保护他们的服务器和用户避免遭到HTTPS降级、中间人攻击和Cookie劫持等HTTPS攻击的危害。
 
 HSTS可以用来抵御SSL剥离攻击。SSL 剥离攻击是中间人攻击的一种，
 由 Moxie Marlinspike 于2009年发明。
@@ -16794,6 +17078,36 @@ C A D [ V L 9 0 , J o h 9 2 ]。另一个框架也许能帮助你建立针对不
 Python最出色的地方在于，它鼓励清晰易读的代码，
 特别适合以渐进开发的方式构造大项目。其缺陷在于效率不高，
 太慢，不但跟编译语言相比慢，就是跟其他脚本语言相比也显得慢。
+一个普通的.NET程序员，开始可能限制于ASP.NET的 页面开发，
+但一旦他有了发展之心，他自然会对ASP.NET MVC、Silverlight、WinForm、WPF这些UI的开发手法感到兴趣，
+学习不需要多少时间，他可能就会认识这些UI开发只不过是一些工具，
+其实在开发原理上没什么区别。接着他就会向深一层的通讯模式进行了解，
+认识TCP/IP、Web Service、WCF、Remoting这些常用到的通讯方式，
+这时候他可能已经感觉到自己对开发技术有了进一步的了解。
+进而向工作流、设计模式、 面向对象设计、领域驱动设计、面向服务开发等高层次进发，最后成为技术的领导者。
+
+JAVA、C\#、PHP、C++、VB……10多种热门的开发语言，
+哪一种最有发展潜力呢？其实开发语言只不过是一个工具，
+“与其分散进攻，不如全 力一击”，无论是哪一种开发语言，
+只要您全力地去学习，到有了一定的熟悉程度的时候，
+要学习另一种的语言也是轻而易举的事情。开发语言主要分为三大类：
+
+1. 网络开发
+
+现在网络已经成为世界通讯的一座桥梁，好像Javascript、PHP、Ruby这几类开发语言大部分是用作网络开发方面
+
+2. 企业软件开发
+
+JAVA、C\#、VB这几类开发语言都实现了面向对象开发的目标，更多时候用于企业系统的开发
+
+3. 系统软件
+
+C语言、C++、Object-C这些软件更多是用在系统软件开发，嵌入式开发的方面。
+
+当然，这分类不是绝对，像JAVA、C\#、VB很多时候也用于动态网站的开发。
+在很开发项目都会使用集成开发的方式，同一个项目里面使用多种开发语言，
+各展所长，同步开发。但所以在刚入门的时候，建议您先为自己选择一种合适的开发工具，
+“专注地投入学习，全力一击”。
 
 \chapter{经验汇总}
 
@@ -17791,6 +18105,8 @@ RunTime using activator:00:00:00:20
 	42 & \url{http://nickcraver.com/} & 2016-03-12 & Nick Craver的博客(StackOverflow)\\
 	\hline
 	43 & \url{http://www.jobbole.com/} & 2016-03-12 & 伯乐在线\\
+	\hline
+	44 & \url{https://www.darencademy.com/} & 2016-04-02 & 大人学\\
 	\hline			
 \end{longtable}
 
@@ -18007,7 +18323,7 @@ public string this[string key]
 
 按照传递数据量来说，Request.Form可以传递不限大小的数据，
 而Request.QueryString只能传递2k的数据量。
-按照速度来说，Request.QeurysString 会略快于Request.Form。
+按照速度来说，Request.QueryString会略快于Request.Form。
 
 Request.Params[]、Request[]这二个属性都可以让我们方便地
 根据一个Key去搜索QueryString、Form、Cookies 或 ServerVariables这4个集合。 
@@ -18025,17 +18341,17 @@ http://www.cnblogs.com/fish-li/archive/2011/12/06/2278463.html
 HTTP保持状态主要通过Cookie、Session。Cookie比Session要早添加到HTTP协议中。
 Cookie机制采用的是在客户端保存状态的方案，而session机制采用的是在服务器端保持状态的方案。
 
-1、cookie数据存放在客户的浏览器上，session数据放在服务器上。
+1、Cookie数据存放在客户的浏览器上，Session数据放在服务器上。
 
-2、cookie不是很安全，别人可以分析存放在本地的COOKIE并进行COOKIE欺骗考虑到安全应当使用session。
+2、Cookie不是很安全，别人可以分析存放在本地的Cookie并进行Cookie欺骗考虑到安全应当使用Session。
 
-3、session会在一定时间内保存在服务器上。当访问增多，会比较占用你服务器的性能考虑到减轻服务器性能方面，应当使用COOKIE。
+3、Cookie会在一定时间内保存在服务器上。当访问增多，会比较占用你服务器的性能考虑到减轻服务器性能方面，应当使用Cookie。
 
-4、单个cookie保存的数据不能超过4K，很多浏览器都限制一个站点最多保存20个cookie。
+4、单个Cookie保存的数据不能超过4K，很多浏览器都限制一个站点最多保存20个Cookie。
 
 5、所以个人建议：
-   将登陆信息等重要信息存放为SESSION
-   其他信息如果需要保留，可以放在COOKIE中 
+   将登陆信息等重要信息存放为Session
+   其他信息如果需要保留，可以放在Cookie中 
 
 \subsection{string.Empty、""和null的区别}
 
@@ -18263,7 +18579,7 @@ if(myobj.GetType() == typeof(MyComplexClass))
 }
 \end{lstlisting}
 
-\subsection{JavaScript中 undefinedd与null的区别}
+\subsection{JavaScript中undefined与null的区别}
 
 JavaScript中有5种简单数据类型（也称为基本数据类型）：Undefined、Null、Boolean、Number和String。
 还有1种复杂数据类型——Object，Object本质上是由一组无序的名值对组成的。
@@ -18303,7 +18619,7 @@ if (cardId === undefined) {
 \end{itemize}
 
 
-\subsection{for/forecch/LINQ的区别}
+\subsection{for/foreach/LINQ的区别}
 
 For and foreach differ slightly in performance. 
 They are approximately the same speed. 
@@ -18464,21 +18780,6 @@ List<string>它可以转换为string[]后使用string.Concat或string.Join，
 他们是相同的，编码中要么全用string，
 要么全用String。
 
-\subsection{Javascript中undefine与null的区别}
-
-JavaScript基本数据类型：String,boolean,Number,Undefined, Null，
-引用数据类型：Object(Array,Date,RegExp,Function)。
-首先，null像在Java里一样，被当成一个对象。
-Brendan Eich觉得表示"无"的值最好不是对象。
-其次，JavaScript的最初版本没有包括错误处理机制，
-发生数据类型不匹配时，往往是自动转换类型或者默默地失败。
-Brendan Eich觉得，如果null自动转为0，很不容易发现错误。
-因此，Brendan Eich又设计了一个undefined。
-JavaScript的最初版本是这样区分的：null是一个表示"无"的对象，
-转为数值时为0；undefined是一个表示"无"的原始值，转为数值时为NaN。
-null表示"没有对象"，即该处不应该有值。
-undefined表示"缺少值"，就是此处应该有一个值，但是还没有定义。
-
 \subsection{IIS何时会重启}
 
 无外乎下面几种情况:
@@ -18570,7 +18871,15 @@ ADO以Recordset存储，而ADO.NET则以DataSet表示。Recordset看起来更像
 \subsection{Javascript如何判断是否是对象}
 
 typeof bar === "object" 并不能准确判断 bar 就是一个 Object。
-可以通过 Object.prototype.toString.call(bar) === "[object Object]" 来避免这种弊端：
+在使用typeof运算符时采用引用类型存储值会出现一个问题，
+无论引用的是什么类型的对象，它都返回 "object"。
+可以通过
+
+\begin{lstlisting}[language=VBScript]
+Object.prototype.toString.call(bar) === "[object Object]" 
+\end{lstlisting}
+
+来避免这种弊端：
 
 \begin{lstlisting}[language=VBScript]
 let obj = {};
@@ -18604,8 +18913,6 @@ C\#里面事件就是回调函数,要先声明一个代理（也就是定义一�
 \item{事件只能够从对象外部增加新的响应方法和删除已知的响应方法，而不能主动去触发事件和获取其他注册的响应方法等信息。如果使用公有的delegate则不能做这些限制，也就是说事件对委托做了限制，使委托使用起来更加方便。也有人说事件是对委托的阉割，大概也是这个意思。}
 \end{itemize}
 
-
-
 \subsection{localhost、127.0.0.1、本机IP的区别}
 
 localhost
@@ -18625,11 +18932,15 @@ localhost
 
 \subsection{动态创建对象}
 
-1. Type.InvokeMember
-2. ContructorInfo.Invoke
-3. Activator.CreateInstance(Type)
-4. Activator.CreateInstance(assemblyName, typeName)
-5. Assembly.CreateInstance(typeName)
+\begin{enumerate}
+\setcounter{enumi}{0}
+\item{Type.InvokeMember}
+\item{ContructorInfo.Invoke}
+\item{Activator.CreateInstance(Type)}
+\item{Activator.CreateInstance(assemblyName, typeName)}
+\item{Assembly.CreateInstance(typeName)}
+\end{enumerate}
+
 最快的是方式3，与Direct Create的差异在一个数量级之内，约慢7倍的水平。
 其他方式，至少在40倍以上，最慢的是方式4，要慢三个数量级。 
 
@@ -18711,7 +19022,7 @@ we make it harder for people to read each other’s code, and so on. Sometimes t
 因为代码只有一行而foreach有3行。
 
 
-\subsection{hashtable Hashmap区别}
+\subsection{HashTable Hashmap区别}
 
 首先C\#只有Hashtable,Hashtable表示键/值对的集合，
 这些键/值对根据键的哈希代码进行组织。C\#中没有HashMap,
