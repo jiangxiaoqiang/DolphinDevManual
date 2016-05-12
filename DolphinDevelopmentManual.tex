@@ -158,7 +158,7 @@
 
 \textsc{\LARGE Experience Record}\\[1.5cm]
 
-\textsc{RRMall Project}\\[0.5cm]
+\textsc{Dolphin Project}\\[0.5cm]
 
 \rule{8cm}{0.2em}\mbox{} \\[0.4cm]
 
@@ -234,9 +234,9 @@ Donald \textsc{Knuth}
 		\hline
 		11 & 蒋小强 & 2015-11-26 & 添加Chrome调试网页相关内容\\
 		\hline
-		12 & 蒋小强 & 2015-12-25 & 添加浏览器渲染（Render）相关内容\\
+		12 & 蒋小强 & 2015-12-25 & 添加浏览器渲染(Render)相关内容\\
 		\hline
-		13 & 蒋小强 & 2015-02-05 & 添加RESTful API授权流程\\
+		13 & 蒋小强 & 2016-02-05 & 添加RESTful API授权流程\\
 		\hline
 	\end{tabular}
 \end{table}
@@ -306,6 +306,19 @@ Performance/Availability/Scalability/Security
 我们很多的编程结构之所以存在，就是为了帮助我们消除重复（例如，循环语句，函数，类，等等）。
 一旦程序里开始有重复现象的出现（例如很长的表达式、一大堆的语句，但都是为了表达相同的概念），
 你就需要对代码进行一次新的提炼，抽象。
+一次且仅一次（once and only once，简称OAOO）又称为 Don't repeat yourself（不要重复你自己，简称DRY）或一个规则，
+实现一次(one rule, one place)是面向对象编程中的基本原则，程序员的行事准则。旨在软件开发中，减少重复的信息。
+DRY的原则是:系统中的每一部分，都必须有一个单一的、明确的、权威的代表──指的是（由人编写而非机器生成的）代码和测试所构成的系统，
+必须能够表达所应表达的内容，但是不能含有任何重复代码。当DRY原则被成功应用时，
+一个系统中任何单个元素的修改都不需要与其逻辑无关的其他元素发生改变。此外，与之逻辑上相关的其他元素的变化均为可预见的、均匀的，并如此保持同步。
+软件重复出现至少会导致以下问题： 
+
+\begin{itemize}
+	\item{其中的一个版本会过期}
+	\item{代码的责任会四处散开，导致代码难以理解}
+	\item{当你修改代码时，需要重复修改很多地方，一不小心就会遗漏}
+	\item{你不能很好地进行性能优化}
+\end{itemize}
 
 \subsection{单一职责原则(Single Responsibility Principle,SRP)}
 
@@ -334,6 +347,16 @@ Performance/Availability/Scalability/Security
  \emph{Premature optimization is the root of all evil!}
 \end{quote}
 “对于小幅度的性能改进都不该考虑，要优化就应该是97\%的性能提升：过早优化是一切罪恶的根源” — Donald Knuth。
+编程的一个最核心的目的是解决问题，满足用户的需求。先保证解决方案的正确性（确实正确地解决了问题），
+再考虑其他一些特性，比如易操作性、运行速度、界面友好等等，经过适当的迭代一般在这些方面就能越来越好。
+但是，解决方案的正确性却不一定会慢慢「越来越正确」的，比如用户需要监测一个金融市场指标是否发生了分布性质的突变，
+从而根据突变的情况做出不同的决策，结果一个研究小组开发出一套做监测的系统过早地做了优化，
+计算速度飞快、用户体验也很好，但是由于研究不到位，使用的基础统计检验整个就是错误的，
+由此经过大量性能优化的算法基本也都是白费了。
+
+因此，为了减少无用功，提高一定时间内的有效生产力，先保证解决方案在原理上是正确的，
+可以解决问题，可以满足需求，再考虑更高层次的要求，例如性能等等。
+
 
 \subsection{依赖倒置原则(Dependence Inversion Principle)}
 
@@ -367,7 +390,14 @@ change, and redeploy. ISP is one of the five SOLID principles of Object-Oriented
 好的接口定义应该是具有专一功能性的，而不是多功能的，否则造成接口污染。
 如果一个类只是实现了这个接口的中一个功能，而不得不去实现接口中的其他方法，就叫接口污染。
 
-\subsection{封装变化点}
+\subsection{关注点分离(Separation of Concerns)}
+
+好的架构设计必须把变化点错落有致地封装到软件系统的不同部分，为此，必须进行关注点分离。
+Ivar Jacobson在《AOSD中文版》中写道：
+
+好的架构必须使每个关注点相互分离，也就是说系统中的一部分发生了改变，
+不会影响其他部分。即使需要改变，也能够清晰地识别出哪些部分需要改变。
+如果需要扩展架构，影响将会最小化。已经可以工作的每个部分都将继续工作。\subsection{封装变化点}
 
 %\item{提炼原则}
 
@@ -391,16 +421,43 @@ YAGNI原则指的是只需要将应用程序必需的功能包含进来，
 
 尽量使用合成/聚合，尽量不要使用继承。
 
+\subsection{依赖倒置(Dependency Inversion Principle)}
+
+DIP的两大原则：
+
+1、高层模块不应该依赖于低层模块,二者都应该依赖于抽象。
+
+2、抽象不应该依赖于细节,细节应该依赖于抽象。
+
+具体来讲，依赖倒置的核心思想是针对接口而不是实现编程。
+应用DIP可以降低模块之间的耦合度，只要接口保持稳定，
+模块可以独立演化而互不影响。
+
 \subsection{读写分离}
-
-
 
 \subsection{动静分离}
 
+\subsection{数据库表拆分\&分片}
 
+\subsection{主从同步}
+
+\subsection{负载均衡}
+
+\subsection{去中心化}
 
 \subsection{主从分离}
 
+\subsection{服务隔离}
+
+\subsection{灰度部署}
+
+避免上线导致大规模应用故障。
+
+\subsection{异步化}
+
+减少系统之间的强依赖，避免一个服务无法使用整个系统都无法使用的问题。
+
+\subsection{统一监控\&统一日志}
 
 \subsection{技术选型}
 
@@ -419,6 +476,36 @@ YAGNI原则指的是只需要将应用程序必需的功能包含进来，
 所以，那里都是AIX、RISC600，Solaris，Java，C/C++的地方），
 但是国外很多金融机构却更多用的是Windows。
 
+以前淘宝架构师黄裳说过，或许是 PHP 缺少一个IDE ;) 当然实际上不是这样的，
+当时的 PHP 远没有现在成熟。比如，PHP 缺少中间件(或许现在也是)，
+而 Java 当时起码有 Weblogic /Jboss 可用。至于解决方案，Java 相对更为成熟，
+从人的角度来说，Java 企业级应用背景的人才更多一些，再说可以得到Sun中国技术团队的协助。
+应该是2004年底的技术决定吧，同时间段迁移的还有从 MySQL 迁移到 Oracle ，从 PC 服务器迁移到小型机。这是一个正确的决定。
+
+其实当时最早更换的不是PHP语言，而是MySQL，MySQL当年太弱了，读写性能问题严重，
+容易死锁。而阿里当时在Oracle方面的积累非常强大，有冯春培、汪海、Fenng这样的人物（fenng比他们稍微晚点来，来的时候已经换了），
+于是数据库就迁移到了Oracle。PHP不具备连接池的功能，一开始弄了一个sqlRelay中间件来充当连接池，
+结果这个东东也经常死掉，于是开发语言也必须跟着换，至于为什么换java，fenng已经说的很清楚了。 
+当然现在的MySQL已经不是当年的吴下阿蒙了，现在用LAMP架构的话应该能支持很高的流量。
+
+轮回罢了。 当业务快速发展的时候必须靠DB的能力顶上，所以第一批做DB的人冒出了头。 
+接下来DB扛不住了，架构上场…… 出了一批架构师。 架构搞好之后，DB就不再那么重要了，
+于是开始可以降低Oracle规模了,Mysql上场以及KV出场。 oracle 收购了mysql 要围剿的话，
+谁知道几年后是不是 postgresql 上场？
+
+现在国外用PHP很多的，典型的是Facebook。 Java运行时对内存的管理和监控非常方便，之前twitter使用ruby写了一个消息队列，
+因为无法管控内存，换成用Scala重写了一个新的消息队列
+
+58同城使用的是 Windows、iis、SQL-Sever、C\# 这条路。
+现在很多创业公司可能就不会这么做。58 同城为什么当时选择了这条路？
+原因是公司招聘的第一个工程师和第二个工程师只会这个，所以只能走这条路。
+
+网站在不同的阶段遇到的问题不一样，而解决这些问题使用的技术也不一样，
+流量小的时候，我们主要目的是提高开发效率，在早期要引入 ORM，
+DAO 这些技术。随着流量变大，使用动静分离、读写分离、主从同步、垂直拆分、CDN、MVC等方式不断提升网站的稳定性。
+面对更大的流量时，通过垂直拆分、服务化、反向代理、开发框架（站点/服务）等等，不断提升高可用。
+在面对上亿级的更大流量时，通过中心化、柔性服务、消息总线、自动化（回归，测试，运维，监控）来迎接新的挑战。
+未来的就是继续实现 移动化，大数据实时计算，平台化
 
 \section{编码规范(Programming Specification)/编程风格(Programming Style)}
 
@@ -448,14 +535,14 @@ YAGNI原则指的是只需要将应用程序必需的功能包含进来，
 \item{如果需要多次串联，请使用Stringbuilder代替string，这可以节省堆内存}
 \item{为了避免在阅读代码时不得不滚动源代码编辑器，每行代码或注释在1024*800的分辨率下不得超过一显示屏，
 代码中方法的行数不超过30到40行}
-\item{避免for/foreach循环嵌套和if条件嵌套（Restrict all code to very simple control flow constructs）}
+\item{避免for/foreach循环嵌套和if条件嵌套(Restrict all code to very simple control flow constructs)}
 \item{在一个尽可能小的范围内赋值或初始化变量、结构等，
-限制全局变量的使用（Data objects must be declared at the smallest possible level of scope）。
+限制全局变量的使用(Data objects must be declared at the smallest possible level of scope)。
 降低变量的作用域有如下好处：
 其一：变量被无意修改的可能性降低；
 其二：使代码更具有可读性；
 其三：当需要对大程序分拆成小的子程序时，
-降低变量的作用域（Comments on Minimizing Scope）会使分拆起来更加简单\footnote{《代码大全》10.4节}。
+降低变量的作用域(Comments on Minimizing Scope)会使分拆起来更加简单\footnote{《代码大全》10.4节}。
 全局变量也会大大增加需要兼顾的代码的比例\footnote{《代码大全》34.1节}。}
 \item{重视日志的采集，保证所有的系统异常和关键信息有记录}	
 \item{使用标准库函数和公共函数}	
@@ -469,7 +556,7 @@ YAGNI原则指的是只需要将应用程序必需的功能包含进来，
 \item{方法应避免过多参数,合理的参数个数,其上限大概是7个左右\footnote{《代码大全》7.1节.}}
 \item{为变量指定单一用途，避免在2个位置把同一变量用于不同用途，
 例如temp变量在程序里2处用到，但代表不同的含义\footnote{《代码大全》10.8节}}
-\item{记住典型的布尔变量命名，done,error,found,success或ok}
+\item{记住典型的布尔变量命名:done,error,found,success或ok}
 \item{将复杂度降到最低是高质量代码的关键}
 \item{可考虑将大的工具类拆分成互不干扰的小的工具类,
 如NetworkUtil可拆分成HttpUtil,FTPUtil,TelnetUtil}
@@ -739,23 +826,26 @@ if (requestUrlObj != null)
 }
 \end{lstlisting}
 
-
-\subsection{公共函数库分类}
-
-\noindent 1. 网络（Network）包含HTTP\newline
-2. 字符串（StringOperation）\newline
-3. WebUtil（session,cookie,cache）\newline
-4. 安全（SecurityUtil）：加密、解密\newline
-5. 文件操作（FileUtil）包含ImageUtil,VideoUtil，ConfigUtil，XML。\newline
-6. 验证（ValidateUtil）\newline
-
 \section{效率（Performance）}
 
 \subsection{避免开辟内存}
 
 \subsection{避免装箱}
 
+\subsection{常见数据结构及复杂度}
 
+\begin{tabular}{l|l|l|l|l}
+	\multirow{1}{*}{}			
+	& \multicolumn{1}{c}{}
+	& \multicolumn{1}{c}{}
+	& \multicolumn{1}{c}{}
+	& \multicolumn{1}{c}{}\\
+	Data Structure & Add & Find & Delete & GetByIndex\\
+	\hline
+	Array (T[]) & O(n) & O(n) & O(n) & O(1)\\
+	\hline
+	Linked list (LinkedList<T>) & O(1) & O(n) & O(n) & O(n)\\
+\end{tabular}
 
 
 \section{数据库}
@@ -886,25 +976,22 @@ and not interpreters (step-by-step executors of source code, where no pre-runtim
 
 \subsection{Web Server}
 
-\subsubsection{OpenResty（BSD）}
+\subsubsection{OpenResty(BSD)}
 
 OpenResty（也称为 ngx\_openresty）是一个全功能的Web应用服务器。
 它打包了标准的Nginx核心，很多的常用的第三方模块，以及它们的大多数依赖项。
-
 通过众多进行良好设计的Nginx模块，
-OpenResty有效地把Nginx服务器转变为一个强大的 Web 应用服务器，
-基于它开发人员可以使用 Lua 编程语言对 Nginx 核心以及现有的各种 Nginx C 模块进行脚本编程，
-构建出可以处理一万以上并发请求的极端高性能的 Web 应用。
-
+OpenResty有效地把Nginx服务器转变为一个强大的Web应用服务器，
+基于它开发人员可以使用Lua编程语言对Nginx核心以及现有的各种Nginx C模块进行脚本编程，
+构建出可以处理一万以上并发请求的极端高性能的Web应用。
 OpenResty 致力于将你的服务器端应用完全运行于 Nginx 服务器中，
 充分利用 Nginx 的事件模型来进行非阻塞 I/O 通信。
 不仅仅是和 HTTP 客户端间的网络通信是非阻塞的，
 与MySQL、PostgreSQL、Memcached、以及 Redis 等众多远方后端之间的网络通信也是非阻塞的。
-
 因为 OpenResty 软件包的维护者也是其中打包的许多 Nginx 模块的作者，
 所以 OpenResty 可以确保所包含的所有组件可以可靠地协同工作。
 
-基于OpenResty：优库。
+基于OpenResty:优酷。
 
 \subsubsection{Tengine}
 
@@ -1588,7 +1675,12 @@ CORS允许一个域上的网络应用向另一个域提交跨域AJax请求。
 \item{JSONP主要被老的浏览器支持，它们往往不支持CORS，而绝大多数现代浏览器都已经支持了CORS}
 \end{enumerate}      
 
-For WCF service you have to develop new behavior and include it in the enpoint configuration\footnote{http://enable-cors.org/server\_wcf.html}: 
+CORS需要浏览器和服务器同时支持。目前，所有浏览器都支持该功能，IE浏览器不能低于IE10。
+整个CORS通信过程，都是浏览器自动完成，不需要用户参与。对于开发者来说，
+CORS通信与同源的AJAX通信没有差别，代码完全一样。浏览器一旦发现AJAX请求跨源，
+就会自动添加一些附加的头信息，有时还会多出一次附加的请求，但用户不会有感觉。
+因此，实现CORS通信的关键是服务器。只要服务器实现了CORS接口，就可以跨源通信。
+For WCF service you have to develop new behavior and include it in the endpoint configuration\footnote{http://enable-cors.org/server\_wcf.html}: 
 
 
 客户端脚本如下所示：
@@ -3673,7 +3765,7 @@ OVER关键字后的括号中还经常添加选项用以改变进行聚合运算�
 TransactionScope存在于System.Transactions命名空间中，
 它是从Framework 2.0开始引入的一个事务管理类,
 它也是微软推荐使用的一个事务管理类。
-在TransactionScope的构造函数中会自动创建了一个新的LTM（轻量级事务管理器），
+在TransactionScope的构造函数中会自动创建了一个新的LTM(轻量级事务管理器)，
 并通过Transaction.Current隐式把它设置为环境事务。
 在使用隐式事务时，事务完成前程序应该调用TransactionScope的Complete（）方法，
 把事务提交，最后利用Dispose（）释放事务对象。若执行期间出现错误，事务将自动回滚。
@@ -3687,8 +3779,7 @@ using (TransactionScope transactionScope = new TransactionScope())
 {
     try
     {
-        //事务操作        
-
+        //事务操作          
         transactionScope.Complete();
     }
     catch (Exception e)
@@ -3761,9 +3852,9 @@ ApplicationException类: 由用户程序引发，
 在程序中可以简单的进行异常的抛出，
 在自定义异常类中统一进行异常的处理，
 而不需要在类中进行日志的记录，
-也算是封装变化点的实现方式之一（因为记录日志的工具可能发生变化，
+也算是封装变化点的实现方式之一(因为记录日志的工具可能发生变化，
 那样就不需要到每一个类中去修改关于日志的代码，
-在异常类中统一进行修改即可），
+在异常类中统一进行修改即可)，
 自定义异常如代码片段\ref{code:CustomException}所示。
 
 \begin{lstlisting}[language={[Sharp]C},caption=自定义异常,label={code:CustomException}]
@@ -3788,18 +3879,15 @@ public class RestfulNullDataException : Exception
 \end{lstlisting}
 
 
-
 \subsection{根据经纬度计算距离}
 
 根据地球之间2点的经纬度计算2点之间的距离，
 Google提供的方法，公式为：
 
 \begin{quotation}
-\scalebox{1.5}{$S=2\arcsin\sqrt[]{\sin^2{(\frac{a}{2})}+\cos{(Lat1)}\times \cos(Lat2)
+\scalebox{1.2}{$S=2\arcsin\sqrt[]{\sin^2{(\frac{a}{2})}+\cos{(Lat1)}\times \cos(Lat2)
 \times \sin^2{\frac{b}{2}}}\times 6378.1$}
 \end{quotation}
-
-
 
 公式中经纬度均用弧度表示，
 角度到弧度的转化应该是很简单的了吧，
@@ -3880,7 +3968,7 @@ this.Text = condition;
 这里是将数组、集合中的元素拼接为带引号的字符串，
 方便放入SQL的in操作符中，
 这个语法可以做一些复杂的聚合运算，例如累计求和，累计求乘积。
-它接受2个参数，一般第一个参数是称为累积数（默认情况下等于第一个值），
+它接受2个参数，一般第一个参数是称为累积数(默认情况下等于第一个值)，
 而第二个代表了下一个值。
 第一次计算之后，计算的结果会替换掉第一个参数，继续参与下一次计算。
 
@@ -3903,13 +3991,13 @@ foreach(var item in arr)
 \end{lstlisting}
 
 
-这样是实现了，但是简单地使用indexOf函数就可以获取到索引值，
-更加简洁，例如代码片段\ref{code:foreachGetIndexUsingIndexOf}：
+这样是实现了，但是简单地使用IndexOf函数就可以获取到索引值，
+更加简洁，如代码片段\ref{code:foreachGetIndexUsingIndexOf}：
 
 \begin{lstlisting}[language={[Sharp]C},caption=foreach获取当前索引号,label={code:foreachGetIndexUsingIndexOf}]
 foreach(var item in arr)
 {
-     int index = arr.indexOf(item); //index 为索引值
+     int index = arr.IndexOf(item); //index 为索引值
      item....
 }
 \end{lstlisting}
@@ -3953,7 +4041,7 @@ static void Main()
 
 可以通过如下命令操作Windows服务。
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Bash]
 ----安装Windows服务-----
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319>InstallUtil.exe -i D:\项目\zouwo\RRInterop\bin\Debug\RRInterop.exe
 
@@ -4037,7 +4125,6 @@ string configFilePath = domain.SetupInformation.ConfigurationFile;
 //250,000.00，默认保留2位小数，如果为{0:N1},则默认保留1位小数，N为Number的缩写
 string result=string.Format("{0:N}", 250000);
 \end{lstlisting}
-
 
 \section{参数验证}
 
@@ -4190,9 +4277,32 @@ public static bool CompileUtil(string sourceCodeContent, string outAssemblyPath,
 
 \subsection{CodeDOMProvider}
 
+\section{配置}
 
+\subsection{ini}
+
+INI文件格式是某些平台或软件上的配置文件的非正式标准，以节(section)和键(key)构成，
+常用于微软Windows操作系统中。这种配置文件的文件扩展名多为INI，故名。
+INI是英文“初始化”（initialization）的缩写。正如该术语所表示的，
+INI文件被用来对操作系统或特定程序初始化或进行参数设置。
 
 \chapter{Web}
+
+1999 HTML
+
+2000 CGI
+
+2001 asp
+
+2002 xhtml
+
+2003 flash
+
+2004 ajax
+
+2005 php perl java
+
+2006 now-RIA
 
 \clearpage
 \mbox{}         
@@ -4439,7 +4549,7 @@ IIS\_IUSRS组也是内置的，
 所以在所有的Windows Server 2008机器上，它总是具有相同的名称和SID，
 这就让ACL以及其它配置在WindowsServer2008(以及WindowsVista)机器之间是完全可迁移的。
 
-\subsection{经典模式和集成模式}
+\subsection{经典模式(Classic Model)和集成模式(Integrated Model)}
 
 这种经典的托管模式有很多缺点，其一，扩展繁琐，开发人员要自己编写程序运行所需要的ISAPI过滤器，
 但对于一般的程序猿来说这是很困难的时；
@@ -4466,7 +4576,7 @@ ASP.NET的性能之所以能够得到改善，也是因为ASP.NET应用程序集
 诸如身份验证之类的ASP.NET功能也可以用于处理非ASP.NET内容（如：StaticFile、Image、HTML等）。
 每个请求都可以由IIS和ASP.NET进行处理，而不必考虑其所属类型。
 
-\subsubsection{Configuring an ASP.NET 4 Application to Auto-Start}
+\subsection{Configuring an ASP.NET 4 Application to Auto-Start}
 
 在IIS更新之后的首次Request会等待较长时间，
 ASP.NET 4中有一个叫“自动启动（auto-start）”的新特性，可以较好地解决这个场景， 
@@ -5128,14 +5238,17 @@ Apache默认通过FileEtag中FileEtag INode Mtime Size的配置自动生成ETag
 
 \subsection{HTTP Proxy}
 
-Web代理（proxy）服务器是网络的中间实体。 代理位于Web客户端和Web服务器之间，
+Web代理(proxy)服务器是网络的中间实体。代理位于Web客户端和Web服务器之间，
 扮演“中间人”的角色。HTTP的代理服务器即是Web服务器又是Web客户端。
-Fiddler 是以代理web服务器的形式工作的,它使用代理地址:127.0.0.1, 端口:8888.
+Fiddler是以代理web服务器的形式工作的,它使用代理地址:127.0.0.1, 端口:8888.
 当Fiddler退出的时候它会自动注销代理，这样就不会影响别的程序。
 
 \begin{itemize}
 \item{\textbf{代理翻墙}}~~很多人都喜欢用Facebook， 看YouTube。但是我们在天朝，天朝有The Great of Fire Wall(长城防火墙)，屏蔽了这些好网站。怎么办?通过代理来跳墙，就可以访问了。
-\item{\textbf{匿名访问}}~~经常听新闻，说”某某某“在网络上发布帖子，被跨省追缉了。   假如他使用匿名的代理服务器，就不容易暴露自己的身份了。 http代理服务器的匿名性是指： HTTP代理服务器通过删除HTTP报文中的身份特性（比如客户端的IP地址， 或cookie,或URI的会话ID）， 从而对远端服务器隐藏原始用户的IP地址以及其他细节。 同时HTTP代理服务器上也不会记录原始用户访问记录的log(否则也会被查到)。
+\item{\textbf{匿名访问}}~~经常听新闻，说“某某某”在网络上发布帖子，被跨省追缉了。
+假如他使用匿名的代理服务器，就不容易暴露自己的身份了。HTTP代理服务器的匿名性是指： 
+HTTP代理服务器通过删除HTTP报文中的身份特性（比如客户端的IP地址， 或cookie,或URI的会话ID），
+从而对远端服务器隐藏原始用户的IP地址以及其他细节。 同时HTTP代理服务器上也不会记录原始用户访问记录的log(否则也会被查到)。
 \item{\textbf{通过代理上网}}~~比如局域网不能上网， 只能通过局域网内的一台代理服务器上网。
 \item{\textbf{代理缓存，加快上网速度}}~~大部分代理服务器都具有缓存的功能，就好像一个大的cache， 它有很大的存储空间，它不断将新取得数据存储到它本地的存储器上， 如果浏览器所请求的数据在它本机的存储器上已经存在而且是最新的，那么它就不重新从Web服务器取数据，而直接将存储器上的数据传给用户的浏览器，这样就能显著提高浏览速度。
 \item{\textbf{儿童过滤器}}~~很多教育机构，会利用过滤器代理来阻止学生访问成人内容。
@@ -5176,12 +5289,21 @@ Proxy将这个回复转发给客户端，这个Response是Proxy跟目标服务�
 \end{figure}
 
 HttpTuunnel(也叫Http隧道，Http穿梭），是这样一种技术: 
-它用HTTP协议在要通信的Client和Server建立起一条”Tunnel”，
+它用HTTP协议在要通信的Client和Server建立起一条“Tunnel”，
 然后Client和Server之间的通信，都是在这条Tunnel的基础之上。
-
-HttpTunnel通常被用在受限的网络环境中，比如在NAT环境中的Client，受防火墙限制的环境中的Client等，
+HttpTunnel通常被用在受限的网络环境中，
+比如在NAT\footnote{Network Address Translation (NAT) is a methodology 
+of remapping one IP address space into another by 
+modifying network address information in Internet Protocol (IP) 
+datagram packet headers while they are in transit across a 
+traffic routing device.The technique was originally used for ease 
+of rerouting traffic in IP networks without renumbering every host. 
+It has become a popular and essential tool in conserving global 
+address space allocations in face of IPv4 address exhaustion 
+by sharing one Internet-routable IP address of a NAT gateway 
+for an entire private network.}(Network address translation)环境中的Client，
+受防火墙限制的环境中的Client等，
 在这样的环境中，Client不能直接连接到公网(WAN)的Server，这时候就可以通过HttpTunnel技术，来解决上述问题。
-
 上图是HttpTunnel技术的基本原理，它基本的工作过程主要分为以下几个步骤：
 （1）Client向ProxyServer发送要连接到Server的请求（Http协议）
 （2）Proxy Server向实际的Server发送连接请求（Http协议）
@@ -5256,12 +5378,12 @@ POST服务器也有相应的限制.
 
 服务端获取Get请求参数用Request.QueryString.
 获取POST请求用Request.Form.
-JSP用request.getParameter(\"\").
+JSP用request.getParameter().
 另POST的安全性比Get高.
 
 \subsection{HTTP Request and HTTP Response}
 
-一个HTTP请求报文由请求行（request line）、请求头部（header）、空行和请求数据4个部分组成。
+一个HTTP请求报文由请求行(request line)、请求头部(header)、空行和请求数据4个部分组成。
 HTTP协议的请求方法有GET、POST、HEAD、PUT、DELETE、OPTIONS、TRACE、CONNECT。
 最常见的一种请求方式，当客户端要从服务器中读取文档时，
 当点击网页上的链接或者通过在浏览器的地址栏输入网址来浏览网页的，
@@ -5289,7 +5411,7 @@ yMfO2M4QMRKcH1g0iQv9u-2hfBW7bUFwVh7pGaRUb0RnHcJU37y-
 FxlRugatx63JLv7CWMD6UB_O_r  
 \end{lstlisting}
 
-可以看到，GET方式的请求一般不包含”请求内容”部分，
+可以看到，GET方式的请求一般不包含“请求内容”部分，
 请求数据以地址的形式表现在请求行。地址链接如下：
 
 \begin{lstlisting}[language=HTML]
@@ -5302,6 +5424,10 @@ FxlRugatx63JLv7CWMD6UB_O_r
 显然，这种方式不适合传送私密数据。另外，
 由于不同的浏览器对地址的字符限制也有所不同，
 一般最多只能识别1024个字符，
+服务器对地址字符同样也有相应的限制\footnote{具体可以 参考链接：
+http://www.cnblogs.com/henryhappier/archive/2010/10/09/1846554.html}，
+为了让所有的用户都能正常浏览，我们的URL最好不要超过IE的最大长度限制(2038个字符)，
+当然，如果URL不直接提供给用户，而是提供给程序调用，侧这时的长度就只受Web服务器影响了。
 所以如果需要传送大量数据的时候，也不适合使用GET方式。
 
 \subsection{HTTP 状态码（HTTP Status Code）}
@@ -5569,44 +5695,6 @@ $("#slides").slidesjs({
 单位为毫秒，这里设置的是10秒。
 
 \subsection{IIS 6.0中MVC项目部署}
-
-在项目的App\_Start文件夹的RouteConfig.cs文件中设置MVC默认路由规则，如下代码所示：
-
-\begin{lstlisting}[language={[Sharp]C}]
-public class RouteConfig
-{
-    public static void RegisterRoutes(RouteCollection routes)
-    {
-        routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-
-        routes.MapRoute(
-            name: "Default",//路由的名称，可自由定义
-            url: "{controller}/{action}/{id}",
-            defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }            
-        );
-    }
-}
-\end{lstlisting}
-
-controller的值为View下一级文件夹的名称，
-action为页面的名称，
-注意在controller中需要有和页面名称相对应的方法，
-否则会报找不到页面的错误。
-RouteConfig需要在Global.asax文件中进行注册，代码为：
-
-\begin{lstlisting}[language={[Sharp]C}]
-public class MvcApplication : System.Web.HttpApplication
-{
-    protected void Application_Start()
-    {
-        AreaRegistration.RegisterAllAreas();
-        WebApiConfig.Register(GlobalConfiguration.Configuration);
-        FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-        RouteConfig.RegisterRoutes(RouteTable.Routes);
-        BundleConfig.RegisterBundles(BundleTable.Bundles);
-    }
-}
-\end{lstlisting}
 
 将MVC4网站部署到IIS6.0，部署完成后在网站的属性页面点击“配置”，
 如图\ref{fig:IIS6MVC4ConfigAttribute}所示：
@@ -6869,9 +6957,68 @@ http://www.cnblogs.com/suizhouqiwei/archive/2012/08/15/2637775.html
 
 \paragraph{把CSS放到顶部}
 
+\subsection{利用反向代理服务器加速和保护应用}
 
+如果 Web 应用运行在一台独立的电脑上，性能问题的解决方案是显而易见的：
+换一台更快的电脑，里面加上更多的处理器、内存、快速磁盘阵列等等。
+然后在这台新电脑上运行 WordPress 服务、Node.js 应用、Java 应用等等，会比以前快很多。
+（如果应用需要访问服务器，方案还是很简单：换两台更快的电脑，用更快速的连接把它们连接起来。）
 
-\subsection{其他}
+但电脑速度可能不是问题所在。通常 Web 应用运行缓慢，是由于电脑一直在不同的任务间切换：
+同成千上万的客户交互、访问磁盘上的文件、执行应用代码和其它的任务。
+应用服务器可能会因为下面这些问题而崩溃 —— 内存耗尽、把很多的数据从内存交换到磁盘上、以及很多请求都在等待一个类似磁盘 I/O 的单个任务。
+
+你应该采用一种完全不同的方式，而不是升级硬件：增加一个反向代理服务器来分担这些任务。
+这台反向代理服务器设置在运行应用的电脑之前，用来处理网络流量。只有这台反向代理服务器直接连到网络上，
+它和应用服务器通过一个快速的内部网络进行通信。
+
+利用这台反向代理服务器，应用服务器就不用等着和 Web 应用的用户进行交互，它可以专注在建立网页，
+并通过反向代理服务器把它们发送到网络上。因为应用服务器不必再等待客户的响应，所以能以最优的速度运行。
+
+增加一台反向代理服务器也增加了 Web 服务器的弹性。如果一台服务器过载了，很容易增加另一台同类型的服务器。
+如果一台服务器宕机，也很容易把它换掉。
+
+因为反向代理服务器带来的灵活性，它也成为了很多其它性能提升方法的先决条件，比如：
+
+\textbf{负载均衡}—— 反向代理服务器上运行一个负载均衡器，把流量平均分配给一堆应用服务器。
+由于负载均衡器的引入，在增加应用服务器时可以完全不用修改应用程序。
+
+\textbf{缓存静态文件} —— 直接请求的文件，比如图片或者代码文件，可以存在反向代理服务器上，
+并直接发送给客户端，这样可以更快地提供服务，分担了应用服务器的负载，可以让应用执行得更快。
+
+\textbf{保护网站} —— 反向代理服务器可以设置较高的安全级别，通过监控进快速识别和响应攻击，这样就可以把应用服务器保护起来。
+
+NGINX 软件是专门设计用做反向代理服务器的，具有上述这些附加功能。NGINX 利用事件驱动处理的方法，
+比其它传统的服务器更加高效。NGINX Plus 增加了更多反向代理的高级功能和支持，包含应用程序健康检查、特定请求路由和高级缓存等
+
+http://blog.jobbole.com/94962/
+
+\subsection{增加一个负载均衡器}
+
+增加一个负载均衡器是一个相对简单的改动，而且会大幅度地改善网站的性能和安全性。
+你可以利用负载均衡器把业务分配给一些服务器，而不是建造一台更大更强的 Web 核心服务器。
+就算应用程序编写得很烂或者扩展性很差，负载均衡器都能提升用户体验而不需要任何其它的改动。
+
+负载均衡器首先是一个反向代理服务器 —— 它接收网络流量，并把请求转交给另一个服务器。
+一个窍门就是让负载均衡器支持两台以上的应用服务器，利用一个选择算法在服务器间分配请求。
+最简单的方法就是轮询，每个新请求发送给列表中的下一台服务器。其它方法包括把请求发送给活动连接数量最少的服务器。
+NGINX Plus 可以在同一台服务器上维持一个给定的用户会话，这个功能被称为会话持久性。
+
+负载均衡器可以极大地改善性能，因为它们避免让一台服务器过载，而其它服务器却处于空闲的状态。
+它们也很容易扩展 Web 服务器的能力，增加相对便宜的服务器并确保它们物尽其用。
+
+负载均衡可以运用在很多协议上，包含HTTP、HTTPS、SPDY、HTTP/2、WebSocket、FastCGI、SCGI、uwsgi、memcache，
+还有一些应用程序，包含基于 TCP 的应用和 L4 协议。分析 Web 应用使用了什么技术和性能落后在什么地方。
+
+同一台服务器或者用于负载均衡的服务器，还能处理其他任务，
+包含 SSL 终端、支持客户端使用的 HTTP/1/x 和 HTTP/2、以及缓存静态文件。
+
+NGINX 通常被用于负载均衡：想了解更多，请参考这些资料，
+一篇介绍性的文章、一篇关于配置的文章、一本电子书和相关的网络课程和相关文档。
+我们的商业版本（NGINX Plus），支持更多负载均衡的特殊功能，比如基于服务器响应时间的路由规划，
+和基于微软 NTLM 协议的负载均衡。（译者注：NTLM 是NT LAN Manager的缩写，NTLM 是 Windows NT 早期版本的标准安全协议。）
+
+\subsection{缓存静态和动态内容}
 
 
 
@@ -6941,6 +7088,125 @@ IIS 6默认运行在Network Service账户下，
 1.如果确定域名已经解析生效，但是仍然不能访问，出现Bad Request (Invalid Hostname).那么这就可能是您没有绑定该域名的原因
 2.确定端口使用的是80端口
 
+\chapter{Windows Form}
+
+\section{资源文件(Resource)}
+
+\subsection{简介}
+
+资源文件顾名思义就是存放资源的文件。资源文件在程序设计中有着自身独特的优势，
+他独立于源程序，这样资源文件就可以被多个程序使用。同时在程序设计的时候，
+有时出于安全或者其它方面因素的考虑，把重要东西存放在资源文件中，也可以达到保密、安全的效果。
+资源文件中一般存三种类型的数据：byte流（byte[]）、对象（object）和字符串（string）。
+对于一些纯文件的信息可以用string类型来保存，对于图片（Image）、图标（Icon）等用object来保存，其它的可以用byte流来保存。
+System.Resources命名空间中有大量的类和方法来处理资源文件。
+
+\subsection{资源文件的分类}
+
+资源文件可以分为两类，一类是以.resx为后缀名的文件，一类是以.resources为后缀名的文件。
+二者的区别在于：
+
+1.resx虽然是以resx结尾的文件，但是它却是XML格式的文件，你可以用记事本等工具直接打开它修改里面的东西；
+而resources是二进制的文件，相对来说安全性更好一些。
+
+2.resources作为内嵌资源，在指定路径正确的前提下，
+可以在程序中直接引用；而resx虽然也是内嵌资源，但它却是要依附于.CS文件存在的。
+也就是说它是作为winform窗体的一个描述性资源存在的，要想在程序中直接使用它，
+在解决方案中必须有与它同名（只是名字相同，后缀名不同）的.CS文件存在.
+
+3.可以利用CSC命令把resx文件转换成resources文件。
+RESGEN.EXE LitwareStrings.resx LitwareStrings.resources.
+注意变量环境为framework1.1。
+
+\subsection{利用资源文件来做多国语言版本}
+
+如何使用VS的IDE来制作多国语言版本。每一个Form1.cs文件都有一或多个相应的resx文件作为附属资源。
+他们的命名规则为Form1.cs的资源文件为Form1.resx，Form1.zh-CHS.resx，Form1.zh-CHT.resx等，
+其中Form1.resx是缺省的窗体资源文档，其它是在不同语言环境要使用的资源文档，
+其中Form1.zh-CHS.resx是中文简体系统，Form1.zh-CHT.resx是中文繁体系统。
+关于命名可不是随便起的，可以参见msdn中关于不同地区的命名规则。
+
+\subsection{MouseDown事件后无法触发MouseDoubleClick}
+
+.NET控件的单双击事件的触发过程，就是先触发单击过程，再触发双击过程
+这个是.NET已有控件的固定机制，这个无法改变。
+事件引发的顺序:
+MouseDown 事件。
+Click 事件。
+MouseClick 事件。
+MouseUp 事件。
+MouseDown 事件。
+DoubleClick 事件。
+MouseDoubleClick 事件。
+MouseUp 事件。
+
+\subsection{指定DllImport文件目录}
+
+引用的dll都放在根目录下，随着项目的日益增大，根目录下充满了各种各样的dll，非常的不美观。
+如果能够把dll按照想要的目录来存放，那么系统就美观多了，
+有时需要引用Win32的Native dll，无法通过定义私有目录的方式定义dll，
+此时可以通过指定程序的环境变量的方式定义dll的搜索目录，
+添加环境变量的代码如下片段所示。
+
+\begin{lstlisting}[language={[Sharp]C}]
+public static void AddEnvironmentPaths(IEnumerable<string> paths)
+{
+	var path = new[] { Environment.GetEnvironmentVariable("PATH") ?? string.Empty };
+	var newPath = string.Join(Path.PathSeparator.ToString(), path.Concat(paths));
+	Environment.SetEnvironmentVariable("PATH", newPath);
+}
+\end{lstlisting}
+
+这样添加环境变量对系统的环境变量没有影响。
+
+\section{常见问题}
+
+\subsection{关于嵌入互操作类型（Embed Interop Types）}
+
+在项目开发中引用了一个dll,编译器显示警告如下:
+
+\begin{lstlisting}
+由于存在对由程序集“AxInterop.videocx3Lib.dll”创建的程序集的间接引用，因此创建了对嵌入的互操作程序集“Interop.videocx3Lib.dll”的引用。请考虑更改其中一个程序集的“嵌入互操作类型”属性。
+\end{lstlisting}
+
+当按照提示更改AxInterop.videocx3Lib.dll的嵌入互操作类型后出现错误：
+
+\begin{lstlisting}
+无法嵌入来自程序集“AxInterop.videocx3Lib.dll”的互操作类型，因为它缺少“ImportedFromTypeLibAttribute”特性或“PrimaryInteropAssemblyAttribute”特性
+\end{lstlisting}
+
+排查发现此程序集和另一个ActiveX组件存在冲突，
+更改ActiveX组件的嵌入互操作类型后问题得以解决。
+使用 COM 互操作程序集，而不要求该程序集在运行时必须存在。
+目的是减轻将 COM 互操作程序集与您的应用程序一起部署的负担。
+"嵌入互操作类型"中的嵌入就是引进、导入的意思，
+类似于c\#中using，c中include，Java的Import的作用，目的是告诉编译器是否要把互操作类型引入。
+"互操作类型"实际是指一系列Com组件的程序集，是公共运行库中库文件，类似于编译好的类，接口等。
+"嵌入互操作类型"设定为true，实际上就是不引入互操作集（编译时候放弃Com程序集），仅编译用户代码的程序集。
+而设定为false的话，实际就是需要从互操作程序集中获取 COM 类型的类型信息。
+当 COM 互操作在最初版本的 .NET Framework 中引入时，就确立了主互操作程序集 (PIA) 的概念。
+引入此概念，是为了解决在组件之间共享 COM 对象的难题。例如：如果您有一些不同的互操作程序集，
+分别定义了一个 Excel Worksheet，则我们无法在组件之间共享这些 Worksheet，因为它们具有不同的 .NET 类型。
+PIA 通过只存在一次而解决了这个难题：所有客户端都使用它，因此 .NET 类型始终是匹配的。
+尽管 PIA 在理论上是个好主意，但在实际部署中却被证明是个大麻烦，因为它只有一份，而有多个应用程序可能会尝试安装或卸载它。
+而由于 PIA 通常很大，事情更复杂了。Office 在默认 Office 安装方式中并未部署它们，
+用户只需通过使用 TLBIMP 来创建自己的互操作程序集，即可轻松绕过这一个程序集系统。
+因此，现在为了扭转这种局面，发生了两件事：
+对于两个结构相同且共享相同识别特征（名称、GUID等）的COM互操作类型，运行时能够聪明地将其看作同一个 .NET 类型。
+C\#编译器利用这一点的方式是在编译时直接在您自己的程序集中重现互操作类型，因此不再要求在运行时存在该互操作程序集。
+通过将引用上的“嵌入式互操作类型”属性设置为 true，告诉编译器为您将互操作类型嵌入到 Visual Studio 中。
+由于C\#团队希望这种方法成为引用COM程序集的首选方法，因此在默认情况下，
+Visual Studio会将添加到C\#项目中的任何新互操作引用的此属性设置为True(这里不准确，经过测试添加的dll嵌入互操作类型的值为False)。
+Beginning with the .NET Framework 4, the common language runtime supports embedding type 
+information for COM types directly into managed assemblies, 
+instead of requiring the managed assemblies to obtain type information for COM types from interop assemblies.  
+Because the embedded type information includes only the types and members that are actually used by a managed assembly, 
+two managed assemblies might have very different views of the same COM type.  
+Each managed assembly has a different Type object to represent its view of the COM type.  
+The common language runtime supports type equivalence between these different views for interfaces,
+ structures, enumerations, and delegates.  
+
+\subsection{Class not registered (Exception from HRESULT: 0x80040154 (REGDB\_E\_CLASSNOTREG))}
 
 \chapter{ASP.NET MVC(Apache License 2.0)}
 
@@ -9207,6 +9473,9 @@ at 20:00 /every:M,T,W,Th,F,S,Su shutdown -f -s -t 60
 #23:44:00定时运行脚本提交代码
 schtasks /create /tn "Code Commit" /tr G:\CommitCode.bat /sc daily /st 23:44:00 /ed 2100/12/31
 
+#每隔一分钟运行同步脚本，注意脚本的路径文件夹名称最好不要有空格，可能导致任务无法启动
+schtasks /create /sc minute /mo 1 /tn "Sync log" /tr "D:\AutoSync.bat"
+
 #定时提醒提交代码
 schtasks /create /tn CodeCommit /sc daily /st 09:12:00 /tr "mshta vbscript:msgbox(\"记得提交代码！\",64,\"定时提醒\")(window.close)"
 
@@ -9514,6 +9783,23 @@ ToBase64String方法会将这个数组分成2个数组，
 
 \subsection{XSS漏洞}
 
+XSS又称CSS，全称Cross SiteScript，跨站脚本攻击，
+是Web程序中常见的漏洞，XSS属于被动式且用于客户端的攻击方式，
+所以容易被忽略其危害性。其原理是攻击者向有XSS漏洞的网站中输入(传入)恶意的HTML代码，
+当其它用户浏览该网站时，这段HTML代码会自动执行，
+从而达到攻击的目的。如，盗取用户Cookie、破坏页面结构、重定向到其它网站等。
+
+如何预防呢？原则：　不相信客户输入的数据
+注意:  攻击代码不一定在<script></script>中
+
+\begin{itemize}
+\item{将重要的cookie标记为http only,这样的话Javascript中的document.cookie语句就不能获取到cookie了}
+\item{只允许用户输入我们期望的数据。 例如：　年龄的textbox中，只允许用户输入数字}
+\item{而数字之外的字符都过滤掉。对数据进行Html Encode处理过滤或移除特殊的Html标签，
+例如: <script>, <iframe> , \&lt; for <, \&gt; for >, 
+\&quot for过滤JavaScript 事件的标签。例如 "onclick=", "onfocus" 等等}
+\end{itemize}
+
 \subsection{跨站请求伪造—CSRF}
 
 <img src="http://bank.example.com/withdraw?account=bob\&amount=1000000\&for=mallory">
@@ -9801,6 +10087,15 @@ Only ethernet devices can be used for raw scans on Windows, and "ppp0" is not an
 \begin{lstlisting}[language=Bash]
  -sV: Probe open ports to determine service/version info
 \end{lstlisting}
+
+
+\section{AppScan}
+
+IBM AppScan该产品是一个领先的 Web 应用安全测试工具，
+曾以 Watchfire AppScan 的名称享誉业界。Rational AppScan 可自动化 Web 应用的安全漏洞评估工作，
+能扫描和检测所有常见的 Web 应用安全漏洞，
+例如 SQL 注入（SQL-injection）、跨站点脚本攻击（cross-site scripting）、
+缓冲区溢出（buffer overflow）及最新的 Flash/Flex 应用及 Web 2.0 应用曝露等方面安全漏洞的扫描。
 
 
 \subsection{操作系统侦测（Operating System Detection）}
@@ -10498,8 +10793,7 @@ CLR中的异常是基于SEH（Structured Exception Handling）的结构化异常
 当在监视区内出错时，系统会取得当前线程的控制权处理回调函数，处理完毕后，系统释放控制权给当前线程，
 当前线程继续执行，如果未处理异常的代码段，会导致进程中止。
 
-
-\subsection{Winows SEH}
+\section{Winows SEH}
 
 SEH(Structured Exception Handling)是Windows系统提供的功能，跟开发工具无关。值得一提的是，
 VC将SEH进行了封装try catch finally，
@@ -10526,6 +10820,20 @@ TopLevelEH：顶层异常处理
 \item{交给调试器(上面的异常处理都说处理不了，就再次交给调试器)}
 \item{调用异常端口通知csrss.exe}
 \end{enumerate}
+
+\subsection{Don't ever swallow exceptions}
+
+The worst thing you can do is catch (Exception) and put an empty code block on it. Never do this.
+
+参照：http://www.codeproject.com/Articles/9538/Exception-Handling-Best-Practices-in-NET
+
+\subsection{Log Exception.ToString(); never log only Exception.Message}
+
+As we're talking about logging, don't forget that you should always log Exception.ToString(), 
+and never Exception.Message. Exception.ToString() will give you a stack trace, 
+the inner exception and the message. Often, this information is priceless and if you only log Exception.Message, 
+you'll only have something like "Object reference not set to an instance of an object".
+
 \subsection{异常列表(Exception List)}
 
 \begin{tabular}{ll}
@@ -10536,23 +10844,60 @@ TopLevelEH：顶层异常处理
 	DivideByZeroException & 表示整数十进制运算中试图除以零而引发的异常\\					
 \end{tabular}
 
-\subsection{Winform中统一异常处理}
+\subsection{Windows Form中统一异常处理}
 
 WinFrom的Application对象本身就提供了ThreadException时间来捕捉为处理的异常
 
 \begin{lstlisting}[language={[Sharp]C}]
 static void Main()
 {
-    //注册捕捉异常事件
-    Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
-    Application.EnableVisualStyles();
+    //设置应用程序处理异常方式：ThreadException处理
+    Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+    //处理UI线程异常
+    Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
+    //处理非UI线程异常
+    AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);    Application.EnableVisualStyles();
     Application.SetCompatibleTextRenderingDefault(false);
     Application.Run(new Form1());
 }
-static void Application_ThreadException(object sender,ThreadExceptionEventArgs e)
+
+static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
 {
-    Exception ex = e.Exception;
-    //做一些极其简单的记录异常信息操作
+    string str = GetExceptionMsg(e.Exception, e.ToString());
+    MessageBox.Show(str, "系统错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    //LogManager.WriteLog(str);
+}
+
+static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+{
+    string str = GetExceptionMsg(e.ExceptionObject as Exception, e.ToString());
+    MessageBox.Show(str, "系统错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    //LogManager.WriteLog(str);
+}
+
+/// <summary>
+/// 生成自定义异常消息
+/// </summary>
+/// <param name="ex">异常对象</param>
+/// <param name="backStr">备用异常消息：当ex为null时有效</param>
+/// <returns>异常字符串文本</returns>
+static string GetExceptionMsg(Exception ex,string backStr)
+{
+    StringBuilder sb = new StringBuilder();
+    sb.AppendLine("****************************异常文本****************************");
+    sb.AppendLine("【出现时间】：" + DateTime.Now.ToString());
+    if (ex != null)
+    {                
+        sb.AppendLine("【异常类型】：" + ex.GetType().Name);
+        sb.AppendLine("【异常信息】：" + ex.Message);
+        sb.AppendLine("【堆栈调用】：" + ex.StackTrace);
+    }
+    else
+    {
+        sb.AppendLine("【未处理异常】：" + backStr);
+    }
+    sb.AppendLine("***************************************************************");
+    return sb.ToString();
 }
 \end{lstlisting}
 
@@ -10583,12 +10928,28 @@ static void HandleException(Exception e)
 值得注意的是，UnhandledException提供的机制并不能阻止应用程序终止
 ，也就是说，CurrentDomain\_UnhandledException方法执行后，应用程序就会被终止。
 
+\subsection{DllNotFoundException}
 
+在.NET下通过DLLImport使用C++编写的dll组件，
+抛出DllNotFoundException，原因是由于该dll依赖于其他dll, 而另其他dll不存在。
+使用Dependency Walker\footnote{Dependency Walker is a free utility that scans any 32-bit or 64-bit Windows module (exe, dll, ocx, sys, etc.) 
+and builds a hierarchical tree diagram of all dependent modules. 
+For each module found, it lists all the functions that are exported by that module, 
+and which of those functions are actually being called by other modules. Another view displays the minimum set of required files, 
+along with detailed information about each file including a full path to the file, base address, 
+version numbers, machine type, debug information, and more.Website:http://dependencywalker.com/}工具查看dll文件的依赖如图\ref{fig:AnalyseDllDependency}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=1]{AnalyseDllDependency.jpg}
+	\caption{Dll Dependency}
+	\label{fig:AnalyseDllDependency}
+\end{figure}
 
 
 \section{静态文件自动化管理}
 
-\section{网络（Network）}
+\chapter{网络（Network）}
 
 \subsection{RAML}
 
@@ -10619,7 +10980,36 @@ request.AddHeader("auth", "value");
 IRestResponse response = client.Execute(request);
 \end{lstlisting}
 
-\section{Python}
+\section{TCP}
+
+\subsection{TCP流量控制}
+
+所谓流量控制就是让发送发送速率不要过快，让接收方来得及接收。
+利用滑动窗口机制就可以实施流量控制。
+原理这就是运用TCP报文段中的窗口大小字段来控制，
+发送方的发送窗口不可以大于接收方发回的窗口大小。
+考虑一种特殊的情况，就是接收方若没有缓存足够使用，就会发送零窗口大小的报文，
+此时发送放将发送窗口设置为0，停止发送数据。之后接收方有足够的缓存，
+发送了非零窗口大小的报文，但是这个报文在中途丢失的，那么发送方的发送窗口就一直为零导致死锁。
+
+解决这个问题，TCP为每一个连接设置一个持续计时器(persistence timer)。
+只要TCP的一方收到对方的零窗口通知，就启动该计时器，周期性的发送一个零窗口探测报文段。
+对方就在确认这个报文的时候给出现在的窗口大小（注意：TCP规定，即使设置为零窗口，
+也必须接收以下几种报文段：零窗口探测报文段、确认报文段和携带紧急数据的报文段）。
+
+\section{即时通信}
+
+\subsection{title}
+
+现客户端跟服务器之前相互发送接受消息的功能
+
+\chapter{Python}
+
+\section{Python简介}
+
+用Python可以做什么？可以做日常任务，比如自动备份你的MP3；
+可以做网站，很多著名的网站包括YouTube就是Python写的；
+可以做网络游戏的后台，很多在线游戏的后台都是Python开发的。
 
 \section{Ruby}
 
@@ -11500,7 +11890,10 @@ ilasm.exe /dll /output=E:\dll\a.dll /Resource=E:\dll\b.res E:\dll\b.il
 \end{lstlisting}
 
 dll参数表示编译成dll文件，如果不指定参数，默认编译成exe文件。
-
+除了用微软提供的dumpbin工具编辑IL之外，
+也可以使用dnSpy\footnote{源码托管地址：https://github.com/0xd4d/dnSpy}工具编辑dll.
+使用dnSpy工具打开dll之后，在面板中点击右键选择“Edit IL Instruction(编辑IL指令)”即可修改IL代码，
+修改完成后点击OK，导出dll即可。
 \section{调试(Debug)}
 
 Visual Studio在调试的过程中可以修改代码，可以拖动调试断点。
@@ -11517,6 +11910,8 @@ Visual Studio在调试的过程中可以修改代码，可以拖动调试断点�
 也就是说，当你的程序发布给客户以后，客户在使用程序的过程中，
 可能会碰到一些很难重现的错误（bug）。这时操作系统可以将出错的程序的内存保存到一个文件里面，
 然后你可以在自己的开发机上调试这个文件，找到程序错误的原因。
+
+\subsection{调试器工作原理}
 
 \subsection{符号文件(Symbol File)}
 
@@ -11620,6 +12015,23 @@ SOS.dll是Microsoft提供的一种调试扩展，全称是Son of Strike，
 而是如何使用SOS.dll来协助我们学习.NET CLR/JIT的一些知识。
 启用非托管代码调试后，不能使用Visual Studio的编辑并继续功能，这点需要注意。
 
+\paragraph{快速定位异常}如果你在代码外层显式的加上了Try-Catch异常捕获的时候，
+默认情况下，Visual Studio会直接跳到异常处理代码块，而不是出现异常的代码行。
+在调试状态下运行时，Visual Studio会将代码停在catch这一行，而不是出现错误代码的那一行。
+如果代码简单那倒无所谓，但是假想我们的代码是经过层层的函数调用，
+最外层却加了这么个Try-Catch，那么异常函数调用内抛出了异常，
+我们也很难定位到异常出错的代码（StackTrace也只能定位哪一个函数调用出错了）。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{DebugExceptionThrowSetting.png}
+	\caption{调试异常设置}
+	\label{fig:DebugExceptionThrowSetting}
+\end{figure}
+
+在CLR异常的Thrown列打上勾，那么以后遇到CLR的异常就不再是定位到用户处理代码了，
+而是直接停在抛出异常的代码上。这样可以大大方便我们调试程序的Bug 。
+
 \subsection{不能设置断点的检查步骤}
 
 当Visual Studio提示：“当前不会命中断点，还没有为该文档加载任何符号”时，
@@ -11700,6 +12112,13 @@ dumpbin.exe /headers "C:\Fosc.Dolphin.UI.exe"
 则最后才到远程的symbol server中查找。
 通过上面的查找顺序我们可以看出为什么public build和private build的PDB查找不会冲突。 
 
+\subsection{调试第三方Dll}
+
+在安装了Resharper后，在动态链接库右键点击，选择View In Assembly Explorer，
+选择生成PDB文件。
+
+
+
 \section{Visual Studio}
 
 \subsection{Shared Source Common Language Infrastructure 2.0}
@@ -11746,6 +12165,43 @@ VS查找源文件的流程是这样的：
 \subsection{低版本打开高版本工程}
 
 在Visual Studio中打开高版本Visual Studio新建的工程。
+
+\subsection{使用后期生成事件}
+
+在做插件开发的过程中需要将插件生成的dll拷贝到项目的主目录，
+每次生成都拷贝相当麻烦，使用生成后事件在插件项目成功生成后自动将插件dll拷贝到主项目的Plugin文件夹中。
+命令为：
+
+\begin{lstlisting}[language=Bash]
+#\$(ProjectDir)的目录示例为当前项目的根目录
+#如D:/OneDrive/SourceCode/ZWLBS/Client/Source/2.0/MVSP.Client
+xcopy /r /y $(ProjectDir)bin\Debug\MVSP.Client.dll $(ProjectDir)..\Mangroves\plugins
+\end{lstlisting}
+
+r参数表示覆盖只读文件，y参数表示取消提示以确认要覆盖现有目标文件。
+在项目属性->生成事件->编辑后期生成事件的宏选项中，
+可以看到宏脚本常用的变量符，
+脚本中可能用到的环境变量如图\ref{fig:VisulStudioMicroVariable}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{VisulStudioMicroVariable.jpg}
+	\caption{Visual Studio中查看宏变量}
+	\label{fig:VisulStudioMicroVariable}
+\end{figure}
+
+\subsection{解决方案文件夹}
+
+正在处理包含许多项目的解决方案，则可以使用解决方案文件夹将相关的项目组织成组，然后对这些项目组执行操作。
+有关解决方案文件夹的信息（包括它们包含的项目和解决方案项）存储在解决方案文件(.sln)中，
+添加解决方案文件夹后的项目如图\ref{fig:SolutionFolder}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{SolutionFolder.jpg}
+	\caption{解决方案文件夹}
+	\label{fig:SolutionFolder}
+\end{figure}
 
 \section{发布(Publish)}
 
@@ -11801,6 +12257,10 @@ RR.Web.Activity直接引用lib文件夹中的RR.DataCommon.dll而非直接引用
 自动编译时会动态生成bin、obj对应的文件。
 When you deploy, it doesn't care what files are in your BIN folder. 
 It cares about what files your CSPROJ project file specifies as part of the project deployment. 
+发布的时候对于某些资源文件需要选择复制到输出目录，
+这样发布之后会包含在最终的发布文件夹里面，
+否则在发布后的目录里会缺少某些必要文件，
+导致程序运行失败。
 
 \subsection{Visual Studio中采用FTP发布}
 
@@ -12419,6 +12879,44 @@ All方法则确定某一集合中是否所有的元素都满足某一特定条�
 var containsAreadyGone = areadyGoneModel.Any(areadyGome => areadyGome.played == 1 && areadyGome.collectionStatus == 1);
 \end{lstlisting}
 
+\section{异步(Async)}
+
+\subsection{使用IAsyncResult对象的异步操作}
+
+异步委托提供以异步方式调用同步方法的能力。当同步调用一个委托时，“Invoke”方法直接对当前线程调用目标方法。
+如果编译器支持异步委托，则它将生成“Invoke”方法以及“BeginInvoke”和“EndInvoke”方法。如果调用“BeginInvoke”方法，
+则公共语言运行库 (CLR) 将对请求进行排队并立即返回到调用方。将对来自线程池的线程调用该目标方法。
+提交请求的原始线程自由地继续与目标方法并行执行，该目标方法是对线程池线程运行的。
+如果在对“BeginInvoke”方法的调用中指定了回调方法，则当目标方法返回时将调用该回调方法。
+在回调方法中，“EndInvoke”方法获取返回值和所有输入/输出参数。如果在调用“BeginInvoke”时未指定任何回调方法，
+则可以从调用“BeginInvoke”的线程中调用“EndInvoke”。
+
+当我们直接调用委托时，实际上是调用了Invoke()方法，它会中断调用它的客户端，
+然后在客户端线程上执行所有订阅者的方法（客户端无法继续执行后面代码），最后将控制权返回客户端。
+注意到BeginInvoke()、EndInvoke()方法，在.Net中，异步执行的方法通常都会配对出现，
+并且以Begin和End作为方法的开头（最常见的可能就是Stream类的BeginRead()和EndRead()方法了）。
+它们用于方法的异步执行，即是在调用BeginInvoke()之后，客户端从线程池中抓取一个闲置线程，
+然后交由这个线程去执行订阅者的方法，而客户端线程则可以继续执行下面的代码。
+
+\section{多线程}
+
+\subsection{lock}
+
+lock 关键字可以用来确保代码块完成运行，而不会被其他线程中断。它可以把一段代码定义为互斥段（critical section），
+互斥段在一个时刻内只允许一个线程进入执行，而其他线程必须等待。这是通过在代码块运行期间为给定对象获取互斥锁来实现的。
+
+\section{Windows 32接口编程}
+
+\subsection{DllImport}
+
+DllImport会按照顺序自动去寻找的地方：1、exe所在目录 2、System32目录 3、环境变量目录所以只需要你把引用的DLL拷贝到这三个目录下就可以不用写路径。
+
+\section{常见问题}
+
+\paragraph{不是有效的Win32应用程序}查看程序的架构是否一样，是统一的x86还是x64。
+一般情况下都是由于架构不一致导致的此种问题。
+
+\paragraph{没有注册类 (异常来自 HRESULT:0x80040154 (REGDB\_E\_CLASSNOTREG))}将项目改为x86平台。
 
 \chapter{基础引擎(Fundation Engine)}
 
@@ -12590,6 +13088,344 @@ react-native init MyProject
 react-native run-android
 \end{lstlisting}
 
+\chapter{Windows SDK}
+
+大致说来windows编程有两种方法： 1.windwos c方式（SDK）， 2.c++方式:
+即对SDK函数进行包装，如VC的MFC,BCB的OWL等，如果要深入 下去，还是要熟悉SDK。
+
+两种方法有哪些区别呢：SDK编程就是直接调用windows的API进行编程，
+但是有上千个API组成(win95的API有两千多个)，这种数目太大了，
+对于编程显然不利。而MFC把这些API封闭起来，共有一百多个类组成。
+一般只需20多个windows类和另外20多个通用的非windows类就可"干活"了，
+这一改变无疑是有很大好处的。尽管MFC如此方便，但是要学VC，
+直接去学MFC却是不明智的选择。只有在熟悉了MFC的运行机制的情况下，
+才有可能深入下去。那些如多少天精通什么什么的书籍其实讲的全是些如怎么使用VC这种工具的话题,
+学来学去学会了怎么会使用VC这种工具，而不能深入MFC编程。
+象VB这类工具就更令人感觉到太闷了，不过各有各的好处。
+
+MFC虽然提高了程序员编程的效率，但是也失去了SDK编程的灵活性
+在Windows平台下，最常见最流行的编程就是MFC编程了，
+在网上可以搜索出大把的MFC编程相关的文章，今天我们来讨论另外一种windows下的编程模式，
+即Windows SDK编程。这种编程具有更加灵活和强大的控制，
+能实现一些MFC不易实现甚至难以实现的功能。
+
+其实Windows的三大模块就是以DLL的形式提供的（Kernel32.dll，User32.dll，GDI32.dll），
+里面就含有了API函数的执行代码。为了使用DLL中的API函数，我们必须要有API函数的声明（.H）和其导入库（.LIB），
+函数的原型声明不难理解，那么导入库又是做什么用的呢？我们暂时先这样理解：导入库是为了在DLL中找到API的入口点而使用的。
+所以，为了使用API函数，我们就要有跟API所对应的.H和.LIB文件，
+而SDK正是提供了一整套开发Windows应用程序所需的相关文件、范例和工具的"工具包"。到此为止，我们才真正的解释清楚了SDK的含义。
+由于SDK包含了使用API的必需资料，所以人们也常把仅使用API来编写Windows应用程序的开发方式叫做"SDK编程"。
+而API和SDK是开发Windows应用程序所必需的东西，所以其它编程框架和类库都是建立在它们之上的，
+比如VCL和MFC，虽然他们比起"SDK编程"来有着更高的抽象度，但这丝毫不妨碍它们在需要的时候随时直接调用API函数。
+
+
+\chapter{SOA}
+
+\section{SOA简介}
+
+SOA(Service-Oriented Architecture)，即面向服务的架构，
+这是最近一两年出现在各种技术期刊上最多的词汇了。
+现在有很多架构设计师和设计开发人员简单的把SOA和Web Services技术等同起来，
+认为SOA就是Web Service的一种实现。本质上来说，SOA体现的是一种新的系统架构，
+SOA的出现，将为整个企业级软件架构设计带来巨大的影响。
+
+基于以上图示．SOA具有以下五个特征：
+
+\begin{itemize}
+\item{\textbf{可重用}}一个服务创建后能用于多个应用和业务流程。
+\item{\textbf{松耦合}}服务请求者到服务提供者的绑定与服务之间应该是松耦合的。
+因此，服务请求者不需要知道服务提供者实现的技术细节，例如程序语言、底层平台等等。
+\item{\textbf{明确定义的接口}}服务交互必须是明确定义的。
+Web服务描述语言（Web Services Description Language，WSDL）
+是用于描述服务请求者所要求的绑定到服务提供者的细节。WSDL不包括服务实现的任何技术细节。
+服务请求者不知道也不关心服务究竟是由哪种程序设计语言编写的。
+\item{\textbf{无状态的服务设计}}服务应该是独立的、自包含的请求，
+在实现时它不需要获取从一个请求到另一个请求的信息或状态。
+服务不应该依赖于其他服务的上下文和状态。当产生依赖时，它们可以定义成通用业务流程、函数和数据模型。
+\item{\textbf{基于开放标准}}当前SOA的实现形式是Web服务，
+基于的是公开的W3C及其他公认标准．
+采用第一代Web服务定义的SOAP、WSDL和UDDI以及第二代Web服务定义的WS-*来实现SOA。
+\end{itemize}
+
+\section{微服务(Microservices)}
+
+\subsection{概念}
+
+微服务是个新概念，但它没有一个明确的定义，各家对微服务的描述不尽相同，
+本人更倾向于用一些架构原理来描述它，因为架构原理是相对抽象和稳定的，
+而具体实现可以千差万别。微服务原理和软件工程，面向对象设计中的基本原理相通，体现如下：
+
+\textbf{单一职责（Single Responsibility）}，一个服务应当承担尽可能单一的职责，
+服务应基于有界的上下文（bounded context，通常是边界清晰的业务领域）构建，
+服务理想应当只有一个变更的理由（类似Robert C. Martin讲的：
+A class should have only one reason to change），
+当一个服务承担过多职责，就会产生各种耦合性问题，需要进一步拆分使其尽可能职责单一化。
+
+\textbf{关注分离（Separation of Concerns）}，跨横切面逻辑，例如日志分析、监控、限流、安全等等，
+尽可能与具体的业务逻辑相互分离，让开发人员能专注于业务逻辑的开发，
+减轻他们的思考负担，这个也是有界上下文（bounded context）的一个体现。
+
+\textbf{模块化（Modularity）和分而治之（Divide \& Conquer）}，这个是解决复杂性问题的一般性方法，
+将大问题（如单块架构）大而化小（模块化和微服务化），然后分而治之。
+
+微服务架构同时还是一个组织原理的体现，这个原理就是康威定律（Conway’s Law），
+Melvin Conway在1968年指出：“Any organization that design a 
+system(defined broadly) will produce a design whose structure is a copy of the organization’s communication structure”，翻译成中文就是：
+设计系统的组织，其产生的设计和架构等价于组织间的沟通结构。
+Dan North对此还补充说：“Those system then constrain the options for organization change”，
+简言之，这些系统在建成之后反过来还会约束和限制组织的改变。
+
+\subsection{用户体验适配层（Backend For Frontend）}
+
+随着无线技术的发展和各种智能设备的兴起，
+互联网应用已经从单一Web浏览器时代演进到以API驱动的无线优先(Mobile First)和
+面向全渠道体验(omni-channel experience oriented)的时代。
+
+
+
+\chapter{Java}
+
+\section{JAX-WS(Java™ API for XML Web Services)}
+
+通过使用 Java™ API for XML Web Services (JAX-WS) 技术设计和开发 Web 服务，
+可以带来很多好处，能简化 Web 服务的开发和部署，并能加速 Web 服务的开发。
+
+\section{MyEclipse}
+
+\subsection{常用操作}
+
+
+
+\section{Maven}
+
+Maven is a software tool that helps you manage Java projects, 
+and automate application builds. IntelliJ IDEA fully integrates with Maven version 2.2 and later versions, 
+allowing you to create or import Maven modules, download artifacts and perform the goals 
+of the build lifecycle and plugins.
+
+\section{Apache MINA(Multipurpose Infrastructure for Network Applications)}
+
+mina 2.0在合理的负载下1000个并发，最高能达到5076.81rps(Requests Per Second)。
+Apache MINA(Multipurpose Infrastructure for Network Applications) 是 Apache 组织一个较新的项目，
+它为开发高性能和高可用性的网络应用程序提供了非常便利的框架。
+当前发行的 MINA 版本支持基于 Java NIO 技术的 TCP/UDP 应用程序开发、串口通讯程序(只在最新的预览版中提供)，
+MINA 所支持的功能也在进一步的扩展中。
+新项目里的web service需要高并发服务能力，tomcat目前最多支持到200个并发。
+Apache MINA is a network application framework 
+which helps users develop high performance and high 
+scalability network applications easily. 
+It provides an abstract event-driven asynchronous 
+API over various transports such as TCP/IP and UDP/IP via Java NIO.
+
+目前主流网站都是由开源软件构建的。使用 Nginx 做为 Web 服务器，
+Tomcat/Resin 做 App 容器，Memcached 做通用 Cache，MySQL 做数据库，
+使用 Linux 操作系统。网站系统刚上线初期，用户数并不多，所有的模块都整合一个系统中，
+所有业务由一个应用提供，此时采取将全部的逻辑都放在一个应用的方式利于系统的维护和管理。
+但是，随着网站用户的不断增加，系统的访问压力越来越大，为了满足越来越多用户的需求，
+原有的系统需要增加新的功能进来，随着系统功能模块的增多，系统就会变得越来越难以维护和扩展，
+同时系统伸缩性和可用性也会受到影响。例如一个网站初期只有用户服务功能，随着网站发展，
+可能会需要用户信息中心、充值支付中心、商户服务中心等越来越多的子系统，
+如果把这些子系统都整合在原有的系统中，整个网站将会变得非常复杂，并且难以维护。
+另外，由于所有子系统都整合在一起，只要有一个模块出问题，那么所有的功能都会受影响，
+造成非常严重的后果。所以系统发展遇到的瓶颈就是随着系统的发展，如果所有模块都整合在一起，
+系统的可伸缩性和扩展性将受到影响。遇到以上瓶颈该如何解决呢？
+明智的办法就是系统拆分，将系统根据一定的标准，比如业务相关性等拆分为不同的子系统，
+不同的子系统负责不同的业务功。拆分完成后，每个子系统单独进行扩展和维护，
+不会影响其他子系统，从而大大提高整个网站系统的扩展性和可维护性，
+同时系统的水平伸缩性也大大提升了。对于压力比较大的子系统可以再进行扩展而不影响其他子系统，
+如果某个子系统出现问题也不会影响其他服务。从而增强了整个网站系统的健壮性，更有利于保障核心业务。
+因此一个大型的互联网应用，肯定是要经过系统拆分的，因为只有进行拆分，
+系统的扩展性、维护性、伸缩性、可用性才会变得更好。但是拆分也会给系统带来问题，
+就是子系统之间如何通信。本文介绍 MINA2 就是用来充当消息中间件解决各子系统之间的通信问题
+
+\section{Apache Kafka}
+
+使用kafka的理由：
+1.分布式，高吞吐量，速度快（kafka是直接通过磁盘存储，线性读写，速度快：
+避免了数据在JVM内存和系统内存之间的复制，减少耗性能的对象创建和垃圾回收）
+2.同时支持实时和离线两种解决方案（相信很多项目都有类似的需求，
+这也是Linkedin的官方架构，我们是一部分数据通过storm做实时计算处理，一部分到hadoop做离线分析）。
+3.open source (open source 谁不喜欢呢)
+4.源码由scala编写，可以运行在JVM上（笔者对scala很有好感，
+函数式语言一直都挺帅的，spark也是由scala写的，看来以后有空得刷刷scala）
+
+\subsection{Apache Kafka安装}
+
+1、关闭SELINUX
+
+\begin{lstlisting}[language=Bash]
+vi /etc/selinux/config
+
+#SELINUX=enforcing \#注释掉
+
+#SELINUXTYPE=targeted \#注释掉
+
+SELINUX=disabled #增加
+
+:wq! #保存退出
+
+setenforce 0 #使配置立即生效
+\end{lstlisting}
+
+\subsection{安装JDK}
+
+kafka运行需要JDK支持
+
+下载JDK，链接为：http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html。
+
+\begin{lstlisting}[language=Bash]
+#启动MySQL守护进程
+service start mysqld
+
+
+#卸载MySQL
+
+\end{lstlisting}
+
+mysql.server脚本通过调用mysqld\_safe启动服务器，
+该脚本可以通过参数start和stop指定启动还是关闭。
+mysql.server脚本在MySQL安装目录下的share/mysql目录中，如果是采用源码安装的MySQL，
+则可以在support-files目录里找到。
+
+\begin{lstlisting}[language=Bash]
+#查找名为support-files的文件夹
+find / -type d -name support-files
+\end{lstlisting}
+
+\chapter{Linux}
+
+\section{基础}
+
+\subsection{常用命令}
+
+输入"cat /etc/issue", 显示的是发行版本信息。
+解压tar.gz文件：
+
+\begin{lstlisting}[language=Bash]
+tar -zxvf 压缩文件名.tar.gz
+\end{lstlisting}
+
+x代表从文件中extract，
+f是文件(file)的意思，
+z参数代表gzip，
+filter the archive through gzip，
+v代表verbosse，即输出详细的信息。
+
+\subsection{网络}
+
+\paragraph{自动获取IP}
+虚拟机使用桥接模式，相当于连接到物理机的网络里，物理机网络有DHCP服务器自动分配IP地址。
+
+\begin{lstlisting}[language=Bash]
+#自动获取ip地址命令
+dhclient 
+#查询系统里网卡信息，ip地址、MAC地址
+ifconfig 
+\end{lstlisting}
+
+\paragraph{手动设置ip地址}
+
+如果虚拟机不能自动获取IP，只能手动配置，配置方法如下：
+输入命令
+
+\begin{lstlisting}[language=Bash]
+#编辑网卡的配置文件
+vi /etc/sysconfig/network-scripts/ifcfg-eth0
+\end{lstlisting}
+
+输入上述命令后回车，打开配置文件，使用方向键移动光标到最后一行，按字母键“O”，进入编辑模式，输入以下内容：
+IPADDR=192.168.4.10
+NETMASK=255.255.255.0
+GATEWAY=192.168.4.1
+另外光标移动到”ONBOOT=no”这一行，更改为ONBOOT=yes
+“BOOTPROTO=dhcp”，更改为BOOTPROTO=none，
+配置完毕之后如下代码片段所示。
+
+\begin{lstlisting}
+DEVICE=eth0
+HWADDR=00:0C:29:A5:78:61
+TYPE=Ethernet
+UUID=282eb4cc-6657-4a54-98e3-29605f5998b1
+ONBOOT=yes
+NM_CONTROLLED=yes
+BOOTPROTO=none
+IPADDR=192.168.24.85
+NETMASK=255.255.255.0
+GATEWAY=192.168.24.255
+\end{lstlisting}
+
+完成后，按一下键盘左上角ESC键，输入:wq 在屏幕的左下方可以看到，输入回车保存配置文件。
+之后需要重启一下网络服务，命令为
+
+\begin{lstlisting}[language=Bash]
+service network restart
+\end{lstlisting}
+
+网络重启后，eth0的ip就生效了，使用如下命令查看
+
+\begin{lstlisting}[language=Bash]
+ifconfig eth0
+\end{lstlisting}
+ 
+接下来检测配置的IP是否可以ping通，在物理机使用快捷键WINDOWS+R打开运行框，输入命令cmd，
+输入ping 192.168.24.85进行检测，ping通说明IP配置正确。
+
+\paragraph{iptables(防火墙)配置}iptables是一个强大的Linux防火墙，使用频率极高。
+
+\begin{lstlisting}[language=Bash]
+#查看配置情况，可显示相应的端口
+iptables -L -n
+#记得保存
+/etc/init.d/iptables save
+#在CentOS上执行如下命令，需要加上路径
+/etc/rc.d/init.d/iptables save
+#添加input记录
+/sbin/iptables -I INPUT -p tcp --dport 8080 -j ACCEPT
+#添加output记录
+iptables -A OUTPUT -p tcp –sport 22 -j ACCEPT
+\end{lstlisting}
+
+
+一些软件的默认端口：
+
+ftp用到端口是 20 21
+
+ssh 端口是 22
+
+telnet端口是 23
+
+rsync端口是 873
+
+svn 端口3690
+
+pop3端口110
+
+smtp端口25
+
+dns端口53
+
+mysql端口3306
+
+nfs端口111
+
+\subsection{mysql}
+
+\begin{lstlisting}[language=Bash]
+mysql -uroot -hlocalhost -p
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('newpass');
+\end{lstlisting}
+
+\section{Angile}
+
+\subsection{Scrum}
+
+\paragraph{产品订单(product backlog)}是整个专案的概要文档。产品订单包括所有所需特性的粗略的描述。
+产品订单是关于将要生产什么样的产品。产品订单是开放的，每个人都可以编辑。产品订单包括粗略的估算，通常以天为单位。
+估算将帮助产品负责人衡量时程表和优先级（例如，如果"增加拼写检查"特性的估计需要花3天或3个月，将影响产品负责人对该特性的渴望）。
+
+\paragraph{冲刺订单(sprint backlog)}是大大细化了的文档，包含团队如何实现下一个冲刺的需求的信息。
+任务被分解为以小时为单位，没有任务可以超过16个小时。如果一个任务超过16个小时，那么它就应该被进一步分解。
+冲刺订单上的任务不会被分派，而是由团队成员签名认领他们喜爱的任务。
 
 
 \clearpage
@@ -12618,9 +13454,17 @@ react-native run-android
 \mbox{}
 \clearpage
 
-\chapter{日志监控组件}
+\chapter{日志消息组件}
 
 \clearpage
+
+\section{Apache Kafka}
+
+Apache Kafka is an open-source message broker project 
+developed by the Apache Software Foundation written in Scala. 
+The project aims to provide a unified, high-throughput, 
+low-latency platform for handling real-time data feeds. 
+The design is heavily influenced by transaction logs.
 
 \section{log4net}
 
@@ -12806,9 +13650,12 @@ CREATE TABLE [dbo].[Log](
 此种方式适合基于Client/Server架构的项目。
 
 \begin{lstlisting}[language={[Sharp]C}]
-string assemblyFilePath = Assembly.GetExecutingAssembly().Location;
-string assemblyDirPath = Path.GetDirectoryName(assemblyFilePath);
-string configFilePath = assemblyDirPath + @"\config\log4net.config";
+/*
+	Initial log4net in Windows Form
+*/
+var assemblyFilePath = Assembly.GetExecutingAssembly().Location;
+var assemblyDirPath = Path.GetDirectoryName(assemblyFilePath);
+var configFilePath = assemblyDirPath + @"\config\log4net.config";
 
 /*
 * Aways check if the 'configFilePath' is the correct 'log4net.config' file path.
@@ -13130,6 +13977,8 @@ Real-time log monitoring in your browser.
 初始安装时是服务器名称，将之修改为IP地址更容易记忆，
 在管理面板左侧的根目录下，配置授权选项(Configure authentication options...)，
 在Network选项卡中，修改Server Name的值为IP即可。
+SVN的缺点是没有良好的Code Review工具，
+速度比较慢(因为有许多远程操作比如Commit、Update等等。
 
 
 \subsection{svn cleanup failed–previous operation has not finished; run cleanup if it was interrupted}
@@ -13340,7 +14189,7 @@ recursively代表递归进行忽略。
 
 \subsection{SVN提交规则(SVN Commit Rule)}
 
-在开发的过程中，*.sln/*.suo/*.log等文件不需要提交到版本库中，
+在开发的过程中，*.sln/*.suo/*.log/bin/obj等文件不需要提交到版本库中，
 可以在服务器端通过pre-commit钩子(Hooks)进行阻止。
 
 \begin{lstlisting}[language=Bash]
@@ -13817,7 +14666,7 @@ publishDir是需要发布到的地址。
 \section{Jenkins}
 
 Jenkins is an open source continuous integration tool written in Java. 
-The project was forked from Hudson after a dispute with Oracle.
+The project was forked from Hudson after a dispute(辩论，争论) with Oracle.
 
 Jenkins provides continuous integration services for software development. 
 It is a server-based system running in a servlet container such as Apache Tomcat. 
@@ -13858,7 +14707,11 @@ C:\Program Files (x86)\Jenkins\jobs\Tour\workspace\trunk
 
 \paragraph{Build}
 
-接下来到“Build”这部分。点击“Add build step”按钮后，下拉框中就会出现一系列的step类型以供选择，
+在Windows平台上的构建主要是使用MSBuild，安装好.NET Framework后MSBuild的路径为：
+
+\begin{lstlisting}
+C:\Windows\Microsoft.NET\Framework\v4.0.30319
+\end{lstlisting}接下来到“Build”这部分。点击“Add build step”按钮后，下拉框中就会出现一系列的step类型以供选择，
 其中便包括“Build a Visual Studio project or solution using MSBuild”，
 如果你没看到这个选项，就说明MSBuild插件没有正确安装。
 MSBuild Build File是项目文件或者工程文件的名称。
@@ -13882,6 +14735,13 @@ MSBuild Build File是项目文件或者工程文件的名称。
 \end{itemize}
 
 保存后，点击左侧Build Now开始测试一次编译。
+编译默认是要输出PDB文件，如果需要MSBuild不输出PDB文件，
+则在后面添加参数即可，如下代码片段所示：
+
+\begin{lstlisting}[language=Bash]
+MSBuild.exe YourProject.csproj /p:DebugSymbols=false /p:DebugType=None
+\end{lstlisting}
+
 指定项目文件，制定MSBuild Build File，指定项目文件的格式如下所示：
 
 \begin{lstlisting}
@@ -13975,10 +14835,17 @@ VisualStudioVersion=11.0 表示VS2012。
 以163邮箱配置为例，在Jenkins全局配置的邮件通知模块下，
 配置SMTP服务器为：smtp.163.com，勾选使用SMTP认证，
 认证的用户名填写163邮箱地址：dolphinjiang123@163.com。
-注意密码不是登录邮箱的密码，而是在163邮箱开通SMTP服务时要求输入的密码。
+注意密码不是登录邮箱的密码，而是在163邮箱开通SMTP服务时客户端的授权码，
+163客户端授权码可以重置。
 全局变量配置完毕后，在单个项目的构建配置增加构建后操作，
 添加构建失败需要通知的人员，
 多个邮箱地址以空格键相隔。管理员邮箱的名字需要和认证的邮箱的名字一致。
+
+\subsection{自动打包}
+
+
+
+
 
 \section{Travis CI}
 
@@ -14015,6 +14882,97 @@ pause
 
 新建环境变量GRADLE\_HOME，值为Gradle的解压路径；
 
+\section{JIRA}
+
+JIRA是一个优秀的问题(or bugs,task,improvement,new feature )跟踪及管理软件。
+它由Atlassian开发，采用J2EE技术.它正被广泛的开源软件组织，
+以及全球著名的软件公司使用，它堪称是J2EE的Bugzilla。
+
+\subsection{JIRA部署}
+
+\paragraph{卸载安装包}如果有必要，卸载原来的JDK。
+
+\begin{lstlisting}[language=Bash]
+whereis java
+which java （java执行路径）
+echo $JAVA_HOME
+echo $PATH
+
+#查看jdk的信息
+rpm -qa|grep java
+\end{lstlisting}
+
+\paragraph{JDK包安装}安装JDK的RPM包。
+
+\begin{lstlisting}[language=Bash]
+#添加执行权限
+chmod +x jdk-8u91-linux-64.rpm
+#安装
+rpm -ivh jdk-7u25-linux-x64.rpm
+\end{lstlisting}
+
+配置环境变量
+
+在etc/profile文件下添加
+
+\begin{lstlisting}[language=Bash]
+export JAVA_HOME=/usr/java/jdk1.8.0_91
+export CLASSPATH=/usr/java/jdk1.8.0_91/lib
+export PATH=$JAVA_HOME/bin:$PATH
+\end{lstlisting}
+
+命令source /etc/profile使配置文件立即生效
+
+\paragraph{MySQL安装}MySQL的安装配置如下代码所示。
+
+\begin{lstlisting}[language=Bash]
+#yum安装mysql
+yum -y install mysql-server
+#设置开机启动
+chkconfig mysqld on
+
+c）启动MySql服务
+#  service mysqld start
+
+d）设置MySQL的root用户设置密码
+#  mysql -u root
+mysql> select user,host,password from mysql.user;
+
+e）设置root用户密码
+mysql> set password for root@localhost=password('root');
+
+f）删除密码为空的账户（可选）
+mysql>delete from mysql.user where user=’’;
+mysql> exit
+
+g）开放远程登录权限
+
+GRANT ALLPRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+FLUSHPRIVILEGES;
+\end{lstlisting}
+
+\paragraph{创建jira相关}创建JIRA相关如下代码所示。
+
+\begin{lstlisting}[language=Bash]
+a） 创建数据库：
+CREATE DATABASEjiradb CHARACTER SET utf8 COLLATE utf8_bin;
+
+b） 创建用户
+INSERT INTOmysql.user(HOST, USER, PASSWORD) VALUES("localhost","jirauser", PASSWORD("1234"));
+
+c） 授权
+GRANT SELECT,INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX ON jiradb.* TO'jirauser'@'localhost' IDENTIFIED BY '1234';
+GRANT ALLPRIVILEGES ON *.* TO jirauser@'%' IDENTIFIED BY '1234' WITH GRANT OPTION;
+flushprivileges;
+\end{lstlisting}
+
+当在外部无法访问JIRA时需要在防火墙中将8080端口开放。
+配置MySQL连接通过bin下面的config.sh进行。
+
+
+\paragraph{汉化}
+
+\paragraph{破解}
 
 \chapter{测试调试组件}
 
@@ -14024,12 +14982,17 @@ pause
 
 WinDbg是在windows平台下，强大的用户态和内核态调试工具。
 它能够通过dmp文件轻松的定位到问题根源，可用于分析蓝屏、程序崩溃（IE崩溃）原因。
+WinDebug是微软发布的一款相当优秀的源码级(source-level)调试工具，
+可以用于Kernel模式调试和用户模式调试，还可以调试Dump文件。
+日志文件存放在以下目录：
+核心内存转储路径：C:/WINDOWS/MEMORY.DMP，
+小内存转储文件路径：C:/WINDOWS/Minidump/
 
 \subsection{基本使用}
 
 \paragraph{WinDbg设置Symbol Path}符号表是WinDbg关键的“数据库”，
 如果没有它，WinDbg无法分析出更多问题原因。
-运行WinDbg->菜单->File->Symbol File Path->设置\_NT\_SYMBOL\_PATH变量：
+运行WinDbg->菜单->File->Symbol File Path
 在弹出的框中输入
 
 \begin{lstlisting}[language=Bash]
@@ -14043,7 +15006,7 @@ cache*c:\MySymbol;srv*http://msdl.microsoft.com/download/symbols
 例如我将其安装在D:\textbackslash WINDOWS\textbackslash Symbols，
 在该框中输入“D:\textbackslash WINDOWS\textbackslash Symbols”。
 
-\paragraph{命令输出自动换行}有时键入命令后输出的内容太长，
+\paragraph{输出内容自动换行}有时键入命令后输出的内容太长，
 而又不想拖动Command窗口的左右滚动条进行查看，
 此时可以设置输出内容自动换行，当超出当前屏幕展示范围时，
 自动从下一行开始显示，如图\ref{fig:WinDbgAutoWrapWord}所示。
@@ -14096,6 +15059,11 @@ Tools->Fiddler Options->Connections下。如图所示：
 在浏览器中将代理端口设置为Fiddler相应端口值即可。
 
 \subsection{Fiddler Capture}
+
+[Fiddler] The connection to the upstream proxy/gateway failed. 
+Closing Fiddler, changing your system proxy settings, and restarting Fiddler may help. 
+Error: ConnectionRefused (0x274d). 
+System.Net.Sockets.SocketException No connection could be made because the target machine actively refused it 127.0.0.1:8787
 
 Fiddler暂时没有找到暂停抓包的选项，
 有时为了仔细分析某个特定的请求，需要停止抓包或者说是暂停抓包(过多的包干扰分析)，
@@ -14533,6 +15501,25 @@ string tempPath = Application.StartupPath + @"\temp\";
 
 \section{xUnit}
 
+\subsection{使用xUnit}
+
+注意xUnit从.NET Framework 4.5开始支持，最低版本为.NET Framework 4.5。
+安装xUnit在项目右键菜单“程序包管理器”，输入xUnit。简单的单元测试Demo如下:
+
+\begin{lstlisting}[language={[Sharp]C}]
+public class UnitTest1
+{
+	[Fact]
+	public void PassingTest()
+	{
+		Assert.Equal(4, Add(2, 2));
+	}
+}
+\end{lstlisting}
+
+有时在编写了xUnit的代码之后在单元测试管理器中依然无法看到单元测试用例，
+可安装xunit.runner.visualstudio插件，即可看到测试用例。
+
 \section{MiniProfiler}
 
 MVC MiniProfiler是Stack Overflow团队设计的一款对ASP.NET MVC的性能分析的小程序。可以对一个页面本身，
@@ -14645,12 +15632,122 @@ Meet SoapUI, the world's most complete testing tool!
 
 \clearpage
 
+\section{Linux有关工具}
+
+\subsection{Putty}
+
+\subsection{Vi}\section{GMap.NET}
+
+GMap.NET is great and Powerful, Free, cross platform, open source .NET control. 
+Enable use routing, geocoding, directions and maps from Coogle, Yahoo!, 
+Bing, OpenStreetMap, ArcGIS, Pergo, SigPac, Yendux, Mapy.cz, 
+Maps.lt, iKarte.lv, NearMap, OviMap, CloudMade, WikiMapia, 
+MapQuest in Windows Forms \& Presentation, supports caching and runs on windows mobile!
+
+http://greatmaps.wikia.com/wiki/Main\_Page
+
 \section{ildasm.exe(MSIL Disassembler)}
 
 MSIL Disassembler的路径为：
 C:/Program Files (x86)/Microsoft SDKs/Windows。
 
+\section{Source Insight(Commercial)}
 
+Source Insight™ is a project-oriented program editor and code browser, 
+with built-in analysis for C/C++, C\#, and Java programs. 
+Source Insight parses your source code and maintains its 
+own database of symbolic information dynamically while you work, 
+and presents useful contextual information to you automatically.
+
+Source Insight can display reference trees, class inheritance diagrams, 
+and call trees. Source Insight features the quickest navigation of source 
+code and source information of any programming editor.
+Source Insight 3.x does not yet support UNICODE files.
+
+\subsection{特性(Feature)}
+
+不用成功编译也能查看源代码的链接关系。
+
+\paragraph{Call Graphs and Class Tree Diagrams}
+
+The Relation Window is a Source Insight innovation that 
+shows interesting relationships between symbols. 
+It runs in the background and tracks what symbols you have selected. 
+With it, you can view class hierarchies, call trees, reference trees, and more.
+在C\#代码库中看Call Tree如图\ref{fig:FunctionTree}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{FunctionTree.jpg}
+	\caption{Call Graphs}
+	\label{fig:FunctionTree}
+\end{figure}
+
+不过class hierarchies还不知道怎么看，或许是C\#不支持吧。
+
+The beauty of the Relation Window is that you don’t have to do anything special. 
+It works in the background while you work, 
+but you can interact with it when you want to.
+
+The Relation Window can be viewed either graphically, 
+or in outline format. You can also have several Relation Windows open, 
+each showing different types of information.
+
+\section{Inno Setup}
+
+\subsection{支持中文的安装界面}
+
+在安装完毕后制作的安装包界面默认为英文，
+比如下一步是英文的Next而非中文的“下一步”。
+要支持中文需要找到中文的Chinese.isl文件，
+将之拷贝到安装目录下的Languages目录下，
+在生成安装包的脚本里指定Chinese.isl文件的位置即可，
+代码如下：
+
+\begin{lstlisting}[language=Bash]
+[Languages]
+Name: "Chinese"; MessagesFile: "compiler:\Languages\Chinese.isl"
+\end{lstlisting}
+
+\subsection{添加自定义界面}
+
+有时需要添加一个自定义界面展示简单的欢迎信息或者声明条款，
+而不是点击程序直接跳转到安装界面，创建自定义安装欢迎界面脚本如下：
+
+\begin{lstlisting}[language=Bash]
+[Code]
+procedure InitializeWizard();
+var
+	Page: TWizardPage;
+begin
+	Page := CreateCustomPage(wpWelcome, 'Custom wizard page controls', 'TButton and others');
+end;
+\end{lstlisting}
+
+\subsection{启用向导界面}
+
+默认情况下欢迎界面没有开启，
+在Setup代码块中添加如下脚本启动欢迎界面。
+
+\begin{lstlisting}[language=Bash]
+DisableWelcomePage=no
+\end{lstlisting}
+
+启动欢迎界面后效果如图\ref{fig:InnoSetupEnableWelcomePage}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{InnoSetupEnableWelcomePage.jpg}
+	\caption{Inno Setup启用欢迎界面}
+	\label{fig:InnoSetupEnableWelcomePage}
+\end{figure}
+
+
+
+\subsection{自动打包.NET Framework安装程序}
+
+在开发.net客户端时候.Net Framework是个比较让人头疼的问题，比如一个WPF程序大小几百K,
+却要安装一个几十M的.Net Framework。但是也没办法.这里提供两种方式，一个是将.Net Framework打包进安装包中，一个是在线下载.Net Framework然后安装。
 
 \section{Graphviz}
 
@@ -14676,7 +15773,7 @@ including Unix/Linux, Windows, and Mac.}语言脚本描述的图形。
 
 在dot脚本里面写好图形的脚本以后，在命令行中输入以下命令生成ps文件。
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Bash]
 C:\>dot -Tps a.dot -o 1.ps
 \end{lstlisting}
 
@@ -14684,24 +15781,23 @@ C:\>dot -Tps a.dot -o 1.ps
 
 dot -T[output\_filetype] [-G[option\_name]] -o [output\_filename] [input\_filename] 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Bash]
 D:\项目\hotmark\doc\Design>dot -Tjpg Sign.dot -o Sign.jpg
 \end{lstlisting}
 
 Graphviz可以改变生成图片的质量，需要生成的图形更加清晰，参数指定dpi即可，
 编译的命令格式为：
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Bash]
 D:\项目\hotmark\Image>dot -Tjpg -Gdpi=331 PhotoPrintWorkflow.dot -o ppw.jpg
 \end{lstlisting}
-
 
 \subsection{中文乱码}
 
 Graphviz默认设置下是不支持中文，如果在dot文件中直接写中文，会显示成乱码。
 解决Graphviz中文乱码的问题就是指定fontname，如下代码片段所示：
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Bash]
 digraph G{
 	size="8,8"
 	edge[fontname="FangSong"];
@@ -14748,7 +15844,7 @@ Windows系统中文字体的英文名如下所示：
 
 可以指定Node节点的指向位置。一个小的例子写法如下：
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Bash]
 digraph G{
 	size="8,8";
 	edge[fontname="FangSong"];
@@ -15309,7 +16405,16 @@ Workspace可以将Chrome中的网络资源与本地资源进行映射与同步�
 
 \section{ReSharper(Commercial)}
 
-\subsection{设置（Settings）}
+ReSharper是一个JetBrains公司出品的著名的代码生成工具，
+其能帮助Microsoft Visual Studio成为一个更佳的IDE。
+它包括一系列丰富的能大大增加C\#和Visual Basic .net开发者生产力的特征。
+使用ReSharper，你可以进行深度代码分析，智能代码协助，实时错误代码高亮显示，
+解决方案范围内代码分析，快速代码更正，一步完成代码格式化和清理，
+业界领先的自动代码重构，高级的集成单元测试方案，和强大的解决方案内导航和搜索。
+实质上，ReSharper特征可用于C\#，VB.NET，XML，ASP.NET，XAML，和构建脚本。
+ReSharper还为C\#和VB.NET提供了增强的交叉语言功能，它使开发者可以有效的控制.net混合项目。
+
+\subsection{设置(Settings)}
 
 使用Resharper 9后电脑的内存蹭蹭蹭往上涨，
 轻松超过1G，放弃使用那是不可能的了，
@@ -15319,7 +16424,7 @@ Workspace可以将Chrome中的网络资源与本地资源进行映射与同步�
 关闭其中暂时不用的特性即可，设置完毕重新启动Visual Studio 2013即可，
 可以发现内存少了500MB左右。
 
-\subsection{alt+enter}
+\subsection{快捷操作}
 
 \begin{itemize}
 \item{帮你实现某个接口或抽象基类的方法}
@@ -15328,7 +16433,7 @@ Workspace可以将Chrome中的网络资源与本地资源进行映射与同步�
 \item{为你简化当前的臃肿代码}
 \end{itemize}
 
-\subsection{ctrl+enter}
+\paragraph{Ctrl+Enter}
 
 当我们看别人的代码，或者是看自己的代码的时候，
 总是觉得代码太多，于是我们就用 region来把代码进行了封装注释，
@@ -15339,7 +16444,7 @@ Workspace可以将Chrome中的网络资源与本地资源进行映射与同步�
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[scale=0.6]{ResharperFileStructure.jpg}
-	\caption{Resharper File Struncture功能}
+	\caption{Resharper File Structure功能}
 	\label{fig:ResharperFileStructure}
 \end{figure}
 
@@ -15349,10 +16454,12 @@ Resharper这时帮上你的大忙了。用Ctrl+F11，就弹出一个像右边这
 这里面，按照你的region来显示，这样读你的代码的人也受益了。
 每个方法的参数，返回值都如UML一样列出来。
 
-\subsection{清洁代码(Clean Up Code)}
+\paragraph{清洁代码(Clean Up Code)}
 
 写了一个类之后，什么是最愉快的，就是让它顺便变干净以及变规范，
-这个时候，我们需要右键Cleanup Code（Ctrl + Alt + F）。\subsection{查看dll路径}
+这个时候，我们需要右键Cleanup Code（Ctrl + Alt + F）。
+
+\paragraph{查看dll路径}
 
 \begin{figure}[htbp]
 	\centering
@@ -15361,7 +16468,55 @@ Resharper这时帮上你的大忙了。用Ctrl+F11，就弹出一个像右边这
 	\label{fig:ExploreDllFullPath}
 \end{figure}
 
+\paragraph{快速导航到文件}有时会查看当前编辑文件在项目树中的位置，
+此时最常见的操作是用鼠标点击项目解决方案树，一层一层展开，
+最终找到当前编辑的文件在项目树中对应的位置，
+而借助Resharper的快捷键组合Shift+Alt+L(Locate)，可以一键展开项目树并定位到当前编辑的文件。
 
+\paragraph{列出最近编辑位置}
+
+我比较常用的一个特性是列出最近编辑的文件，而在一个文件当中想快速回到之前编辑的地方，
+那么用快捷键Ctrl + Shift + Comma就可以列出最近编辑位置的列表。
+
+\subsection{Navigation and Search}
+
+\paragraph{Navigate To}Navigate To is a single shortcut for all kinds of contextual navigation. 
+Navigate To lists all destinations available at the current caret position. 
+Press \textbf{Alt + \~} for quick navigation links to the declaration, 
+type declaration, base class, inheritor(s), or usage of the symbol under the caret; 
+interface implementation for an interface; function exits for a function, and more.
+
+\paragraph{Go to File Member}
+
+
+\paragraph{Go to File Member}
+
+
+https://www.jetbrains.com/resharper/features/navigation\_search.html
+
+
+\subsection{Code analysis}
+
+\paragraph{Call Tracking}In the past, attempting to track call sequences in code could end up with lots of Find Results windows and lost context. 
+To address this problem, ReSharper can visualize the entire call sequence in a single tool window. This is called Call Tracking, 
+and it enables you to view and navigate through call chains in your code.
+
+Thanks to support for events, interfaces, and closures, 
+ReSharper's Call Tracking is a substantial improvement over Visual Studio's own Call Hierarchy.
+
+To visualize a call sequence, choose ReSharper | Inspect | Outgoing Calls or ReSharper | Inspect | Incoming Calls, 
+or use the Inspect This shortcut feature.
+
+\paragraph{Navigating Between Highlighted Code Items}Each error, warning, 
+or suggestion is represented by an individual stripe on the Marker Bar. 
+Clicking the stripe navigates you directly to the line of code that contains the error or causes the warning/suggestion.
+
+You can navigate between errors, warnings and suggestions by pressing Alt+PageDown (forward) and Alt+PageUp (backward). 
+You can also navigate between just errors (skipping any warnings and suggestions) by pressing Shift+Alt+PageDown (to next error) and Shift+Alt+PageUp (to previous error). 
+A message describing the current error, warning, or suggestion is displayed in the status bar.
+
+There's also an alternative way of navigating between code issues: 
+you can find all code issues in a certain scope, and explore them in a dedicated tool window.
 
 \section{Reflexil}
 
@@ -15683,13 +16838,38 @@ private void btn_ExecuteJob_Click(object sender, EventArgs e)
 修改配置文件后一般不需要重新启动，例如修改了Trigger的Cron表达式执行的时间间隔，
 那么一段时间后即按照新的触发规则运行。
 
+\section{ThunderBird}
+
+通讯录确切位置在用户目录下AppData/Thunderbird/下面的abook.mab
+
+
+\chapter{科学上网}
+
+\section{Lantern}
+
+Lantern\footnote{Official Website:https://getlantern.org/} is a free desktop application that delivers fast, 
+reliable and secure access to the open Internet for users in censored regions. 
+It uses a variety of techniques to stay unblocked, including P2P and domain fronting. 
+Lantern relies on users in uncensored regions acting as access points to the open Internet. 
+
+\subsection{How does Lantern work}
+
+Lantern was built to give users fast access to the blocked Internet. 
+Lantern automatically detects whether or not a site is blocked 
+and then accesses the blocked site either through our own servers 
+or through Lantern users running as access points in the uncensored world. 
+If a site is unblocked, Lantern gets out of the way, 
+and your browser accesses it directly to give you the fastest possible access.
+
+\section{Shadowsocks(影梭)}
+
 \clearpage
 
 \part{设计}
 
-\chapter{•}
+\chapter{字体}
 
-\section{字体}
+\section{字体(Font)}
 
 \subsection{Museo Sans}
 
@@ -15699,29 +16879,13 @@ It is a sturdy, low contrast, geometric, highly legible sans serif typeface very
 
 This OpenType font family offers also support for CE languages and even Esperanto. Besides ligatures, automatic fractions, proportional/tabular lining and old-style figures, numerators, denominators, superiors and inferiors MUSEO also has a ‘case’ feature for case sensitive forms.
 
+\subsection{Avenir Web}
+
 \part{走喔热印}
 	
 \clearpage
 \mbox{}         
 \clearpage
-
-微信打印客户端技术实现流程方案：\newline
-
-\noindent 1、软件自动启动（流程如下）\newline
-a.检查默认打印机\newline
-b.检查打印机是否就绪\newline
-c.检查网络设置\newline
-d.获取配置文件（API：http://ip/weixin/macdata?id={机器ID}）\newline
-e.检查软件更新（true：下载更新包，下载更新包，启动更新程序，覆盖文件，重新启动软件）\newline
-f.启动软件\newline
-g.获取当前机器打印数据（API：http://ip/weixin/printData?id={机器ID}\&an=refresh\&pz=1）。\newline
-h.打印成功（API：http://ip/weixin/printData?an=ok[POST][guid={guid}]）\newline
-h.打印失败（API：http://ip/weixin/printData?an=error[POST][guid={guid}]）\newline
-2、打印列队（Ajax：http://ip/weixin/printData?id={机器ID}\&pz=10）\newline
-3、定时关机\newline
-4、启动软件时得同时软件状态定时器：每5分钟获取服务器配置文件，检查是否有更新。\newline
-5、网络自动连接，电脑里面不应该弹出任何提示页面，这个要提早禁用或关闭。\newline
-6、日志，本地日志，错误日志，bug模式。机子状态需要更新到服务器。\newline
 
 \section{配置}
 
@@ -15745,34 +16909,6 @@ gui.App.clearCache();
 \begin{lstlisting}
 window.disableCache(bool);
 \end{lstlisting}
-
-\section{模块}
-
-走喔热印的整体流程如图所示，其中视频更新如章节\ref{sec:VideoUpdate}：
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.5]{HotmarkWorkflow.jpg}
-	\caption{走喔热印流程}
-	\label{HotmarkWorkflow}
-\end{figure}
-
-
-\subsection{系统升级}
-
-升级采用FTP协议下载服务器上的整个升级文件夹，
-暂不采用下载压缩文件解压的方式，
-减少程序升级过程中对外部程序的依赖。
-程序升级流程如图\ref{SoftwareUpdateWorkflow}所示。
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.2]{SoftwareUpdateWorkflow.jpg}
-	\caption{系统升级流程}
-	\label{SoftwareUpdateWorkflow}
-\end{figure}
-
-在程序的更新文件下载完毕后，关闭正在运行的主程序和Node-WebKit。
 
 \subsubsection{程序间参数传递}
 
@@ -16489,166 +17625,10 @@ where printId=25980
 
 \chapter{配置}
 
-\section{微信配置}
-
-\subsection{添加自定义菜单}
-
-在微信公众号中添加自定义菜单，
-添加自定义菜单有2种途径，
-一是通过微信公众平台调试接口，
-二是公众平台功能界面，
-且二者不能同时设置。
-
-\begin{lstlisting}
-{
-    "button": [
-        {
-            "name": "贴心导航", 
-            "sub_button": [
-                {
-                    "type": "view", 
-                    "name": "商场简介", 
-                    "url": "http://mp.weixin.qq.com/s?__biz=MzA4MjI0MDEyNg==&mid=201337739&idx=1&sn=35b3ce72966c1870affe9632fc51ff4d#rd"
-                }, 
-                {
-                    "type": "view", 
-                    "name": "楼层介绍", 
-                    "url": "http://mp.weixin.qq.com/s?__biz=MzA4MjI0MDEyNg==&mid=10000052&idx=1&sn=3461145a3cf4e77ee879d1867a403f33#rd"
-                }, 
-                {
-                    "type": "view", 
-                    "name": "到店指南", 
-                    "url": "http://mp.weixin.qq.com/s?__biz=MzA4MjI0MDEyNg==&mid=10000048&idx=1&sn=d44987e22575cb6e50078fa09f458efa#rd"
-                }, 
-                {
-                    "type": "view", 
-                    "name": "贴心服务", 
-                    "url": "http://mp.weixin.qq.com/s?__biz=MzA4MjI0MDEyNg==&mid=10000058&idx=1&sn=e404856dac6275e817f281a032deb734#rd"
-                }
-            ]
-        }, 
-        {
-            "name": "照片打印", 
-            "type": "click", 
-            "key": "printPhoto"
-        }, 
-        {
-            "name": "会员专区", 
-            "sub_button": [
-                {
-                    "type": "view", 
-                    "name": "会员手册", 
-                    "url": "http://mp.weixin.qq.com/s?__biz=MzA4MjI0MDEyNg==&mid=201354412&idx=1&sn=e6a97d2e184ddbc08829a77daae7dc42#rd"
-                }, 
-                {
-                    "type": "click", 
-                    "name": "积分返利", 
-                    "key": "jffl"
-                }, 
-                {
-                    "type": "click", 
-                    "name": "会员活动", 
-                    "key": "hyhd"
-                }
-            ]
-        }
-    ]
-}
-\end{lstlisting}
-
-在添加微信自定义菜单时，如果只有一级菜单没有自菜单，
-那么需要添加如"sub\_button": [ ]的配置，
-如下代码块所示：
-
-\begin{lstlisting}[language=VBScript]
-{
-    "name": "精品楼盘", 
-    "type": "view", 
-    "url": "http://m.house.zouwo.com/", 
-    "sub_button": [ ]
-}
-\end{lstlisting}
-
-走喔特惠菜单配置。
-
-
-\begin{lstlisting}
-{
-    "button": [
-        {
-            "name": "旅游节精品", 
-            "type": "view", 
-            "url": "http://m.house.zouwo.com"
-        }, 
-        {
-            "name": "幸运大抽奖", 
-            "type": "view", 
-            "url": "http://active.zouwo.net"
-        }
-    ]
-}
-\end{lstlisting}
-
-其中如果按钮的类型为click时，
-key不能为空。
-
-\subsection{调试}
-
-\subsubsection{配置Web应用调试环境}
-
-调试IIS环境配置如图\ref{IISDebugDeplymentSetting}所示，Visual Studio环境设置如图\ref{VisualStudioWebDebugSetting}所示。
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=1]{IISDebugDeplymentSetting.jpg}
-	\caption{IIS部署配置}
-	\label{IISDebugDeplymentSetting}
-\end{figure}
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.6]{VisualStudioWebDebugSetting.jpg}
-	\caption{Visual Studio调试配置}
-	\label{VisualStudioWebDebugSetting}
-\end{figure}
-
-\subsubsection{模拟微信消息发送}
-
-\begin{lstlisting}
-<xml>
-	<ToUserName><![CDATA[gh_303a30c63a14]]></ToUserName>
-	<FromUserName><![CDATA[ozcu5uBSiqaFoMSoMDXlj_-jwi5U]]></FromUserName>
-	<CreateTime>12345678</CreateTime>
-	<MsgType><![CDATA[text]]></MsgType>
-	<Content><![CDATA[你好]]></Content>
-</xml>
-\end{lstlisting}
-
-action="http://129.19.11.118:801/weixin/getmsg?id=1" 
-
-在Web页面中查看POST信息，利用FireDebug工具进行查看，如图\ref{CheckBrowerPOSTinfo}所示。
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=1]{CheckBrowerPOSTinfo.jpg}
-	\caption{查看浏览器POST信息}
-	\label{CheckBrowerPOSTinfo}
-\end{figure}
-
-
-\subsection{应用框架}
-
-\subsubsection{NVelocity}
-
-NVelocity is a .Net-based template engine. It permits anyone to use the simple yet powerful template language to reference objects defined in .Net code.
-
-The purpose of this project is to port the Jakarta Velocity project to Microsoft .Net (written in C\#). The intent is to stay as close the the original Java version as the languages will permit.
-
-\subsubsection{ECharts}
-
 \subsection{照片裁剪}
 
-头像裁剪是一个经常用到的功能，实现原理也较为简单，就是在本地选择好所需裁剪图片的坐标，将坐标发送到服务器，由服务器执行图片裁剪操作。
+头像裁剪是一个经常用到的功能，实现原理也较为简单，
+就是在本地选择好所需裁剪图片的坐标，将坐标发送到服务器，由服务器执行图片裁剪操作。
 
 jQuery插件Jcrop\footnote{Jcrop is the quick and easy way to add image cropping functionality to your web application.
 It combines the ease-of-use of a typical jQuery plugin with a powerful cross-platform DHTML cropping engine that 
@@ -16880,7 +17860,7 @@ public static void Cut(Stream fromFile, string fileSaveUrl, int xPosition, int y
 
 \subsection{业务词汇对照}
 
-\begin{tabular}{ll}
+\begin{longtable}{ll}
 	\multirow{1}{*}{}			
 	& \multicolumn{1}{c}{}\\
 	二维码 & QR Code\footnotemark[1](Quick Response Code)\\
@@ -16908,15 +17888,21 @@ public static void Cut(Stream fromFile, string fileSaveUrl, int xPosition, int y
 	聚合 & Mashup\\
 	PV(页面浏览量) & Page View\\
 	UV(独立访客量) & Unique Visitor\\
-	QPS(每秒查询率) & Query Per Second\\					
-\end{tabular}
+	QPS(每秒查询率) & Query Per Second\\
+	迭代计划会 & Iteration Planning Meeting\\
+	每日站会 & Daily Standup\\
+	代码评审会 & Code Review\\
+	回顾会议 & Retrospective Meeting\\
+	结对编程 & Pair Programming\\
+	现场客户 & On-site Customer\\	
+\end{longtable}
 
 \footnotetext[1]{二维码的一种类型之一，具体参见http://en.wikipedia.org/wiki/Barcode}
 \footnotetext[2]{RFC1630，发布于 1994 年 6 月，被称为“Universal Resource Identifiers in WWW: A Unifying Syntax for the Expression of Names and Addresses of Objects on the Network as used in the World-Wide Web”。它是一个Informational RFC —— 也就是说，它没有获得社区的任何认可。}
 \footnotetext[3]{RFC1738，发布于 1994 年 12 月, 被称为“Uniform Resource Locators”。它是一个 Proposed Standard —— 也就是说，它是一个共识过程的结果，虽然它还没有经过测试，并成熟到足以成为一个完整的 Internet Standard。}
 \footnotetext[4]{RFC1737，发布于 1994 年 12 月，被称为“Functional Requirements for Uniform Resource Names”。1997 年，紧随 Proposed Standard RFC2141（即 URN Syntax）之后发布了 RFC1737，它指定了另一个方案 —— urn: —— 来加入 http:、ftp:和其他协议中。}	
 
-\begin{tabular}{lp{8cm}}
+\begin{longtable}{lp{8cm}}
 	\multirow{1}{*}{}			
 	& \multicolumn{1}{c}{}\\
 	语法糖 & Syntactic Sugar\footnotemark[5]\\
@@ -16943,7 +17929,8 @@ public static void Cut(Stream fromFile, string fileSaveUrl, int xPosition, int y
 	bible & 有权威的书\\
 	swagger & 昂首阔步; 夸耀，炫耀\\
 	PR(PR on line or Public Relations) & 线上公关或e公关\\
-\end{tabular}
+	LBS & 位置服务(LBS,Location Based Services)\\
+\end{longtable}
 
 \footnotetext[5]{In computer science, syntactic sugar is syntax within a 
 programming language that is designed to make things easier to read or to express. 
@@ -16954,7 +17941,7 @@ more concisely, or in an alternative style that some may prefer.}
 
 \subsection{计算机词汇中英对照}		
 
-\begin{tabular}{ll}
+\begin{longtable}{lp{10cm}}
 	\multirow{1}{*}{}			
 	& \multicolumn{1}{c}{}\\
 	序列化 & Serialization\\
@@ -16995,7 +17982,10 @@ more concisely, or in an alternative style that some may prefer.}
 	代码审查 & Code ReView\\
 	认证 & Credential\\
 	SSL & 安全套接层协议(Secure Socket Layer)\\
-\end{tabular}
+	TAP & 在网络分析监测领域，TAP是Test Access Point的首字母缩写，也叫分光器/分路器。
+	分光是数据通过光纤传输；分路是数据通过网线传输。粗浅的说，Tap的概念类似于“三通”的意思，
+	即原来的流量正常通行，同时分一股出来供监测设备分析使用。\\
+\end{longtable}
 
 \section{常用术语}
 
@@ -17111,6 +18101,14 @@ C语言、C++、Object-C这些软件更多是用在系统软件开发，嵌入�
 
 \chapter{经验汇总}
 
+1.建立良好的Profile工具
+
+2.避免数据库的join操作，表与表之间的join尽量在应用层解决
+
+\section{规划}
+
+
+
 \section{Windows搜索}
 
 如果在搜索中想让文件名称绝对匹配，
@@ -17123,13 +18121,13 @@ C语言、C++、Object-C这些软件更多是用在系统软件开发，嵌入�
 
 \subsection{自动属性}
 
- 属性的特点：C\#属性是对类中的字段（fields）的保护，像访问字段一样来访问属性。
- 同时也就封装了类的内部数据。每当赋值运算的时候自动调用set访问器，
- 其他时候则调用get访问器。 以 帕斯卡命名 不能冠以Get/Set。
- 静态属性是通过类名调用的！
+属性的特点：C\#属性是对类中的字段（fields）的保护，像访问字段一样来访问属性。
+同时也就封装了类的内部数据。每当赋值运算的时候自动调用set访问器，
+其他时候则调用get访问器。 以 帕斯卡命名 不能冠以Get/Set。
+静态属性是通过类名调用的！
 
- C\#中属性这种机制使得在保证封装性的基础上实现了访问私有成员的便捷性。
- 一个支持属性的语言将有助于获得更好的抽象。
+C\#中属性这种机制使得在保证封装性的基础上实现了访问私有成员的便捷性。
+一个支持属性的语言将有助于获得更好的抽象。
 
 \subsection{Ubuntu下执行定时任务}
 
@@ -17385,9 +18383,20 @@ echo you can exit press any key...... &pause>nul
 :end
 \end{lstlisting}
 
-\subsubsection{Quip}
+\subsection{Windows脚本 - \%~dp0的含义}
 
-
+更改当前目录为批处理本身的目录 
+有些晕吧？不急，我举例 
+比如你有个批处理a.bat在D:/qq文件夹下  
+a.bat内容为 
+cd /d \%~dp0 
+在这里 
+cd /d \%~dp0的意思就是cd /d d:/qq 
+\%0代表批处理本身 d:/qq/a.bat 
+~dp是变量扩充 
+d既是扩充到分区号 d: 
+p就是扩充到路径 /qq 
+dp就是扩充到分区号路径 d:/qq
 
 \subsubsection{DebugView.exe的使用}
 
@@ -17616,6 +18625,12 @@ interface ISystemOperHelperFactory
 
 \subsubsection{职责链模式(Chain of Responsibility)}
 
+\subsection{表驱动法(Table-Driven Approach)}
+
+表驱动法(查表法)是一种编程模式(scheme)-从表里面查找信息而不使用逻辑语句(if和case)。
+事实上，凡是能通过逻辑语句来选择的事物，都可以通过查表来选择。
+对简单的情况而言，使用逻辑语句更为容易和直白。但随着逻辑链的越来越复杂，查表法也就愈发显得更具有吸引力。
+
 \section{逆向工程(Reverse Engineering)}
 
 \subsection{反混淆dll(Deobfuscation dll)}
@@ -17740,23 +18755,6 @@ public static void Main()
     Console.WriteLine("The system database name is {0}", Enum.GetName(typeof(DatabaseName), 0));
 }	
 \end{lstlisting}	
-
-\subsection{页面无样式}
-
-微信后台管理页面的样式和JavaScript脚本从服务器上面进行下载，
-如果下载失败，会造成页面无样式。
-样式下载地址为http://static.zouwo.com/admin/1.0.1/themes/minified/fides/color-schemes/dark-blue.min.css。
-当无法下载时可以通过修改host文件来修复。
-在host文件\footnote{Hosts是一个没有扩展名的系统文件，
-可以用记事本等工具打开，其作用就是将一些常用的网址域名与其对应的IP地址建立一个关联“数据库”，
-当用户在浏览器中输入一个需要登录的网址时，系统会首先自动从Hosts文件中寻找对应的IP地址，
-一旦找到，系统会立即打开对应网页，如果没有找到，
-则系统再会将网址提交DNS域名解析服务器进行IP地址的解析。}后添加121.41.103.12~~static.zouwo.com即可。
-
-
-\subsection{SVN}
-
-\paragraph{cleanup}
 
 \subsection{字符串拼接}
 	
@@ -18010,7 +19008,9 @@ RunTime using activator:00:00:00:20
 
 \subsection{表驱动法}
 
-\section{常用网站}
+\section{常用资源}
+
+\subsection{常用网站搜藏}
 
 \begin{longtable}{|c|c|c|c|c|}
 	\caption{常用网址搜藏}\\
@@ -18107,7 +19107,13 @@ RunTime using activator:00:00:00:20
 	43 & \url{http://www.jobbole.com/} & 2016-03-12 & 伯乐在线\\
 	\hline
 	44 & \url{https://www.darencademy.com/} & 2016-04-02 & 大人学\\
-	\hline			
+	\hline
+	45 & \url{http://www.fosshub.com/} & 2016-04-21 & Clean Software Host\\
+	\hline
+	46 & \url{http://wangjianshuo.com/}	& 2016-04-22 & 王建硕的博客\\
+	\hline
+	47 & \url{https://channel9.msdn.com} & 2016-04-22 & 第九频道\\
+	\hline	
 \end{longtable}
 
 
@@ -18118,7 +19124,21 @@ RunTime using activator:00:00:00:20
 	\label{DeobfuscationedDll}
 \end{figure}
 
-\chapter{Open Source}
+\subsection{资源地址搜藏}
+
+\begin{longtable}{|c|c|c|c|c|}
+	\caption{常用资源搜藏}\\
+	\hline
+	\multirow{1}{*}{序号}
+	& \multicolumn{1}{c|}{网址}  
+	& \multicolumn{1}{c|}{日期} 
+	& \multicolumn{1}{c|}{备注}\\			
+	\cline{1-4}
+	1 & \url{http://mirrors.sohu.com/} & 2015-04-22 & 搜狐镜像下载站点\\
+	\hline
+	2 & \url{http://www.ctex.org/documents/shredder/tex_frame.html} & & LaTex宣传页\\
+	\hline
+\end{longtable}\chapter{Open Source}
 
 \section{参与开源项目}
 
@@ -19189,6 +20209,362 @@ The submit method does not invoke the onsubmit event handler.
 Call the onsubmit event handler directly.
 When using Microsoft? Internet Explorer 5.5 and later,
 you can call the fireEvent method with a value of onsubmit in the sEvent parameter.
+
+\subsection{Model, ORM, DAO和Active Record的区别}
+
+\paragraph{DAO}DAO是一个软件设计的指导原则，在核心J2EE模式中是这样介绍DAO模式的：
+为了建立一个健壮的J2EE应用，应该将所有对数据源的访问操作抽象封装在一个公共API中。
+用程序设计的语言来说，就是建立一个接口，接口中定义了此应用程序中将会用到的所有事务方法。
+在这个应用程序中，当需要和数据源进行交互的时候则使用这个接口，
+并且编写一个单独的类来实现这个接口在逻辑上对应这个特定的数据存储。
+顾名思义就是与数据库打交道，夹在业务逻辑与数据库资源中间，是DAL的具体实现。
+简单的说Dao层就是对数据库中数据的增删改查等操作封装在专门的类里面，
+在业务逻辑层中如果要访问数据的时候，直接调用该dao类（包括了如何访问数据库和数据的增删改查等等代码），
+就可以返回数据，而不需要再在业务逻辑层中写这些代码。
+
+\paragraph{ORM}ORM也是一种对数据库访问的封装，然而ORM不像DAO只是一种软件设计的指导原则，
+强调的是系统应该层次分明，更像是一种工具，有着成熟的产品，比如JAVA界非常有名的Hibernate，
+以及很多PHP框架里自带的ORM库。他们的好处在于能将你程序中的数据对象自动地转化为关系型数据库中对应的表和列，
+数据对象间的引用也可以通过这个工具转化为表之间的JOIN。使用ORM的好处就是使得你的开发几乎不用接触到SQL语句。
+创建一张表，声明一个对应的类，然后你就只用和这个类的实例进行交互了，至于这个对象里的数据该怎么存储又该怎么获取，通通不用关心。
+
+\subsection{TCP长连接与短连接的区别}
+
+\paragraph{TCP短连接}模拟一下TCP短连接的情况，client向server发起连接请求，
+server接到请求，然后双方建立连接。client向server发送消息，
+server回应client，然后一次读写就完成了，这时候双方任何一个都可以发起close操作，
+不过一般都是client先发起close操作。为什么呢，一般的server不会回复完client后立即关闭连接的，
+当然不排除有特殊的情况。从上面的描述看，短连接一般只会在client/server间传递一次读写操作
+
+短连接的优点是：管理起来比较简单，存在的连接都是有用的连接，不需要额外的控制手段
+
+\paragraph{TCP长连接}接下来我们再模拟一下长连接的情况，
+client向server发起连接，server接受client连接，双方建立连接。
+Client与server完成一次读写之后，它们之间的连接并不会主动关闭，后续的读写操作会继续使用这个连接。
+
+首先说一下TCP/IP详解上讲到的TCP保活功能，保活功能主要为服务器应用提供，
+服务器应用希望知道客户主机是否崩溃，从而可以代表客户使用资源。如果客户已经消失，
+使得服务器上保留一个半开放的连接，而服务器又在等待来自客户端的数据，则服务器将应远等待客户端的数据，
+保活功能就是试图在服务器端检测到这种半开放的连接。
+
+\subsection{HTTP的长连接和短连接}
+
+HTTP1.1规定了默认保持长连接（HTTP persistent connection ，也有翻译为持久连接），
+数据传输完成了保持TCP连接不断开（不发RST包、不四次握手），等待在同域名下继续用这个通道传输数据；相反的就是短连接。
+
+HTTP首部的Connection: Keep-alive是HTTP1.0浏览器和服务器的实验性扩展，
+当前的HTTP1.1 RFC2616文档没有对它做说明，因为它所需要的功能已经默认开启，无须带着它，
+但是实践中可以发现，浏览器的报文请求都会带上它。如果HTTP1.1版本的HTTP请求报文不希望使用长连接，
+则要在HTTP请求报文首部加上Connection: close。《HTTP权威指南》提到，
+有部分古老的HTTP1.0代理不理解Keep-alive，而导致长连接失效：
+客户端-->代理-->服务端，客户端带有Keep-alive，而代理不认识，于是将报文原封不动转给了服务端，
+服务端响应了Keep-alive，也被代理转发给了客户端，于是保持了“客户端-->代理”连接和“代理-->服务端”连接不关闭，
+但是，当客户端第发送第二次请求时，代理会认为当前连接不会有请求了，于是忽略了它，
+长连接失效。书上也介绍了解决方案：当发现HTTP版本为1.0时，就忽略Keep-alive，客户端就知道当前不该使用长连接。
+其实，在实际使用中不需要考虑这么多，很多时候代理是我们自己控制的，如Nginx代理，
+代理服务器有长连接处理逻辑，服务端无需做patch处理，常见的是客户端跟Nginx代理服务器使用HTTP1.1协议\&长连接，
+而Nginx代理服务器跟后端服务器使用HTTP1.0协议\&短连接。
+
+在实际使用中，HTTP头部有了Keep-Alive这个值并不代表一定会使用长连接，客户端和服务器端都可以无视这个值，
+也就是不按标准来，譬如我自己写的HTTP客户端多线程去下载文件，就可以不遵循这个标准，并发的或者连续的多次GET请求，
+都分开在多个TCP通道中，每一条TCP通道，只有一次GET，GET完之后，立即有TCP关闭的四次握手，
+这样写代码更简单，这时候虽然HTTP头有Connection: Keep-alive，但不能说是长连接。
+正常情况下客户端浏览器、web服务端都有实现这个标准，因为它们的文件又小又多，保持长连接减少重新开TCP连接的开销很有价值。
+
+\subsection{为什么使用强名称(强命名程序集)}
+
+强名称(Strong Name) 由一个程序集的标识组成并通过公钥和数字签名（针对该程序集生成）加强的名称，
+其中的标识包括程序集的简单文本名称、版本号和区域性信息（如果提供的话）。
+在Windows下开发程序时常会遭遇著名的“DLL Hell”问题，即动态链接库的向后兼容问题。
+微软在.Net产生前曾尝试使用COM组件的方式来解决DLL Hell问题，即使用Guid来唯一的标识每一个COM组件。
+但是，实际上使用COM组件（包括版本升级）也是一件颇为麻烦的事：为了运行COM组件就必须在组册表中对其进行注册，
+重新编译有可能破坏Guid从而导致原来引用此COM组件的程序不能正确运行，等等。
+在.Net中，微软引入了一种新的解决方案：强命名程序集（Strong Name），以及与之配套的全局程序集缓存（GAC）来解决这个问题。
+我们知道，.Net使用Name、Version、Culture、PublicToken四个属性来唯一标识一个程序集，
+而不同产品前三个属性（Name、Version和Culture）完全相同的情况是有可能发生的，如此一来，
+这唯一标识程序集可重任就落到PublicToken的头上了。强命名的程序集正是使用RSA来保证PublicToken的唯一性，
+因为在理论上，非对称算法RSA生成的公钥/私钥对不会重复。.Net正是通过在编译项目时将指定的公钥/私钥对写入程序集来保证其唯一性。
+对于全局程序集缓存（GAC），MSDN是这样介绍的：安装有公共语言运行库的每台计算机都具有称为全局程序集缓存的计算机范围内的代码缓存。
+全局程序集缓存中存储了专门指定给由计算机中若干应用程序共享的程序集。在开发一般的、非共享的程序时，我们不需要使用强命名的程序集，
+仅将项目（Project）编辑成.DLL或者.EXE即可。但是，如果我们开发的是组件库、框架时，通过对程序集进行强命名，
+并使用将其部署到GAC中，可以保证我们的程序集不会出现版本问题。
+
+\subsection{Invoke与BeginInvoke的区别}
+
+* Control.Invoke 方法 (Delegate) :在拥有此控件的基础窗口句柄的线程上执行指定的委托。
+
+* Control.BeginInvoke 方法 (Delegate) :在创建控件的基础句柄所在线程上异步执行指定委托。
+
+控件上的大多数方法只能从创建控件的线程调用。 如果已经创建控件的句柄，
+则除了InvokeRequired属性以外，控件上还有四个可以从任何线程上安全调用的方法，
+它们是：Invoke、BeginInvoke、EndInvoke和CreateGraphics。
+在后台线程上创建控件的句柄之前调用CreateGraphics可能会导致非法的跨线程调用。
+对于所有其他方法调用，则应使用调用 (invoke) 方法之一封送对控件的线程的调用。
+调用方法始终在控件的线程上调用自己的回调。
+
+注：在主线程中直接调用Invoke、BeginInvoke、EndInvoke都会造成阻塞。所以应该利用副线程（支线线程）调用。
+
+* Control的Invoke和BeginInvoke的委托方法是在主线程，
+即UI线程上执行。（也就是说如果你的委托方法用来取花费时间长的数据，
+然后更新界面什么的，千万别在主线程上调用Control.Invoke和Control.BeginInvoke，
+因为这些是依然阻塞UI线程的，造成界面的假死）
+
+* Invoke会阻塞主支线程，BeginInvoke只会阻塞主线程，不会阻塞支线程！
+因此BeginInvoke的异步执行是指相对于支线程异步，而不是相对于主线程异步。
+
+\subsection{Activex、OLE、COM、OCX、DLL之间的区别}
+
+熟悉面向对象编程和网络编程的人一定对ActiveX、OLE和 COM/DCOM这些概念不会陌生，
+但是它们之间究竟是什么样的关系，对许多们还是比较模糊的。在具体介绍它们的关系之间，
+我们还是先明确组件 （Component）和对象（Object）之间的区别。组件是一个可重用的模块，
+它是由一组处理过程、数据封装和用户接口组成的业务对象（Rules Object）。组件看起来像对象，但不符合对象的学术定义。它们的主要区别是： 
+1）组件可以在另一个称为容器（有时也称为承载者或宿主）的应用程序中使用，也可以作为独立过程使用； 
+2）组件可以由一个类构成，也可以由多个类组成，或者是一个完整的应用程序； 
+3）组件为模块重用，而对象为代码重用。现在，比较流行的组件模型有COM（Component Object Module，
+对象组件模型）/DCOM（ Distributed COM，分布式对象组件模型）和CORBA（Common Object Request Broker Architecture，
+公共对象请求代理体系结构）。到这里，已经出现了与本文相关的主题COM，而CORBA与本文无关，就不作介绍。
+之所以从组件 与对象的区别说起，是想让大家明确COM和 CORBA是处在整个体系结构的最底层，如果暂时对此还不能理解，
+不妨继续往下看，最后在回过头看一看就自然明白了。现在开始阐述ActiveX、OLE 和COM的关系。
+首先，让大家有一个总体的概念，从时间的角度讲，OLE是最早出现的，然后是COM和ActiveX；
+从体系结构角度讲，OLE和 ActiveX是建立在 COM之上的，所以COM是基础；单从名称角度讲，
+OLE、ActiveX是两个商标名称，而COM则是一个纯技术名词，这也是大家更多的听说 ActiveX和OLE的原因。既然OLE是最早出现的，那么就从OLE说起，自从Windows操作系统流行以来，
+“剪贴板”（ Clipboard）首先解决了不同程序间的通信问题（由剪贴板作为数据交换中心，进行复制、粘贴的操作），
+但是剪贴板传递的都是“死”数据，应用程序开 发者得自行编写、解析数据格式的代码，
+于是动态数据交换（Dynamic Data Exchange，DDE）的通信协定应运而生，
+它可以让应用程序之间自动获取彼此的最新数据，但是，解决彼此之间的“数据格式”转换仍然是程序员沉重的负担。
+对象的链接与嵌入（Object Linking and Embedded，OLE）的诞生把原来应用程序的数据交换提高到“对象交换”，
+这样程序间不但获得数据也同样获得彼此的应用程序对象，并且可以直接使用 彼此的数据内容，
+其实OLE是Microsoft的复合文档技术，它的最初版本只是瞄准复合文档，但在后续版本OLE2中，
+导入了COM。由此可见， COM是应OLE的需求而诞生的，所以虽然COM是OLE的基础，
+但OLE的产生却在COM之前。 COM的基本出发点是，让某个软件通过一个通用的机构为另一个软件提供服务。
+COM是应OLE 的需求而诞生，但它的第一个使用者却是OLE2，所以COM与复合文档间并没有多大的关系，
+实际上，后来COM就作为与复合文档完全无关的技术，开始被广 泛应用。这样一来， Microsoft就开始“染指”通用平台技术。
+但是COM并不是产品，它需要一个商标名称。而那时Microsoft的市场专家们已经选用了OLE作为 商标名称，
+所以使用COM技术的都开始贴上了 OLE的标签。虽然这些技术中的绝大多数与复合文档没有关系。
+Microsoft的这一做法让人产生这样一个误解OLE是仅指复合文档呢？还是不单单指复合文档？
+其实OLE是COM的商标名称，自然不仅仅指复合文档。但Microsoft自己恐怕无法解释清楚，
+这要花费相当的精力和时间。 于是，随着Internet的发展，在1996年春，Microsoft改变了主意，
+选择ActiveX作为新的商标名称。ActiveX是指宽松定义 的、基于COM的技术集合，而OLE仍然仅指复合文档。
+当然，ActiveX最核心的技术还是COM。ActiveX和OLE的最大不同在于，OLE针对的是桌面上应用软件和文件之间的集成，
+而ActiveX则以提 供进一步的网络应用与用户交互为主。到这里，大家应该对ActiveX、OLE和COM三者的关系有了一个比较明确的认识，
+COM才是最根本的核心技术， 所以下面的重点COM。让对象模型完全独立于编程语言，
+这是一个非常新奇的思想。这一点从C++和Java的对象概念上，我们就能有所了解。但所谓COM 对象究竟是什么呢？
+为了便于理解，可以把COM看作是某种（软件）打包技术，即把它看作是软件的不同部分，
+按照一定的面向对象的形式，组合成可以交互的过 程和以组支持库。COM对象可以用C++、Java和VB等任意一种语言编写，
+并可以用DLL或作为不同过程工作的执行文件的形式来实现。使用COM对象 的浏览器，无需关心对象是用什么语言写的，
+也无须关心它是以DLL还是以另外的过程来执行的。从浏览器端看，无任何区别。这样一个通用的处理技巧非常有用。
+例如，由用户协调运行的两个应用，可以将它们的共同作业部分作为COM对象间的交互来实现（当然，现在的OLE复合文档也能做到）。
+为在浏览器中执行 从Web服务器下载的代码，浏览器可把它看作是COM对象，也就是说，
+COM技术也是一种打包可下载代码的标准方法（ActiveX控件就是执行这种功能 的）。
+甚至连应用与本机OS进行交互的方法也可以用COM来指定，例如在Windows和Windows NT中用的是新API，多数是作为COM对象来定义的。可见，COM虽然起源于复合文档，但却可有效地适用于许多软件问题，
+它毕竟是处在底层的基础技术。 用一句话来说，COM是独立于语言的组件体系结构，可以让组件间相互通信。
+随着计算机网络的发展，COM进一步发展为分布式组件对象模型，这就是 DCOM，它类似于CORBA的ORB，
+本文对此将不再做进一步的阐述。通过上面的讲述相信大家一定对ActiveX、OLE和COM/DCOM的关系有了一个清楚的了解。
+
+Activex,OLE,COM都是微软的一些技术标准。Ole比较老后来发展成Activex，再后来发展成为COM OCX，
+DLL是扩展名。 Activex有两种扩展名OCX和DLL。实际上你可以把它们的扩暂名字调换。 COM作为ActiveX的更新技术，扩展名也有可能是DLL DLL文件还有可能是动态链接库。
+主要是装载一些函数，可以动态加载。activex、ole、ocx都是基于com技术的。这三种实际上都是com的具体表现。
+至于dll，和其它四种没什么关系，虽然Activex、OLE、COM、OCX的扩展名也可以是dll，但也可以是exe，或是ocx/vbx等等。
+dll的种类就很多了，com组件有很多是以dll形式提供的，当然，普通的api一般也是被封在dll中。 甚至还有.net程序。 
+实际上，微软在.net之前，只有两种基本的组件技术，一个是com（在com的基础上出现了很多其他的技术，如activex)，
+另一个就是普通的api了，如windows kernel api。 不过有了.net ，尽尽量使用.net的技术。
+com注册太麻烦，弄不好就会掉进com hell里去了。
+
+\subsection{Hadoop和Spark区别}
+
+\paragraph{解决问题的层面不一样}
+首先，Hadoop和Apache Spark两者都是大数据框架，但是各自存在的目的不尽相同。
+Hadoop实质上更多是一个分布式数据基础设施: 它将巨大的数据集分派到一个由普通计算机组成的集群中的多个节点进行存储，
+意味着您不需要购买和维护昂贵的服务器硬件。
+
+同时，Hadoop还会索引和跟踪这些数据，让大数据处理和分析效率达到前所未有的高度。Spark，
+则是那么一个专门用来对那些分布式存储的大数据进行处理的工具，它并不会进行分布式数据的存储。
+
+\paragraph{两者可合可分}
+Hadoop除了提供为大家所共识的HDFS分布式数据存储功能之外，还提供了叫做MapReduce的数据处理功能。
+所以这里我们完全可以抛开Spark，使用Hadoop自身的MapReduce来完成数据的处理。
+
+相反，Spark也不是非要依附在Hadoop身上才能生存。但如上所述，毕竟它没有提供文件管理系统，所以，
+它必须和其他的分布式文件系统进行集成才能运作。这里我们可以选择Hadoop的HDFS,
+也可以选择其他的基于云的数据系统平台。但Spark默认来说还是被用在Hadoop上面的，毕竟，大家都认为它们的结合是最好的。
+
+以下是从网上摘录的对MapReduce的最简洁明了的解析:
+
+我们要数图书馆中的所有书。你数1号书架，我数2号书架。这就是“Map”。我们人越多，数书就更快。
+现在我们到一起，把所有人的统计数加在一起。这就是“Reduce”。
+Spark数据处理速度秒杀MapReduce
+
+Spark因为其处理数据的方式不一样，会比MapReduce快上很多。MapReduce是分步对数据进行处理的: 
+”从集群中读取数据，进行一次处理，将结果写到集群，从集群中读取更新后的数据，进行下一次的处理，
+将结果写到集群，等等…“ Booz Allen Hamilton的数据科学家Kirk Borne如此解析。
+
+反观Spark，它会在内存中以接近“实时”的时间完成所有的数据分析：“从集群中读取数据，完成所有必须的分析处理，
+将结果写回集群，完成，” Born说道。Spark的批处理速度比MapReduce快近10倍，内存中的数据分析速度则快近100倍。
+
+如果需要处理的数据和结果需求大部分情况下是静态的，且你也有耐心等待批处理的完成的话，
+MapReduce的处理方式也是完全可以接受的。
+
+但如果你需要对流数据进行分析，比如那些来自于工厂的传感器收集回来的数据，又或者说你的应用是需要多重数据处理的，
+那么你也许更应该使用Spark进行处理。
+
+大部分机器学习算法都是需要多重数据处理的。此外，通常会用到Spark的应用场景有以下方面：实时的市场活动，
+在线产品推荐，网络安全分析，机器日记监控等。
+
+\paragraph{灾难恢复}
+两者的灾难恢复方式迥异，但是都很不错。因为Hadoop将每次处理后的数据都写入到磁盘上，
+所以其天生就能很有弹性的对系统错误进行处理。
+
+Spark的数据对象存储在分布于数据集群中的叫做弹性分布式数据集(RDD: Resilient Distributed Dataset)中。
+“这些数据对象既可以放在内存，也可以放在磁盘，所以RDD同样也可以提供完成的灾难恢复功能，”Borne指出。
+
+\subsection{B树、B-树、B+树、B*树都是什么}
+
+B树即二叉搜索树,B树的搜索，从根结点开始，如果查询的关键字与结点的关键字相等，那么就命中；
+否则，如果查询关键字比结点关键字小，就进入左儿子；如果比结点关键字大，就进入右儿子；
+如果左儿子或右儿子的指针为空，则报告找不到相应的关键字；
+
+如果B树的所有非叶子结点的左右子树的结点数目均保持差不多（平衡），那么B树的搜索性能逼近二分查找；
+但它比连续内存空间的二分查找的优点是，改变B树结构（插入与删除结点）不需要移动大段的内存数据，甚至通常是常数开销；
+
+实际使用的B树都是在原B树的基础上加上平衡算法，即“平衡二叉树”；如何保持B树结点分布均匀的平衡算法是平衡二叉树的关键；
+平衡算法是一种在B树中插入和删除结点的策略；
+B-树是一种多路搜索树（并不是二叉的），B+树是B-树的变体，也是一种多路搜索树,B+树是应文件系统所需而产生的一种B-树的变形树。
+
+****B*******树**
+是B+树的变体，在B+树的非根和非叶子结点再增加指向兄弟的指针；
+
+
+
+****B+树在数据库中的应用****
+
+**1. 索引在数据库中的作用 **
+在数据库系统的使用过程当中，数据的查询是使用最频繁的一种数据操作。
+最基本的查询算法当然是顺序查找（linear search），遍历表然后逐行匹配行值是否等于待查找的关键字，其时间复杂度为O（n）。
+但时间复杂度为O（n）的算法规模小的表，负载轻的数据库，也能有好的性能。 但是数据增大的时候，时间复杂度为O（n）的算法显然是糟糕的，性能就很快下降了。
+好在计算机科学的发展提供了很多更优秀的查找算法，例如二分查找（binary search）、二叉树查找（binary tree search）等。
+如果稍微分析一下会发现，每种查找算法都只能应用于特定的数据结构之上，例如**二分查找要求被检索数据有序，而二叉树查找只能应用于二叉查找树上**，
+但是数据本身的组织结构不可能完全满足各种数据结构（例如，理论上不可能同时将两列都按顺序进行组织），所以，**在数据之外，
+数据库系统还维护着满足特定查找算法的数据结构，这些数据结构以某种方式引用（指向）数据，这样就可以在这些数据结构上实现高级查找算法。这种数据结构，就是索引。**
+索引是对数据库表 中一个或多个列的值进行排序的结构。与在表 中搜索所有的行相比，索引用指针 指向存储在表中指定列的数据值，
+然后根据指定的次序排列这些指针，有助于更快地获取信息。通常情 况下 ，只有当经常查询索引列中的数据时 ，才需要在表上创建索引。
+索引将占用磁盘空间，并且影响数 据更新的速度。但是在多数情况下 ，索引所带来的数据检索速度优势大大超过它的不足之处。
+**2. B+树在数据库索引中的应用**
+
+目前**大部分数据库系统及文件系统都采用B-Tree或其变种B+Tree作为索引结构**
+1）在数据库索引的应用
+在数据库索引的应用中，B+树按照下列方式进行组织 ：
+① 叶结点的组织方式 。B+树的查找键 是数据文件的主键 ，且索引是稠密的。也就是说 ，叶结点 中为数据文件的第一个记录设有一个键、指针对 ，
+该数据文件可以按主键排序，也可以不按主键排序 ；数据文件按主键排序，且 B +树是稀疏索引 ， 在叶结点中为数据文件的每一个块设有一个键、指针对 ；
+数据文件不按键属性排序 ，且该属性是 B +树 的查找键 ， 叶结点中为数据文件里出现的每个属性K设有一个键 、 指针对 ， 其中指针执行排序键值为 K的 记录中的第一个。
+② 非叶结点 的组织方式。B+树 中的非叶结点形成 了叶结点上的一个多级稀疏索引。 每个非叶结点中至少有ceil( m/2 ) 个指针 ， 至多有 m 个指针 。 
+2）B+树索引的插入和删除
+①在向数据库中插入新的数据时，同时也需要向数据库索引中插入相应的索引键值 ，则需要向 B+树 中插入新的键值。**即上面我们提到的B-树插入算法。**
+②当从数据库中删除数据时，同时也需要从数据库索引中删除相应的索引键值 ，则需要从 B+树 中删 除该键值 。**即B-树删除算法**
+
+**为什么使用B-Tree（B+Tree）**
+二叉查找树进化品种的红黑树等数据结构也可以用来实现索引，但是文件系统及数据库系统普遍采用B-/+Tree作为索引结构。
+一般来说，索引本身也很大，不可能全部存储在内存中，因此索引往往以索引文件的形式存储的磁盘上。这样的话，
+索引查找过程中就要产生磁盘I/O消耗，相对于内存存取，I/O存取的消耗要高几个数量级，
+所以评价一个数据结构作为索引的优劣最重要的指标就是在查找过程中磁盘I/O操作次数的渐进复杂度。
+换句话说，索引的结构组织要尽量减少查找过程中磁盘I/O的存取次数。为什么使用B-/+Tree，还跟磁盘存取原理有关。
+局部性原理与磁盘预读
+由于存储介质的特性，磁盘本身存取就比主存慢很多，再加上机械运动耗费，磁盘的存取速度往往是主存的几百分分之一，
+因此为了提高效率，要尽量减少磁盘I/O。为了达到这个目的，磁盘往往不是严格按需读取，而是每次都会预读，即使只需要一个字节，
+磁盘也会从这个位置开始，顺序向后读取一定长度的数据放入内存。这样做的理论依据是计算机科学中著名的局部性原理：
+当一个数据被用到时，其附近的数据也通常会马上被使用。
+程序运行期间所需要的数据通常比较集中。
+由于磁盘顺序读取的效率很高（不需要寻道时间，只需很少的旋转时间），因此对于具有局部性的程序来说，预读可以提高I/O效率。
+预读的长度一般为页（page）的整倍数。页是计算机管理存储器的逻辑块，硬件及操作系统往往将主存和磁盘存储区分割为连续的大小相等的块，
+每个存储块称为一页（在许多操作系统中，页得大小通常为4k），主存和磁盘以页为单位交换数据。当程序要读取的数据不在主存中时，
+会触发一个缺页异常，此时系统会向磁盘发出读盘信号，磁盘会找到数据的起始位置并向后连续读取一页或几页载入内存中，然后异常返回，程序继续运行。
+
+我们上面分析B-/+Tree检索一次最多需要访问节点：
+**h =**
+
+** 数据库系统巧妙利用了磁盘预读原理，将一个节点的大小设为等于一个页，这样每个节点只需要一次I/O就可以完全载入。**为了达到这个目的，在实际实现B- Tree还需要使用如下技巧：
+每次新建节点时，直接申请一个页的空间，这样就保证一个节点物理上也存储在一个页里，加之计算机存储分配都是按页对齐的，就实现了一个node只需一次I/O。
+B-Tree中一次检索最多需要h-1次I/O（根节点常驻内存），渐进复杂度为O（h）=O（logmN）。一般实际应用中，m是非常大的数字，通常超过100，因此h非常小（通常不超过3）。
+综上所述，用B-Tree作为索引结构效率是非常高的。
+而红黑树这种结构，**h**明显要深的多。由于逻辑上很近的节点（父子）物理上可能很远，无法利用局部性，所以红黑树的I/O渐进复杂度也为O（h），效率明显比B-Tree差很多。
+
+
+
+
+****MySQL的B-Tree索引（技术上说B+Tree）****
+
+在 MySQL (http://lib.csdn.net/base/14) 中，主要有四种类型的索引，分别为： B-Tree 索引， 
+Hash 索引， Fulltext 索引和 R-Tree 索引。我们主要分析B-Tree 索引。
+B-Tree 索引是 MySQL 数据库中使用最为频繁的索引类型，除了 Archive 存储引擎之外的其他所有的存储引擎都支持 B-Tree 索引。
+Archive 引擎直到 MySQL 5.1 才支持索引，而且只支持索引单个 AUTO\_INCREMENT 列。
+不仅仅在 MySQL 中是如此，实际上在其他的很多数据库管理系统中B-Tree 索引也同样是作为最主要的索引类型，
+这主要是因为 B-Tree 索引的存储结构在数据库的数据检索中有非常优异的表现。
+一般来说， MySQL 中的 B-Tree 索引的物理文件大多都是以 Balance Tree 的结构来存储的，
+也就是所有实际需要的数据都存放于 Tree 的 Leaf Node(叶子节点) ，而且到任何一个 Leaf Node 的最短路径的长度都是完全相同的，
+所以我们大家都称之为 B-Tree 索引。当然，可能各种数据库（或 MySQL 的各种存储引擎）在存放自己的 B-Tree 索引的时候会对存储结构稍作改造。
+如 Innodb 存储引擎的 B-Tree 索引实际使用的存储结构实际上是 B+Tree，也就是在 B-Tree 数据结构的基础上做了很小的改造，
+在每一个Leaf Node 上面出了存放索引键的相关信息之外，还存储了指向与该 Leaf Node 相邻的后一个 LeafNode 的指针信息（增加了顺序访问指针），
+这主要是为了加快检索多个相邻 Leaf Node 的效率考虑。
+
+
+
+动态查找树主要有：二叉查找树（Binary Search Tree），平衡二叉查找树（Balanced Binary Search Tree），
+红黑树 (Red-Black Tree )，B-tree/B+-tree/ B*-tree** **(B~Tree)。前三者是典型的二叉查找树结构，
+其查找的时间复杂度O(log2N)与树的深度相关，那么降低树的深度自然对查找效率是有所提高的；还有一个实际问题：
+就是大规模数据存储中，实现索引查询这样一个实际背景下，树节点存储的元素数量是有限的（如果元素数量非常多的话，
+查找就退化成节点内部的线性查找了），这样导致二叉查找树结构由于树的深度过大而造成磁盘I/O读写过于频繁，
+进而导致查询效率低下（为什么会出现这种情况，待会在外部存储器-磁盘中有所解释），那么如何减少树的深度（当然是不能减少查询的数据量），
+一个基本的想法就是：采用多叉树结构（由于树节点元素数量是有限的，自然该节点的子树数量也就是有限的）。
+这样我们就提出了一个新的查找树结构——多路查找树。根据平衡二叉树的启发，自然就想到平衡多路查找树结构，
+也就是这篇文章所要阐述的主题B~tree(B树结构)，B-tree这棵神奇的树是在Rudolf Bayer, 
+Edward M. McCreight(1970)写的一篇论文《Organization and Maintenance of Large Ordered Indices》中首次提出。
+具体介绍可以参考wikipedia中的介绍：http://en.wikipedia.org/wiki/B-tree，其中还阐述了B-tree名字来源以及相关的开源地址。
+
+\subsection{ocx是什么}
+
+OCX 是对象类别扩充组件（Object Linking and Embedding (OLE) Control eXtension）；是不可执行的文件； 
+是 ocx 控件的扩展名，与 .exe、.dll 同属于PE文件。
+如果你用过 Visual Basic 或者 Delphi 一类的可视化编程工具，那么对控件这个概念一定不会陌生，
+就是那些工具条上的小按钮，如 EditBox，Grid，ImageBox，Timer 等等。每个控件都有自己的事件、方法和属性。
+使用了控件的编程非常容易。在程序的设计阶段可以设置一些属性，如大小，位置，标题（caption）等等，
+在程序运行阶段，可以更改这些属性，还可以针对不同的事件，调用不同的方法来实现对该控件的控制。
+控件就好像一块块的积木，程序要做的事只是将这些积木搭起来。控件的最大好处是可以重复使用，
+甚至可以在不同的编程语言之间使用，例如，你可以在 VB 中嵌入用 VC 开发的控件。
+
+
+\subsection{什么是面向对象？为什么要面向对象？}
+
+面向对象程序设计（英语：Object-oriented programming，缩写：OOP）是种具有对象概念的程序编程范型，
+同时也是一种程序开发的方法。它可能包含数据、属性、代码与方法。对象则指的是类的实例。
+它将对象作为程序的基本单元，将程序和数据封装其中，以提高软件的重用性、灵活性和扩展性，
+对象里的程序可以访问及经常修改对象相关连的数据。在面向对象程序编程里，计算机程序会被设计成彼此相关的对象。
+
+面向对象程序设计可以看作一种在程序中包含各种独立而又互相调用的对象的思想，
+这与传统的思想刚好相反：传统的程序设计主张将程序看作一系列函数的集合，或者直接就是一系列对电脑下达的指令。
+面向对象程序设计中的每一个对象都应该能够接受数据、处理数据并将数据传达给其它对象，
+因此它们都可以被看作一个小型的“机器”，即对象。目前已经被证实的是，面向对象程序设计推广了程序的灵活性和可维护性，
+并且在大型项目设计中广为应用。此外，支持者声称面向对象程序设计要比以往的做法更加便于学习，
+因为它能够让人们更简单地设计并维护程序，使得程序更加便于分析、设计、理解。反对者在某些领域对此予以否认。
+
+当我们提到面向对象的时候，它不仅指一种程序设计方法。它更多意义上是一种程序开发方式。在这一方面，
+我们必须了解更多关于面向对象系统分析和面向对象设计（Object Oriented Design，简称OOD）方面的知识。
+许多流行的编程语言是面向对象的,它们的风格就是会透由对象来创出实例。重要的面向对象编程语言包含Common Lisp、Python、C++、Objective-C、Smalltalk、Delphi、Java、Swift、C\#、Perl、Ruby 与 PHP.
+
+\paragraph{面向对象相对面向过程的优点}
+
+1）结构清晰。使人们的编程与实际的世界更加接近，所有的对象被赋予属性和方法，结果编程就更加富有人性化。
+2）封装性。减小外部对内部的影响。封装将对象有关的数据和行为封装成整体来处理，
+使得对象以外的部分不能随意存取对象的内部属性，从而有效地避免了外部错误对它的影响，
+大大减小了查错和排错的难度。
+3）容易扩展，代码重用率高。容易扩展，在大框架不变的情况下很容易就开发出适合自己的功能，
+实现简单，可有效地减少程序的维护工作量，软件开发效率高。
+
+\paragraph{面向对象相对面向过程的缺点}
+
+1）增加工作量。如果一味地强调封装，当进行修改对象内部时，对象的任何属性都不允许外部直接存取，
+则要增加许多没有其他意义、只负责读或写的行为。这会为编程工作增加负担，增加运行开销，并且使程序显得臃肿。
+2）性能低。由于面向更高的逻辑抽象层，使得面向对象在实现的时候，不得不做出性能上面的牺牲，
+计算时间和空间存储大小的都开销很大。
+
 \section{非技术类}
 
 团队水准/文化
