@@ -238,6 +238,8 @@ Donald \textsc{Knuth}
 		\hline
 		13 & 蒋小强 & 2016-02-05 & 添加RESTful API授权流程\\
 		\hline
+		14 & 蒋小强 & 2016-06-11 & 添加Wireshark捕获包与TCP协议结合理解相关内容\\
+		\hline
 	\end{tabular}
 \end{table}
 
@@ -274,12 +276,46 @@ they strive to achieve a balance between quality and speed of execution.}
 
 \chapter{规范准则}
 
-集群、负载均衡、排队、分库分表、锁、缓存
+集群、负载均衡、排队、分库分表、锁、缓存。
+编程语言虽然该学，但是学习计算机算法和理论更重要，因为计算机算法和理论更重要，
+因为计算机语言和开发平台日新月异，但万变不离其宗的是那些算法和理论，例如数据结构、算法、编译原理、计算机体系结构、关系型数据库原理等等。
 
 
 \clearpage
 
 \section{程序设计原则}
+
+\subsection{编程经验}
+
+\paragraph{所有事情所花费的时间总是比你预期的要长}
+
+即使一切进展顺利，我们也很难对功能所需的时间做出正确的预算。并且，开发软件时碰到各种意想不到的问题是非常常见的。
+一个简单的合并操作会导致一系列小bug，一次框架升级意味着一些函数必须改变或者一些API不按照你想象的那样工作。
+
+Hofstadter Law（ 霍夫施塔特定律）其实道出了真谛：做事所花费的时间总是比你预期的要长，
+即使你在预期中已经考虑了 Hofstadter Law（ 霍夫施塔特定律）。
+
+\paragraph{从小事做起，然后再扩展}
+
+无论是创建一个新的系统，还是在现有的系统中添加新的功能，
+我总是从一个简单到几乎没有任何所需功能的版本开始，然后再一步一步地解决问题，
+直到满意为止。我从来没有妄想过能够一步登天。相反，我一边开发一边学习，
+同时新掌握的信息还可以用于解决方案中。
+我很喜欢 John Gall 的这句话：
+“复杂系统总是源于简单系统的演化。”
+
+\subsection{程序语言喜好统计}
+
+图\ref{fig:YourFavoriteDislikeProgramLanguage}是Hacker News对编程语言的喜好做的一个统计。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{YourFavoriteDislikeProgramLanguage.png}
+	\caption{对编程语言的喜好}
+	\label{fig:YourFavoriteDislikeProgramLanguage}
+\end{figure}
+
+
 
 \subsection{Architectural Requirements}
 
@@ -308,7 +344,7 @@ Performance/Availability/Scalability/Security
 你就需要对代码进行一次新的提炼，抽象。
 一次且仅一次（once and only once，简称OAOO）又称为 Don't repeat yourself（不要重复你自己，简称DRY）或一个规则，
 实现一次(one rule, one place)是面向对象编程中的基本原则，程序员的行事准则。旨在软件开发中，减少重复的信息。
-DRY的原则是:系统中的每一部分，都必须有一个单一的、明确的、权威的代表──指的是（由人编写而非机器生成的）代码和测试所构成的系统，
+DRY的原则是:系统中的每一部分，都必须有一个单一的、明确的、权威的代表:指的是（由人编写而非机器生成的）代码和测试所构成的系统，
 必须能够表达所应表达的内容，但是不能含有任何重复代码。当DRY原则被成功应用时，
 一个系统中任何单个元素的修改都不需要与其逻辑无关的其他元素发生改变。此外，与之逻辑上相关的其他元素的变化均为可预见的、均匀的，并如此保持同步。
 软件重复出现至少会导致以下问题： 
@@ -435,6 +471,21 @@ DIP的两大原则：
 
 \subsection{读写分离}
 
+OneProxy是平民软件完全自主开发的分布式数据访问层，帮助用户在MySQL/PostgreSQL集群上快速搭建支持分库分表的分布式数据库中间件，
+也是一款具有SQL白名单（防SQL注入）及IP白名单功能的SQL防火墙软件。
+采用与MySQL Proxy一致的反向协议输出模式，对应用非常简单和透明易用，
+让用户畏惧的分库分表（Horizontal Partitioning）工作变得极其简单可控！
+基于Libevent机制实现，单个实例可以实现25万的SQL转发能力，用一个OneProxy节点可以带动整个MySQL集群。
+
+互联网企业在开源软件的基础之上打造了足以支撑每天十亿笔交易、支付处理能力的在线系统，
+其中分布式架构在其中发挥了关键的作用。在架构里面又分为应用层架构和数据层架构，
+应用层架构着重于解决应用之间的远程调用、服务的发现、消息的流转，
+数据层架构着重于解决底层数据库、缓存等的透明扩展。关系数据库的水平扩展，
+或者说MySQL数据库的水平扩展能力是架构中的关键所在，OneProxy是一款构建在MySQL数据库之上的透明数据访问中间件，
+由在互联网行业（电商、互联网金融）工作多年的资深架构师精心打造，旨在降底对上层应用开发要求，
+实现对应用基本透明的底层数据库单点切换(Failover)、读写分离、水平拆分功能，
+使任何公司都可以轻松地拥有与大型互联网企业一样底层数据库扩展能力，也不用受制于开发语言的限制，以帮助业务实现再一次腾飞。
+
 \subsection{动静分离}
 
 \subsection{数据库表拆分\&分片}
@@ -506,6 +557,15 @@ DAO 这些技术。随着流量变大，使用动静分离、读写分离、主�
 面对更大的流量时，通过垂直拆分、服务化、反向代理、开发框架（站点/服务）等等，不断提升高可用。
 在面对上亿级的更大流量时，通过中心化、柔性服务、消息总线、自动化（回归，测试，运维，监控）来迎接新的挑战。
 未来的就是继续实现 移动化，大数据实时计算，平台化
+
+\subsection{一般网站架构}
+
+网站架构一般分为网页缓存层、负载均衡层、Web层、数据库层、文件服务器层。
+Nginx已经具备Squid所拥有的Web缓存加速功能。此外，Nginx对多核CPU的利用胜过Squid，
+现在越来越多的架构师都喜欢将Nginx同时作为”负载均衡服务器”与”Web缓存服务器”来使用
+
+
+
 
 \section{编码规范(Programming Specification)/编程风格(Programming Style)}
 
@@ -798,6 +858,25 @@ namespace $rootnamespace$
 \footnotetext[2]{Preview用于存放一些练习的功能页面，集成一些第三插件实例或者实例代码都可以放在里面}
 \footnotetext[3]{Vender(第三方)存放一些可能被修改的第三方插件及一些自个封装插件}
 
+\subsection{目录结构}
+
+\begin{lstlisting}
+root
+	|--Source
+	|	|--Plugin
+	|	|	|--Plugin 1
+	|	|	|--Plugin 2
+	|	|--Project A
+	|	|--Project B
+	|--Test
+	|	|--Test Project A
+	|	|--Test Project B
+	|--Tool
+	|	|--Tool1
+	|	|--Tool2	
+\end{lstlisting}
+
+
 \subsection{代码规范检查}
 
 StyleCop analyzes C\# source code to enforce a set of style and consistency rules. It can be run from inside of Visual Studio or integrated into an MSBuild project. StyleCop has also been integrated into many third-party development tools.
@@ -826,7 +905,7 @@ if (requestUrlObj != null)
 }
 \end{lstlisting}
 
-\section{效率（Performance）}
+\section{运行效率（Performance）}
 
 \subsection{避免开辟内存}
 
@@ -1002,6 +1081,34 @@ Tengine是由淘宝网发起的Web服务器项目。
 
 基于Tengine：凤凰网、淘宝、土豆。
 
+\subsubsection{Phusion Passenger}
+
+Phusion Passenger是一个流行的Web应用服务器，它最初是针对Ruby的，
+现在也支持Node.js应用。在今年的早些时候该功能被引入了Passenger的企业版中，
+但是现在已经开源并随着最近的4.0.21免费版发布。
+Passenger能与Apache或者Nginx Web服务器集成，
+旨在成为一个服务、监控和扩展Web应用程序的完整解决方案。
+Phusion公司的 总部位于荷兰 ，他们宣称在Passenger中运行 Node.js 应用的好处包括：
+多租户——通过最小的配置运行一些应用的能力
+监控——自动启动Node.js进程、如果进程崩溃了则重启它们
+扩展——根据要处理的请求的数量增加或者减少进程的数量
+统计——帮助显示运行中进程的状态的工具
+Passenger的作者 还指出 ，与Apache/Nginx集成还带来了其他的好处，
+例如：加速了静态文件服务，阻止了很多常见的攻击和慢客户端。
+
+\subsection{Apache}
+
+配置文件位置(根据不同的操作系统而定)：
+
+\begin{lstlisting}
+/etc/apache2/httpd.conf
+/etc/apache2/apache2.conf
+/etc/httpd/httpd.conf
+/etc/httpd/conf/httpd.conf
+\end{lstlisting}
+
+
+
 
 \subsection{常见架构}
 
@@ -1076,7 +1183,7 @@ WCF的配置编辑可用微软提供的工具\textbf{SvcConfigEditor.exe}，
 然而，Web架构的设计者们却有意避免采用这两种架构风格。
 主要的原因是运行Web应用的互联网环境，与运行企业应用的企业内网环境有很大的差别。 
 
-\section{规范(Specification)}
+\section{基础应用}
 
 REST可以降低开发的复杂度，提高系统的可伸缩性，增强系统的可扩展性，简化应用系统之间的集成，
 一些新产品的开发甚至已经几乎完全抛弃了传统的类似JSP的技术，转而大量使用REST风格的构架设计， 即在服务器端所有商业逻辑都以REST API的方式暴露给客户端，所有浏览器用户界面使用widget，Ajax，HTML5 等技术，
@@ -1227,6 +1334,24 @@ public Explorer a(string a)
 \begin{lstlisting}[language=HTML]
 https://api.example.com/zoos
 \end{lstlisting}
+
+\subsection{WCF测试客户端}
+
+Windows Communication Foundation(WCF)测试客户端(WcfTestClient.exe)是一个 GUI 工具，
+使用该工具，用户可以输入测试参数、将该输入提交给服务并查看服务发回的响应。
+当与 WCF 服务主机结合时，它可以提供完美的服务测试体验。
+the MSDN documentation tells you to navigate to the 
+
+\begin{lstlisting}[language=Bash]
+%SystemDrive%\Program Files\Microsoft Visual Studio 10.0\Common7\IDE
+\end{lstlisting}
+
+folder. BUT, if you’re running 64-bit Windows, you won’t find it there. You’ll need to look in
+\begin{lstlisting}[language=Bash]
+%SystemDrive%\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE folder
+\end{lstlisting}
+ 
+instead.
 
 \subsection{WCF和Web Service的异同}
 
@@ -2734,7 +2859,40 @@ CookieContainer Cookie = new CookieContainer();
 request.CookieContainer = Cookie;
 \end{lstlisting}
 
-\subsection{WCF异常处理}
+\subsection{调取HTTPS类型的Web Service}
+
+服务端的Web Service采用Java实现，在调取HTTPS类型的Web Service时跟调取普通的服务区别不大。
+在传入HTTPS类型的URL时提示：提供的 URI 方案“https”无效，应为“http”。
+只需要将配置文件的安全配置节修改为Transport即可，Transport代表采用HTTPS连接，
+如下代码片段所示。
+
+\begin{lstlisting}[language=XML]
+<security mode="Transport" />
+\end{lstlisting}
+
+Transport seems to require HTTPS to encrypt credentials and throws an exception if there is no SSL. 
+TransportCredentialsOnly will send the credentials in plain text and unencrypted and is recommended for testing ONLY!
+所有的安全类型如表\ref{table:WebServiceSecurityChoice}所示：
+
+\begin{table}\caption[Web Service Security Choice]{Security Choice}
+	\label{table:WebServiceSecurityChoice}					
+	\medskip
+	\centering		
+	\begin{tabular}{|c|p{10cm}|}
+		\hline
+		\multirow{1}{*}{Member Name}		
+		& \multicolumn{1}{c|}{Description}\\			
+		\cline{1-2}
+		None &  The SOAP message is not secured during transfer. This is the default behavior.\\
+		\hline
+		Transport &  Security is provided using HTTPS. The service must be configured with SSL certificates. The SOAP message is protected as a whole using HTTPS. The service is authenticated by the client using the service’s SSL certificate. The client authentication is controlled through the ClientCredentialType.\\
+		\hline	
+	\end{tabular}
+\end{table}
+
+详细可参考：\url{https://msdn.microsoft.com/en-us/library/system.servicemodel.basichttpsecuritymode(v=vs.100).aspx}
+
+\section{WCF异常处理}
 
 在WCF开发阶段，如果想在客户端访问WCF时看到服务端详细的错误信息，
 可增加配置。
@@ -3639,6 +3797,15 @@ Distinct函数在比较时，先比较的HashCode值，
 wantGoIds = wantGoIds.Distinct(new WantGoPlaceCompare()).ToList();
 \end{lstlisting}
 
+\subsection{List中的元素排序}
+
+\paragraph{使用Linq进行排序}
+
+如下的代码按照司机出发时间(Starttime)降序(descending)排列。
+
+\begin{lstlisting}[language={[Sharp]C}]
+var sortedDriverActionInfos = from items in driverActionInfos orderby items.Starttime descending select items;
+\end{lstlisting}
 \subsection{Unix时间戳格式转换}
 
 经常发现很多地方使用一个时间戳\footnote{时间戳,又叫Unix Stamp. 
@@ -4013,6 +4180,122 @@ foreach (var roadLineModel in roadLineModels.Select((currentModel, currentIndex)
 \end{lstlisting}
 
 
+\subsection{byte操作}
+
+不論是Socket or Serial都是要使用byte[]格式，所以學會轉byte[]是寫程式需要處理的第一步。
+将byte[]转换为string:
+
+\begin{lstlisting}[language={[Sharp]C}]
+var str = System.Text.Encoding.Default.GetString(result);
+\end{lstlisting}
+
+将byte[]转换为十六进制(Hexadecimal)字符串：
+
+\begin{lstlisting}[language={[Sharp]C}]
+public static string ByteArrayToString(byte[] byteArr)
+{
+	string hex = BitConverter.ToString(byteArr);
+	return hex.Replace("-","");
+}
+\end{lstlisting}
+
+将十六进制字符转换为byte[]，如下代码片段所示：
+
+\begin{lstlisting}[language={[Sharp]C}]
+public byte[] StringToByteArray(string hex) {
+	return Enumerable.Range(0, hex.Length)
+					 .Where(x => x % 2 == 0)
+					 .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
+					 .ToArray();
+}
+\end{lstlisting}
+
+将整型int转换为byte[]，也可以适用于将ushort类型转换为byte[]，
+阵列索引值越低，存放高位元组，這称为 Big Endian，
+字串由左至右阅读，转换后，阵列索引值越低，存放低位元组，这称为Little Endian，
+使用BitConverter转换默认情况下为Little Endian，
+Little Endian和Big Endian只是排列分布顺序颠倒而已，就看Server吃什么样的顺序，
+网络字节序：TCP/IP各层协议将字节序定义为Big-Endian，
+因此TCP/IP协议中使用的字节序通常称之为网络字节序。
+我们可以透过Array.Reverse方法來顛倒阵列的顺序，如下代码片段所示：
+
+\begin{lstlisting}[language={[Sharp]C}]
+byte[] bytes = BitConverter.GetBytes(i);
+//如果是小端，转化为大端，因为TCP/IP定义的是大端(Big-Endian)
+if(BitConverter.IsLittleEndian) Array.Reverse(hex)
+\end{lstlisting}
+
+互联网使用的网络字节顺序采用大端模式进行编址，而主机字节顺序根据处理器的不同而不同，
+如PowerPC处理器使用大端模式，而Pentuim处理器使用小端模式。
+The order of bytes in the array returned by the GetBytes method depends on whether the computer architecture is little-endian or big-endian.
+将12位手机号转换为6字节数组BCD码：
+
+\begin{lstlisting}[language={[Sharp]C}]
+public byte[] ConvertToBcd6(string mobileNo)
+{
+	var mobileArray = new byte[6];
+	if (mobileNo.Length != 12) return mobileArray;
+	for (var i = 0; i < 6; i++)
+	{
+		mobileArray[i] = Convert.ToByte(mobileNo.Substring(i * 2, 2), 16);
+	}
+	return mobileArray;
+}  
+\end{lstlisting}
+
+\paragraph{Decimal转换为BCD}
+
+较通用的将Decimal转换为BCD.
+
+\begin{lstlisting}[language={[Sharp]C}]
+private IEnumerable<Byte> DecimalToBcd(Decimal value)
+{
+	Byte currentByte = 0;
+	Boolean odd = true;
+	while (value > 0)
+	{
+		if (odd)
+			currentByte = 0;
+		Decimal rest = value % 10;
+		value = (value - rest) / 10;
+		currentByte |= (Byte)(odd ? (Byte)rest : (Byte)((Byte)rest << 4));
+		if (!odd)
+			yield return currentByte;
+		odd = !odd;
+	}
+	if (!odd)
+		yield return currentByte;
+}  
+\end{lstlisting}
+
+
+\subsection{获取字符串中的数字}
+
+获取字符串中的数字方法如下：
+
+\begin{lstlisting}[language={[Sharp]C}]
+public string GetNumberFromString(string mixedString)
+{
+	var resultNumber = string.Empty;
+	for (var i = 0; i < mixedString.Length; i++)
+	{
+		if (char.IsNumber(mixedString, i))
+		{
+			resultNumber += mixedString.Substring(i, 1);
+		}
+		else
+		{
+			if (mixedString.Substring(i, 1) == ",")
+			{
+				resultNumber += mixedString.Substring(i, 1);
+			}
+		}
+	}
+	return resultNumber;
+}
+\end{lstlisting}
+
+
 \section{Windows服务(Windows Service)}
 
 实现从有赞系统定时将订单数据导入本地数据库，导入的同时，对购买商品的用户
@@ -4070,13 +4353,12 @@ sc stop OrderImportService
 /// change configuration file
 /// </summary>
 /// <param name="createdTime"></param>
-[TestCase("2015-06-122 14:37:59")]
 public void ChangeConfiguration(string createdTime)
 {
-	string exePath = System.AppDomain.CurrentDomain.BaseDirectory + @"\RRInterop.exe";     
-    string appDomainConfigFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
-    Configuration config = ConfigurationManager.OpenExeConfiguration(exePath);
-    AppSettingsSection appSettings = (AppSettingsSection)config.GetSection("appSettings");
+	var exePath = System.AppDomain.CurrentDomain.BaseDirectory + @"\RRInterop.exe";     
+    var appDomainConfigFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+    var config = ConfigurationManager.OpenExeConfiguration(exePath);
+    var appSettings = (AppSettingsSection)config.GetSection("appSettings");
     appSettings.Settings.Remove("queryTime");
     appSettings.Settings.Add("queryTime", createdTime);
     config.Save();
@@ -4127,32 +4409,6 @@ string result=string.Format("{0:N}", 250000);
 \end{lstlisting}
 
 \section{参数验证}
-
-\subsection{公共方法}
-
-将需要验证的方法写入公共类中。
-
-\begin{lstlisting}[language={[Sharp]C}]
-public static class ArgumentHelper
-{ 
-    public static void RequireNotNullOrEmpty(string value, string argumentName)
-    {
-        if (string.IsNullOrEmpty(value))
-        {
-            throw new ArgumentException("The value can't be null or empty", argumentName);
-        }
-    }
-}
-\end{lstlisting}
-
-在调用的时候只需要一句代码即可，调用公共类中相应的验证方法。
-
-\begin{lstlisting}[language={[Sharp]C}]
-public bool Register(string name, int age)
-{
-    ArgumentHelper.RequireNotNullOrEmpty(name,"name");    
-}
-\end{lstlisting}
 
 \subsection{代码契约（Code Contract）}
 
@@ -4286,7 +4542,38 @@ INI文件格式是某些平台或软件上的配置文件的非正式标准，�
 INI是英文“初始化”（initialization）的缩写。正如该术语所表示的，
 INI文件被用来对操作系统或特定程序初始化或进行参数设置。
 
+\subsection{自动注册COM组件}
+
+\begin{lstlisting}[language={[Sharp]C}]
+#region 是否已注册控件
+/// <summary>
+/// 
+/// </summary>
+/// <param name="classId"></param>
+/// <returns></returns>
+public static void IsDllRegisteredSuccess(string[] classId)
+{
+	foreach (var currentClassId in classId)
+	{
+		var registerKey = Registry.ClassesRoot.OpenSubKey("CLSID\\" + currentClassId);
+		if (registerKey != null) continue;
+		var i = DllRegisterServer();
+		if (i < 0)
+		{
+			Log.Logger.Error("Control registered failed");
+		}
+		else
+		{
+			Log.Logger.Info("Control registered suceess");
+		}
+	}
+}
+#endregion
+\end{lstlisting}
+
 \chapter{Web}
+
+Web应用这些年来变得越来越强大，但相比于桌面应用能够完全访问计算机硬件，Web应用还有一些差距。
 
 1999 HTML
 
@@ -4777,6 +5064,7 @@ Optionally, when you need to specify credentials and a method to access the virt
 方便性的提升性能。
 
 \section{HTTP}
+
 \subsection{完整的HTTP请求流程}
 
 HTTP通信机制是在一次完整的HTTP通信过程中，
@@ -4817,10 +5105,7 @@ HTTP是比TCP更高层次的应用层协议，根据规则，
 	\label{fig:TCPThreeHanding}
 \end{figure}
 
-
 \end{itemize}
-
-
 
 \item{Web浏览器向Web服务器发送请求命令}~~
 一旦建立了TCP连接，Web浏览器就会向Web服务器发送请求命令。
@@ -7020,6 +7305,59 @@ NGINX 通常被用于负载均衡：想了解更多，请参考这些资料，
 
 \subsection{缓存静态和动态内容}
 
+\section{Electron}
+
+\subsection{安装}
+
+全局安装electron
+
+\begin{lstlisting}[language=Bash]
+# Install the ‘electron’ command globally in your \$PATH
+npm install electron-prebuilt -g
+\end{lstlisting}
+
+在安装时提示如下错误，Downloading electron-v1.2.1-win32-x64.zip
+Error: connect ETIMEDOUT 54.231.18.161:443，直接ping IP：54.231.18.161失败，
+到环境变量中将下载地址改成淘宝的镜像ID即可：
+
+\begin{lstlisting}
+变量名：ELECTRON_MIRROR
+变量值：http://npm.taobao.org/mirrors/electron/
+\end{lstlisting}
+
+安装打包工具electron-packager
+
+\begin{lstlisting}[language=Bash]
+npm install -g electron-packager
+\end{lstlisting}
+
+查看npm已经安装的包：
+
+\begin{lstlisting}[language=Bash]
+npm ls
+npm ls -g
+\end{lstlisting}
+
+
+NodeJS的安装目录在D:/Program Files/nodejs.
+
+
+\subsection{第一个程序}
+
+\paragraph{Error: Cannot find module 'app'}明确全局模块的默认安装位置:npm root -g
+接着查看全局模块的默认搜索路径：
+
+\begin{lstlisting}[language=Bash]
+node
+global.module.paths
+\end{lstlisting}
+
+
+
+
+\subsection{打包}
+
+
 
 
 \section{常见问题}
@@ -7159,6 +7497,35 @@ public static void AddEnvironmentPaths(IEnumerable<string> paths)
 
 这样添加环境变量对系统的环境变量没有影响。
 
+\subsection{窗口句柄}
+
+在Windows中，句柄是一个系统内部数据结构的引用。例如当你操作一个窗口，或说是一个Delphi窗体时，
+系统会给你一个该窗口的句柄，系统会通知你：你正在操作142号窗口，
+就此你的应用程序就能要求系统对142号窗口进行操作——移动窗口、改变窗口大小、把窗口最小化等等。
+实际上许多Windows API函数把句柄作为它的第一个参数，如GDI（图形设备接口）句柄、菜单句柄、实例句柄、位图句柄等，
+不仅仅局限于窗口函数。换句话说，句柄是一种内部代码，通过它能引用受系统控制的特殊元素，如窗口、位图、图标、内存块、光标、字体、菜单等。
+
+\subsection{Windows弹出窗体}
+
+将最小化窗体弹出并置于最前端。
+
+\begin{lstlisting}[language={[Sharp]C}]
+frmBatchSendMessage.Show();
+if (frmBatchSendMessage.WindowState == FormWindowState.Minimized)
+{
+	frmBatchSendMessage.WindowState = FormWindowState.Normal;
+}
+frmBatchSendMessage.Activate();
+\end{lstlisting}
+
+\paragraph{MessageBox}MessageBox的关闭按钮在MessageBoxButtons为YesNo枚举类型时不可用，
+可以采用MessageBoxButtons.OKCancel，如果想让MessageBox始终置于窗体的最前端，
+MessageBoxOptions使用DefaultDesktopOnly属性。如代码所示：
+
+\begin{lstlisting}[language={[Sharp]C}]
+var result = MessageBox.Show(\@"系统检测到新版本，是否升级", \@"更新提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);  // MB\_TOPMOST
+\end{lstlisting}
+
 \section{常见问题}
 
 \subsection{关于嵌入互操作类型（Embed Interop Types）}
@@ -7206,7 +7573,59 @@ Each managed assembly has a different Type object to represent its view of the C
 The common language runtime supports type equivalence between these different views for interfaces,
  structures, enumerations, and delegates.  
 
-\subsection{Class not registered (Exception from HRESULT: 0x80040154 (REGDB\_E\_CLASSNOTREG))}
+\subsection{Class not registered}
+
+Class not registered (Exception from HRESULT: 0x80040154 (REGDB\_E\_CLASSNOTREG))
+
+\subsection{试图加载格式不正确的程序}
+
+在Manage Code中加载Native dll程序时出错，错误如下：
+
+\begin{lstlisting}[language={[Sharp]C}]
+“System.BadImageFormatException”类型的第一次机会异常在 MVSP.Common.dll 中发生
+其他信息: 试图加载格式不正确的程序。 (异常来自 HRESULT:0x8007000B)
+\end{lstlisting}
+
+程序在64位的机器上就会用运行为64位，而64程序是不能加载32位dll的。
+dll文件是在64位开发环境下下编译的，而你现在的调用程序是的32位，所以无法调用。
+
+\subsection{Dictionary索引超出数组界限}
+
+在向Dictionary中添加项时提示此错误，
+原因是程序是多线程，Directory不是线程安全的，
+解决方案是添加lock语句。
+
+\begin{lstlisting}[language={[Sharp]C}]
+lock (DataManager.VehicleLatestAlarmInfoList)
+{
+	if (!DataManager.VehicleLatestAlarmInfoList.ContainsKey(vehicleInfo.VehicleID))
+	{
+		DataManager.VehicleLatestAlarmInfoList.Add(vehicleInfo.VehicleID, DateTime.Now);
+	}
+	else
+	{
+		DataManager.VehicleLatestAlarmInfoList[vehicleInfo.VehicleID] = DateTime.Now;
+	}
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python]
+import string
+\end{lstlisting}
+
+\subsection{System.ComponentModel.Design.ExceptionCollection}
+
+在Visual Studio打开设计器时提示此错误，
+The real problem of the "ExceptionCollection" being thrown is that when there is a WSOD (White Screen of Darn) indicating a designer load issue, 
+the designer gets unloaded. In your project, the RussTabStrip is throwing exceptions. 
+These get caught by our unload method and get displayed in the dialog box you see.
+So, to fix this you should:
+
+1) Start a second instance of visual studio
+2) go the the Tools menu, "Attach to process", select the 'devenv.exe' process, and click the 'attach' button.
+3) In the Debug/Exceptions menu 
+4) Open the designer with the debugger attached
+5) The second visual studio will break on your error.
 
 \chapter{ASP.NET MVC(Apache License 2.0)}
 
@@ -9445,6 +9864,20 @@ END
 
 \subsection{存储过程（Procedure）}
 
+\section{mysql}
+
+\subsection{常用查询}
+
+\begin{lstlisting}[language=Bash]
+mysql --host=localhost --user=readmine_admin --password=123
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('newpass');
+
+#To see which user you are, and whose permissions you have
+select user(), current_user();
+\end{lstlisting}
+
+
+
 \section{定时任务}
 
 工作中经常忘记提交代码，
@@ -9526,7 +9959,17 @@ schtasks /delete /TN "auto update SVN" `\makeremark{移除作业名称为“auto
 进行网络攻击是一件系统性很强的工作，其主要工作流程是：
 收集情报，远程攻击，远程登录，取得普通用户的权限，
 取得超级用户的权限，留下后门，清除日志。
-主要内容包括目标分析，文档获取，破解密码，日志清除等技术。
+主要内容包括目标分析，文档获取，破解密码，日志清除等技术，
+如图所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{NormalWebSecurity.jpg}
+	\caption{常见Web攻击}
+	\label{fig:NormalWebSecurity}
+\end{figure}
+
+
 
 \section{Encrypt Algorithms}
 
@@ -9856,6 +10299,21 @@ chrome://settings/passwords
 \item{WiFi通常使用NAT进行外网和内网的地址转换，所有内网客户端都共享一个外网地址。这意味着，被劫持的Session，看上去很像来自原来的登录者}
 \end{enumerate}
 
+\section{HTTPS}
+
+\subsection{TLS历史}
+
+1994年，NetScape公司设计了SSL协议（Secure Sockets Layer）的1.0版，但是未发布。
+1995年，NetScape公司发布SSL 2.0版，很快发现有严重漏洞。
+1996年，SSL 3.0版问世，得到大规模应用。
+1999年，互联网标准化组织ISOC接替NetScape公司，发布了SSL的升级版TLS 1.0版。
+2006年和2008年，TLS进行了两次升级，分别为TLS 1.1版和TLS 1.2版。最新的变动是2011年TLS 1.2的修订版。
+
+目前，应用最广泛的是TLS 1.0，接下来是SSL 3.0。但是，主流浏览器都已经实现了TLS 1.2的支持。
+TLS 1.0通常被标示为SSL 3.1，TLS 1.1为SSL 3.2，TLS 1.2为SSL 3.3。
+SSL/TLS协议的基本思路是采用公钥加密法，也就是说，客户端先向服务器端索要公钥，
+然后用公钥加密信息，服务器收到密文后，用自己的私钥解密。
+
 \section{密码哈希加盐（Salted Password Hashing）}
 
 随机盐的优势是，即使对方知道算法，也很难搞，
@@ -9990,6 +10448,9 @@ Nmap脚本引擎(Nmap Script Engine)是Nmap最有力灵活的的一个特性。
 
 \begin{lstlisting}[language=Bash]
 nmap -F -sT -v nmap.org
+# 主机发现，生成存活主机列表
+nmap -sn -T4 -oG Discovery.gnmap 192.168.24.0/24
+grep "Status: Up" Discovery.gnmap | cut -f 2 -d ' ' > LiveHosts.txt
 \end{lstlisting}
 
 \begin{itemize}
@@ -10007,6 +10468,8 @@ nmap -p 0-10000 -A -v <Host>
 
 \item{-v}获取扫描的信息
 \item{-sT(Scan using TCP)}采用的是TCP扫描，不写也是可以的，默认采用的就是TCP扫描
+\item{-sn参数表示ping扫描，禁用端口扫描}
+\item{-oG表示输出Grepable格式}
 \end{itemize}
 
 Nmap输出的是扫描目标的列表，以及每个目标的补充信息，至于是哪些信息则依赖于所使用的选项。
@@ -10069,6 +10532,26 @@ nmap -T4 -A -v 218.201.46.124
 提供可靠的数据传输。如Telnet服务的23端口。
 2）UDP端口是指用户数据包协议端口，不需要在客户端和服务器之间建立连接。
 常见的端口有DNS服务的53端口。
+有的服务器为了安全会修改默认端口，
+比如将ssh默认的22端口修改为50000，
+不过通过Nmap扫描也会很容易的发现。
+详细的扫描指令如下所示：
+
+\begin{lstlisting}[language=Bash]
+nmap -sS -sU -T4 -A -v -PE -PP -PS80,443 -PA3389 -PU40125 -PY -g 53 --script "default or (discovery and safe)" 12.26.32.14 
+\end{lstlisting}
+
+\begin{itemize}
+	\item{-sS参数(TCP SYN Scan)可以利用基本的SYN扫描方式探测其端口开放状态}
+	\item{-sU参数代表UDP Scan}
+	\item{-T<0-5>: Set timing template (higher is faster)}
+	\item{-A: Enable OS detection, version detection, script scanning, and traceroute}
+	\item{-v: Increase verbosity level (use -vv or more for greater effect)}
+	\item{-PE/PP/PM: ICMP echo, timestamp, and netmask request discovery probes}
+	\item{-PS/PA/PU/PY[portlist]: TCP SYN/ACK, UDP or SCTP discovery to given ports}
+	\item{-g/--source-port <portnum>: Use given port number}
+\end{itemize}
+
 
 \paragraph{"ppp0" is not an ethernet device}在使用nmap扫描时候，提示 
 
@@ -10076,7 +10559,8 @@ nmap -T4 -A -v 218.201.46.124
 Only ethernet devices can be used for raw scans on Windows, and "ppp0" is not an ethernet device. Use the --unprivileged option for this scan. QUITTING!
 \end{lstlisting}
 
-因为用Nmap扫描时，不能用pppoe的拨号口，只能用以太网口。根据提示带参数--unprivileged就可以了,注意扫描的命令不能带-A参数，
+因为用Nmap扫描时，不能用pppoe的拨号口，只能用以太网口。
+根据提示带参数--unprivileged就可以了,注意扫描的命令不能带-A参数，
 否则会要求root权限，无法启动扫描。 
 
 
@@ -10346,6 +10830,26 @@ Find Incoming Connection and right-click on it and click Properties.
 如果VPN服务端在局域网中，在传入的IP属性中指定IP地址段时从192.168.1.2开始（图中的IP需要修改），
 因为192.168.1.1为路由器的地址，从192.168.1.1开始会导致VPN服务器会分配到路由器的默认IP，
 导致路由器的部分功能不可用。
+
+\section{DIRB}
+
+DIRB is a Web Content Scanner. It looks for existing (and/or hidden) Web 
+Objects. It basically works by launching a dictionary based attack against 
+a web server and analizing the response.
+
+DIRB comes with a set of preconfigured attack wordlists for easy usage but 
+you can use your custom wordlists. Also DIRB sometimes can be used as a 
+classic CGI scanner, but remember is a content scanner not a vulnerability 
+scanner.
+
+DIRB main purpose is to help in professional web application auditing. 
+Specially in security related testing. It covers some holes not covered by 
+classic web vulnerability scanners. DIRB looks for specific web objects that 
+other generic CGI scanners can't look for. It doesn't search vulnerabilities 
+nor does it look for web contents that can be vulnerables.
+
+
+
 
 \chapter{Node.js}
 
@@ -10846,6 +11350,8 @@ you'll only have something like "Object reference not set to an instance of an o
 
 \subsection{Windows Form中统一异常处理}
 
+适当的使用try捕获异常，异常信息建议由最上层的框架捕获，
+将来修改起来相对容易，越少try...catch的程序越美。
 WinFrom的Application对象本身就提供了ThreadException时间来捕捉为处理的异常
 
 \begin{lstlisting}[language={[Sharp]C}]
@@ -10863,16 +11369,14 @@ static void Main()
 
 static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
 {
-    string str = GetExceptionMsg(e.Exception, e.ToString());
-    MessageBox.Show(str, "系统错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-    //LogManager.WriteLog(str);
+    var exceptionMessage = GetExceptionMsg(e.Exception, e.ToString());
+    Log.Logger.Error(exceptionMessage);
 }
 
 static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
 {
-    string str = GetExceptionMsg(e.ExceptionObject as Exception, e.ToString());
-    MessageBox.Show(str, "系统错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-    //LogManager.WriteLog(str);
+    var exceptionMessage = GetExceptionMsg(e.ExceptionObject as Exception, e.ToString());
+    Log.Logger.Error(exceptionMessage);
 }
 
 /// <summary>
@@ -10883,21 +11387,21 @@ static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEv
 /// <returns>异常字符串文本</returns>
 static string GetExceptionMsg(Exception ex,string backStr)
 {
-    StringBuilder sb = new StringBuilder();
-    sb.AppendLine("****************************异常文本****************************");
-    sb.AppendLine("【出现时间】：" + DateTime.Now.ToString());
+    var exceptionContent = new StringBuilder();
+    exceptionContent.AppendLine("***********异常文本**********");
+    exceptionContent.AppendLine("【出现时间】：" + DateTime.Now.ToString(CultureInfo.InvariantCulture));
     if (ex != null)
-    {                
-        sb.AppendLine("【异常类型】：" + ex.GetType().Name);
-        sb.AppendLine("【异常信息】：" + ex.Message);
-        sb.AppendLine("【堆栈调用】：" + ex.StackTrace);
+    {
+	    exceptionContent.AppendLine("【异常类型】：" + ex.GetType().Name);
+	    exceptionContent.AppendLine("【异常信息】：" + ex.Message);
+	    exceptionContent.AppendLine("【堆栈调用】：" + ex.StackTrace);
     }
     else
     {
-        sb.AppendLine("【未处理异常】：" + backStr);
+	    exceptionContent.AppendLine("【未处理异常】：" + backStr);
     }
-    sb.AppendLine("***************************************************************");
-    return sb.ToString();
+    exceptionContent.AppendLine("******************************");
+    return exceptionContent.ToString();
 }
 \end{lstlisting}
 
@@ -10941,7 +11445,7 @@ version numbers, machine type, debug information, and more.Website:http://depend
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=1]{AnalyseDllDependency.jpg}
+	\includegraphics[scale=0.6]{AnalyseDllDependency.jpg}
 	\caption{Dll Dependency}
 	\label{fig:AnalyseDllDependency}
 \end{figure}
@@ -10950,6 +11454,15 @@ version numbers, machine type, debug information, and more.Website:http://depend
 \section{静态文件自动化管理}
 
 \chapter{网络（Network）}
+
+本地的进程间通信（IPC）有很多种方式，但可以总结为下面4类：
+
+\begin{itemize}
+	\item{消息传递（管道、FIFO、消息队列）}
+	\item{同步（互斥量、条件变量、读写锁、文件和写记录锁、信号量）}
+	\item{共享内存（匿名的和具名的）}
+	\item{远程过程调用（Solaris门和Sun RPC）}
+\end{itemize}
 
 \subsection{RAML}
 
@@ -10968,10 +11481,11 @@ Restful Service还有授权问题，自己写出来的代码是不是很不优�
 通常Restful Service返回的数据格式是XML或者Json，
 还要设置服务的输入参数等等，使用起来很复杂。
 本文向你推荐一个开源的库RestSharp轻松消费Restful Service。
-RestSharp是一个开源的.NET平台下REST和Http API的客户端库，
+RestSharp是一个开源的.NET平台下REST和HTTP API的客户端库，
 支持的平台有.NET 3.5/4、Mono、Mono for Android、MonoTouch、Windows Phone 7.1 Mango。
 他可以简化我们访问Restful服务，
-可以到这里下载代码https://github.com/johnsheehan/RestSharp/archives/master更简单的使用NuGet。RestSharp使用Json.Net处理Json数据同Poco对象的序列化。
+可以到这里下载代码\url{https://github.com/johnsheehan/RestSharp/archives/master}更简单的使用NuGet。
+RestSharp使用Json.Net处理Json数据同Poco对象的序列化。
 
 \begin{lstlisting}[language={[Sharp]C}]
 var client = new RestClient { BaseUrl = new Uri(PublicAttribute.WebApiPath) };
@@ -10981,6 +11495,87 @@ IRestResponse response = client.Execute(request);
 \end{lstlisting}
 
 \section{TCP}
+
+\subsection{Ethernet v2}
+
+以太网规定，一组电信号构成一个数据包，叫做“帧”（Frame）。每一帧分成两个部分：标头（Head）和数据（Data）。
+“标头”包含数据包的一些说明项，比如发送者、接受者、数据类型等等；“数据”则是数据包的具体内容。
+“标头”的长度，固定为18字节。“数据”的长度，最短为46字节，最长为1500字节。
+因此，整个“帧”最短为64字节，最长为1518字节，
+如图\ref{fig:700px-Ethernet_Type_II_Frame_format.svg}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{700px-Ethernet_Type_II_Frame_format.svg.png}
+	\caption{Ethernet 2消息头}
+	\label{fig:700px-Ethernet_Type_II_Frame_format.svg}
+\end{figure}
+
+
+如果数据很长，就必须分割成多个帧进行发送。
+在本地可以通过进程PID来唯一标识一个进程，但是在网络中这是行不通的。
+其实TCP/IP协议族已经帮我们解决了这个问题，网络层的“ip地址”可以唯一标识网络中的主机，
+而传输层的“协议+端口”可以唯一标识主机中的应用程序（进程）。
+这样利用三元组（ip地址，协议，端口）就可以标识网络的进程了，网络中的进程通信就可以利用这个标志与其它进程进行交互。
+
+\subsection{传输层(Transport Layer)的由来}
+
+有了MAC地址和IP地址，我们已经可以在互联网上任意两台主机上建立通信。
+接下来的问题是，同一台主机上有许多程序都需要用到网络，比如，你一边浏览网页，
+一边与朋友在线聊天。当一个数据包从互联网上发来的时候，你怎么知道，它是表示网页的内容，还是表示在线聊天的内容？
+也就是说，我们还需要一个参数，表示这个数据包到底供哪个程序（进程）使用。
+这个参数就叫做“端口”（port），它其实是每一个使用网卡的程序的编号。
+每个数据包都发到主机的特定端口，所以不同的程序就能取到自己所需要的数据。
+"端口"是0到65535之间的一个整数，正好16个二进制位。0到1023的端口被系统占用，
+用户只能选用大于1023的端口。不管是浏览网页还是在线聊天，应用程序会随机选用一个端口
+，然后与服务器的相应端口联系。
+"传输层"的功能，就是建立"端口到端口"的通信。相比之下，"网络层"的功能是建立"主机到主机"的通信。
+只要确定主机和端口，我们就能实现程序之间的交流。因此，Unix系统就把主机+端口，
+叫做"套接字"（socket）。有了它，就可以进行网络应用程序开发了。
+
+\subsection{什么是Socket}
+
+上面我们已经知道网络中的进程是通过socket来通信的，那什么是socket呢？
+socket起源于Unix，而Unix/Linux基本哲学之一就是“一切皆文件”，
+都可以用“打开open –> 读写write/read –> 关闭close”模式来操作。
+我的理解就是Socket就是该模式的一个实现，socket即是一种特殊的文件，一些socket函数就是对其进行的操作（读/写IO、打开、关闭）。
+socket一词的起源是在组网领域的首次使用是在1970年2月12日发布的文献IETF RFC33中发现的，
+撰写者为Stephen Carr、Steve Crocker和Vint Cerf。根据美国计算机历史博物馆的记载，
+Croker写道：“命名空间的元素都可称为套接字接口。一个套接字接口构成一个连接的一端，
+而一个连接可完全由一对套接字接口规定。”计算机历史博物馆补充道：“这比BSD的套接字接口定义早了大约12年。”
+
+\subsection{三次握手}
+
+我们知道tcp建立连接要进行“三次握手”，即交换三个分组。大致流程如下：
+
+\begin{itemize}
+	\item{客户端向服务器发送一个SYN J}
+	\item{服务器向客户端响应一个SYN K，并对SYN J进行确认ACK J+1}
+	\item{客户端再想服务器发一个确认ACK K+1}
+\end{itemize}
+
+从图\ref{fig:ThreeHandShake}可以看出，当客户端调用connect时，触发了连接请求，向服务器发送了SYN J包，
+这时connect进入阻塞状态；服务器监听到连接请求，即收到SYN J包，
+调用accept函数接收请求向客户端发送SYN K ，ACK J+1，这时accept进入阻塞状态；
+客户端收到服务器的SYN K ，ACK J+1之后，这时connect返回，并对SYN K进行确认；
+服务器收到ACK K+1时，accept返回，至此三次握手完毕，连接建立。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.7]{ThreeHandShake.png}
+	\caption{3次握手}
+	\label{fig:ThreeHandShake}
+\end{figure}
+
+http://www.cnblogs.com/skynet/archive/2010/12/12/1903949.html
+
+\subsection{子网掩码}
+
+子网掩码(subnet mask)是每个使用互联网的人必须要掌握的基础知识，只有掌握它，才能够真正理解TCP/IP协议的设置。
+子网掩码——屏蔽一个IP地址的网络部分的“全1”比特模式。对于A类地址来说，
+默认的子网掩码是255.0.0.0；对于B类地址来说默认的子网掩码是255.255.0.0；
+对于C类地址来说默认的子网掩码是255.255.255.0。
+
 
 \subsection{TCP流量控制}
 
@@ -10997,38 +11592,159 @@ IRestResponse response = client.Execute(request);
 对方就在确认这个报文的时候给出现在的窗口大小（注意：TCP规定，即使设置为零窗口，
 也必须接收以下几种报文段：零窗口探测报文段、确认报文段和携带紧急数据的报文段）。
 
+\subsection{通讯协议分析}
+
+车辆道路运输车辆卫星定位系统北斗兼容车载终端通讯协议分析
+WORD相当于C\#中的short,short的取值范围为0 to 65,535，
+相当于.NET Framework中的System.UInt16，对应2字节，即byte[2]。
+
+\begin{lstlisting}
+7e(包头,标志位)|0100(消息ID)|002d(消息体属性)|014846362281(终端手机号码)|
+0002(流水号)|002c(省域ID)|012c(市县域ID)|3730313131(制造商ID)|
+42534a2d413642440000-10位-00000000000000000000(终端型号)|
+30313436363336(终端ID)|02(车牌颜色)|c2b3464c353536(车辆标识)|31ca(校验码)|7e(包尾)
+\end{lstlisting}
+
+\subsection{查看网络状态}
+
+Netstat 是一款命令行工具，可用于列出系统上所有的网络套接字连接情况，
+包括 tcp, udp 以及 unix 套接字，另外它还能列出处于监听状态（即等待接入请求）的套接字。
+如果你想确认系统上的 Web 服务有没有起来，你可以查看80端口有没有打开。
+以上功能使 netstat 成为网管和系统管理员的必备利器。
+
+\begin{lstlisting}[language=Bash]
+#Windows查看20端口情况
+netstat -ano|find "20"
+\end{lstlisting}
+
+参数a表示显示所有(all)连接和侦听端口。
+参数n表示以数字(number)形式显示地址和端口号。
+参数o表示显示拥有的与每个连接关联的进程ID。
+
+\section{X11}
+
+X11（X Window System core protocol）是由MIT于1984年设计出来的开源传输协议，
+一直发展至今，最新版本是X11R7.5。它是X Window System的基本协议。
+而X Window System系统生来就是为瘦客户服务的，从设计之初，它就被设计成计算和显示分离的架构，
+即程序的运行可以在一台计算机，而显示又在另外一台计算机。随着X11的不断演变发展，
+出现了各种不同形式的改良版本，其中最著名的就是NoMachine公司开发的NX协议，NX协议在X11的基础上，
+加入了缓存机制、压缩传输等，使其性能得到飞跃的提升。
+
+X11的设计原则是：create Mechanism, not Policy，所以X故意没有规范应用程式的使用者界面 ，
+例如按钮 、选单 和视窗的标题栏等等。这些都由视窗管理器 （window managers）、GUI 构件工具包 、
+桌面环境 （desktop environments）或者应用程序指定的GUI（䠋如 POS机 ）等等诸如此类的用户软件来提供。这
+样我们就可以理解，为什么Linux系统中会有诸多如Gnome，KDE之类桌面系统，同样使用X协议，绘制的界面却不尽相同。
+X11是X Window System Protocol, Version 11（RFC1013），
+是X server和X client之间的通信协议。X server是xfree86/xorg驱动下的显示设备鼠标键盘统称，
+X client通过X11协议和xfree86/xorg实现的X server通信，比如，告诉它画一个左上角坐标为(x,y)，
+宽为w，高为h的窗口，xfree86就让显示器把屏幕上的小灯（像素）打亮，然后你就看到了一个窗口。
+为了方便开发人员编写X clients，就有了Xlib来封装协议；Xlib不够方便，于是就有了qt和gtk，
+提供了很多窗口控件（widgets）。为了方便用户，就出现了gnome和kde等桌面管理系统。
+一般来说，linux用户看到的界面就是其中之一了。gnome用的是gtk库，kde用的是qt库。
+
+X11本身并不复杂，Server和Client交互的请求一共四种：Requests, Replies, Events, Errors。
+
+1. Request: Client请求Server端返回信息或执行动作。
+
+2. Reply: Server针对Request的返回。不是所有Request都有返回。
+
+3. Event: Server发送的一些界面相关的事件给Client，例如：键盘、鼠标输入，窗口移动，Resize等等。
+
+4. Error: 当Request请求无效时，Server发送错误信息给Cilent。
+
 \section{即时通信}
 
 \subsection{title}
 
 现客户端跟服务器之前相互发送接受消息的功能
 
-\chapter{Python}
+\section{RPC}
 
-\section{Python简介}
+\subsection{RPC(远程过程调用)是什么}
 
-用Python可以做什么？可以做日常任务，比如自动备份你的MP3；
-可以做网站，很多著名的网站包括YouTube就是Python写的；
-可以做网络游戏的后台，很多在线游戏的后台都是Python开发的。
+简单的说，RPC就是从一台机器（客户端）上通过参数传递的方式调用另一台机器（服务器）上的一个函数或方法（可以统称为服务）并得到返回的结果。
+RPC 会隐藏底层的通讯细节（不需要直接处理Socket通讯或Http通讯）
+RPC 是一个请求响应模型。客户端发起请求，服务器返回响应（类似于Http的工作方式）
+RPC 在使用形式上像调用本地函数（或方法）一样去调用远程的函数（或方法）。
 
-\section{Ruby}
+\subsection{远程过程调用发展历程}
 
-\section{SASS}
+ONC RPC （开放网络计算的远程过程调用），OSF RPC（开放软件基金会的远程过程调用）
+CORBA（Common Object Request Broker Architecture公共对象请求代理体系结构）
+DCOM（分布式组件对象模型），COM+
+Java RMI
+.NET Remoting
+XML-RPC，SOAP，Web Service
+PHPRPC，Hessian，JSON-RPC
+Microsoft WCF，WebAPI
+ZeroC Ice，Thrift，GRPC
+Hprose
 
-\section{终端(Terminal)}
+\paragraph{早期的RPC}
 
-\section{日志记录(Logging)}
+第一代 RPC（ONC RPC，OSF RPC）不支持对象的传递。
+CORBA 太复杂，各种不同实现不兼容，一般程序员也玩不转。
+DCOM，COM+ 逃不出 Windows 的手掌心。
+RMI 只能在 Java 里面玩。
+.NET Remoting 只能在 .NET 平台上玩。
 
-\subsection{记录建议(Logging Advisor)}
+\paragraph{XML-RPC，SOAP，WebService}
 
-\begin{itemize}
-\item{不要记录后又重新向外抛出}~~记录日志后重新抛出异常是一个异常反模式(anti-pattern)。
-\item{日志信息应该用英语}~~英语意味着你的log是用ASCII编码的。这非常重要，因为你不会真正知道log信息会发生什么，或是它被归档前经过何种软件层和介质。如果你的信息里面使用了特殊字符集，乃至UTF-8，它可能并不会被正确地显示(render)，更糟的是，它可能在传输过程中被损坏，变得不可读。不过这还有个问题，log用户输入时，可能有各种字符集或者编码。
-\end{itemize}
+冗余数据太多，处理速度太慢。
+RPC 风格的 Web Service 跨语言性不佳，而 Document 风格的 Web Service 又太过难用。
+Web Service 没有解决用户的真正问题，只是把一个问题变成了另一个问题。
+Web Service 的规范太过复杂，以至于在 .NET 和 Java 平台以外没有真正好用的实现，甚至没有可用的实现。
+跨语言跨平台只是 Web Service 的一个口号，虽然很多人迷信这一点，但事实上它并没有真正实现。
 
-\subsection{远程Tail日志}
+\paragraph{PHPRPC}
 
-log.io rTail
+基于 PHP 内置的序列化格式，在跨语言的类型映射上存在硬伤。
+通讯上依赖于 HTTP 协议，没有其它底层通讯方式的选择。
+内置的加密传输既是特点，也是缺点。
+虽然比基于 XML 的 RPC 速度快，但还不是足够快。
+
+\paragraph{Hessian}
+
+二进制的数据格式完全不具有可读性。
+官方只提供了两个半语言的实现（Java，ActionScript 和不怎么完美的 Python 实现），其它语言的第三方实现良莠不齐。
+支持的语言不够多，对 Web 前端的 JavaScript 完全无视。
+虽然是动态 RPC，但动态性仍然欠佳。
+虽然比基于 XML 的 RPC 速度快，但还不是足够快。
+
+\paragraph{JSON-RPC}
+
+JSON 具有文本可读性，且比 XML 更简洁。
+JSON 受 JavaScript 语言子集的限制，可表示的数据类型不够多。
+JSON 格式无法表示数据内的自引用，互引用和循环引用。
+某些语言具有多种版本的实现，但在类型影射上没有统一标准，存在兼容性问题。
+JSON-RPC 虽然有规范，但是却没有统一的实现。在不同语言中的各自实现存在兼容性问题，无法真正互通。
+
+\paragraph{Microsoft WCF，WebAPI}
+
+它们是微软对已有技术的一个 .NET 平台上的统一封装，是对 .NET Remoting、WebService 和基于 JSON 、XML 等数据格式的 REST 风格的服务等技术的一个整合。
+虽然号称可以在 .NET 平台以外来调用它的这些服务，但实际上跟在 .NET 平台内调用完全是两码事。它没有提供任何在其他平台的语言中可以使用的任何工具。
+
+\paragraph{ZeroC Ice，Thrift，GRPC}
+
+初代 RPC 技术的跨语言面向对象的回归。
+仍然需要通过中间语言来编写类型和接口定义。
+仍然需要用代码生成器来将中间语言编写的类型和接口定义翻译成你所使用的编程语言的客户端和服务器端的占位程序（stub）。
+你必须要基于生成的服务器代码来单独编写服务，而不能将已有代码直接作为服务发布。
+你必须要用生成的客户端代码来调用服务，而没有其它更灵活的方式。
+如果你的中间代码做了修改，以上所有步骤你都要至少重复一遍。
+
+\paragraph{Hprose}
+
+无侵入式设计，不需要单独定义类型，不需要单独编写服务，已有代码可以直接发布为服务。
+具有丰富的数据类型和完美的跨语言类型映射，支持自引用，互引用和循环引用数据。
+支持众多传输方式，如 HTTP、TCP、Websocket 等。
+客户端具有更灵活的调用方式，支持同步调用，异步调用，动态参数，可变参数，引用参数传递，多结果返回（Golang）等语言特征，Hprose 2.0 甚至支持推送。
+具有良好的可扩展性，可以通过过滤器和中间件实现加密、压缩、缓存、代理等各种功能性扩展。
+兼容的无差别跨语言调用
+支持更多的常用语言和平台
+支持浏览器端的跨域调用
+没有中间语言，无需学习成本
+性能卓越，使用简单
 
 \chapter{.NET}
 
@@ -11036,59 +11752,18 @@ log.io rTail
 \mbox{}         
 \clearpage
 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{NetInfrastracture.png}
+	\caption{微软Net生态}
+	\label{fig:NetInfrastracture}
+\end{figure}
+
+
+
+
+
 \section{泛型（Generic）与集合（Collection）}
-
-\subsection{方法的泛型}
-
-通过Api调用从服务器返回Model，由于事先不知道具体的Model类型，
-在定义反序列化类时用泛型来指定，由运行调用时动态传入需要反序列化的Model类型即可，
-泛型方法如下所示。
-
-\begin{lstlisting}[language={[Sharp]C}]
-/// <summary>
-/// 获取一个接口，并返回数据（采用泛型）
-/// </summary>
-/// <param name="url">请求的链接</param>
-/// <returns></returns>
-public object GetModel<T>(string url)
-{   
-	string resultJson = RequestApiData(url, "GET", null, authValue);                
-	if (!string.IsNullOrEmpty(resultJson))
-	{
-		//将类型在调用时传入Message类中
-	    Message<T> msg = new Message<T>();	    
-	    return JsonToObject(resultJson, msg);
-	} 
-}
-\end{lstlisting}
-
-在类中指定反序列化的泛型对象。
-
-\begin{lstlisting}[language={[Sharp]C}]
-/// <summary>
-/// 返回消息的类
-/// </summary>
-public class Message<T>
-{   
-    object _data = null; 
-
-    /// <summary>
-    /// 返回消息数据
-    /// </summary>
-    public T data
-    {
-        set { _data = value; }
-        get { return (T)_data; }
-    }
-}
-\end{lstlisting}
-
-方法的调用如下代码所示。
-
-\begin{lstlisting}[language={[Sharp]C}]
-Message<List<tb_usersModel>> msg = _apiClient.GetModel<List<tb_usersModel>>("http://129.20.11.168:8018/User/web/GetUserInfoByID?userId=888");
-List<tb_usersModel> userModel1 = (List<tb_usersModel>)msg.data;
-\end{lstlisting}
 
 \subsection{List与深拷贝}
 
@@ -11121,7 +11796,7 @@ provides an XML schema for a project file that controls how
 the build platform processes and builds software. 
 Visual Studio uses MSBuild, but MSBuild does not depend on Visual Studio. 
 By invoking msbuild.exe on your project or solution file, 
-you can orchestrate and build products in environments where Visual Studio isn't installed.
+you can orchestrate(vt. 把…编成管弦乐曲；（美）精心安排；把…协调地结合起来) and build products in environments where Visual Studio isn't installed.
 MSBuild是一个既熟悉又陌生的名字，Visual Studio的项目加载和构建均通过MSBuild来实现。
 VS中右键打开项目菜单，“生成”对应MSBuild的Build目标，
 VS中的“重新生成”对应MSBuild的Rebuild目标，清理对应MSBuild的Clean目标，
@@ -11130,10 +11805,9 @@ VS中的“重新生成”对应MSBuild的Rebuild目标，清理对应MSBuild的
 并不代表不用了解学习，尤其项目规模愈发庞大时，编写结构良好的MSBuild Script来作为项目构建和管理的基石是必不可少。
 
 \begin{tabular}{|l|p{10cm}|}
-	\hline
-	\multirow{1}{*}{}			
-	& \multicolumn{1}{c|}{}\\
-	文件类型 & 作用\\
+	\hline	
+	\multirow{1}{*}{文件类型}			
+	& \multicolumn{1}{c|}{作用}\\	
 	\hline
 	*.sln & 项目、解决方案在磁盘上的引用，VS通过该类文件加载整个项目、解决方案\\
 	\hline
@@ -11200,7 +11874,7 @@ DLL文件中包含一个导出函数表（存在于PE的.edata节中）。
 如果重新编译和重建DLL文件，并不需要修改应用程序，除非你改变了导出函数的符号名和参数序列。
 简单的DLL文件只为应用程序提供导出函数，比较复杂的DLL文件除了提供导出函数以外，还调用其它DLL文件中的函数。
          
-每个DLL都有一个入口函数（DLLMain），系统在特定环境下会调用DLLMain。
+每个DLL都有一个入口函数\footnote{此种说法不完全正确，类库没有入口函数，main入口函数并不是必须的，执行的过程类似于：用户执行编译器输出的应用程序(PE文件)，操作系统载入PE文件，以及其他的DLL(.NET动态连接库)。操作系统装载器根据前面PE文件中的可执行文件头跳转到程序的入口点。显然，操作系统并不能执行中间语言，该入口点也被设计为跳转到mscoree.dll（.NET平台的核心支持DLL）的\_ CorExeMain()函数入口。CorExeMain()函数开始执行PE文件中的中间语言代码。这里的执行的意思是通用语言运行时按照调用的对象方法为单位，用即时编译器将中间语言编译成本地机二进制代码，执行并根据需要存于机器缓存。}(DLLMain)，系统在特定环境下会调用DLLMain。
 在下面的事件发生时会调用dll入口函数：1.进程装载DLL。
 2.进程卸载DLL。3.DLL在被装载之后创建了新线程。4. DLL在被装载之后一个线程被终止了。
 应用程序导入函数与DLL文件中的导出函数进行链接有两种方式：隐式链接和显式链接。
@@ -11442,7 +12116,7 @@ OS Loader已经可以判断出这个PE是否包含CLR头来决定是否运行MsC
 \subsection{Section}Section有很多，包括代码节，数据节等，
 C\#程序会把CLR头，元数据，IL放在这里面。
 
-\section{CLR(MIT Licence)加载过程}
+\section{CLR}
 
 CLR是托管程序运行的环境，就像Windows是普通的PE程序的运行环境一样。
 在Windows中，整个CLR系统的实现基本其实就是几个关键的DLL，
@@ -11456,6 +12130,8 @@ CLR是托管程序运行的环境，就像Windows是普通的PE程序的运行�
 不包含机器指令. 托管Assembly都与mscoree.dll绑定.
 mscoree.dll在system32目录下, 全称是Microsoft Core Execution Engine. 
 它的功能是选择合适的CLR Execution Engine来加载.
+事实上，类型安全(Type Checker)、垃圾回收（Garbage Collector）、
+异常处理(Exception Manager)、向下兼容(COM Marshaler)等很多C\#中的特性都是由CLR来提供的。
 
 \subsection{PE Loader载入PE文件}当你双击一个.exe文件时，
 Windows操作系统提供的PE Loader会将该exe文件载入内存，
@@ -11697,6 +12373,46 @@ CLR想要确保一个类型构造器在一个AppDomain里面只执行一次，
 
 \section{GC(Garbage Collection)}
 
+\subsection{为什么要GC}
+
+有了Microsoft.Net clr中的垃圾回收机制程序员不需要再关注什么时候释放内存，
+释放内存这件事儿完全由GC做了，对程序员来说是透明的。尽管如此，
+作为一个.Net程序员很有必要理解垃圾回收是如何工作的。
+这篇文章我们就来看下.Net是如何分配和管理托管内存的，之后再一步一步描述垃圾回收器工作的算法机制。
+
+为程序设计一个适当的内存管理策略是困难的也是乏味的，
+这个工作还会影响你专注于解决程序本身要解决的问题。有没有一种内置的方法可以帮助开发人员解决内存管理的问题呢？
+当然有了，在.Net中就是GC，垃圾回收。
+
+让我们想一下，每一个程序都要使用内存资源：例如屏幕显示，网络连接，
+数据库资源等等。实际上，在一个面向对象环境中，每一种类型都需要占用一点内存资源来存放他的数据，
+对象需要按照如下的步骤使用内存：
+1. 为类型分配内存空间
+2. 初始化内存，将内存设置为可用状态
+3. 存取对象的成员
+4. 销毁对象，使内存变成清空状态
+5. 释放内存
+
+这种貌似简单的内存使用模式导致过很多的程序问题，有时候程序员可能会忘记释放不再使用的对象，
+有时候又会试图访问已经释放的对象。这两种bug通常都有一定的隐藏性，不容易发现，他们不像逻辑错误，
+发现了就可以修改掉。他们可能会在程序运行一段时间之后内存泄漏导致意外的崩溃。事实上，
+有很多工具可以帮助开发人员检测内存问题，比如：任务管理器，System Monitor AcitvieX Control, 以及Rational的Purify。
+
+而GC可以完全不需要开发人员去关注什么时候释放内存。然而，垃圾回收器并不是可以管理内存中的所有资源。
+有些资源垃圾回收器不知道该如何回收他们，这部分资源就需要开发人员自己写代码实现回收。
+在.Net Framework中，开发人员通常会把清理这类资源的代码写到Close、Dispose或者Finalize方法中，
+稍后我们会看下Finalize方法，这个方法垃圾回收器会自动调用。
+
+不过，有很多对象是不需要自己实现释放资源的代码的，比如：Rectangle，清空它只需要清空它的left，
+right，width，height字段就可以了，这垃圾回收器完全可以做。下面让我们来看下内存是如何分配给对象使用的。
+
+\subsection{对象分配过程}
+
+\subsection{GC回收原理}
+
+为程序设计一个适当的内存管理策略是困难的也是乏味的，这个工作还会影响你专注于解决程序本身要解决的问题。
+有没有一种内置的方法可以帮助开发人员解决内存管理的问题呢？
+当然有了，在.Net中就是GC，垃圾回收(Garbage Collection)。
 GC会把所有托管堆内的对象分为3代，
 0代、1代、和2代。越小的代拥有着越多被释放的机会，
 CLR的基本算法是：每执行N次0代的回收，才会执行1次1代的回收，
@@ -11760,6 +12476,36 @@ GC会先试着在属于Generation 0的对象中回收，因为这些是最新的
 所以最有可能会被回收，比如一些函数中的局部变量在退出函数时就没有引用了（可被回收）。
 如果在Generation 0中回收了足够的内存，那么GC就不会再接着回收了
 
+C\#的垃圾回收采用了reference tracking的算法，大概的意思是说在执行垃圾回收时，
+所有的对象都默认认为是可以被回收的，然后遍历所有的roots（指向reference type的对象，
+包括类成员变量，静态变量，函数参数，函数局部变量），把这个root指向的对象标记成不能被回收的。
+
+\subsection{GC触发时机}
+
+在讨论什么时候回收大对象之前先来看下普通的垃圾回收操作什么时机执行吧。垃圾回收在下列情况下发生：
+
+\begin{enumerate}
+	\setcounter{enumi}{0}
+	\item{申请的空间超过0代内存大小或者大对象堆的阀值，多数的托管堆垃圾回收在这种情况下发生}
+	\item{在程序代码中调用GC.Collect方法时；如果在调用GC.Collect方法是传入GC.MaxGeneration参数时，会执行所有代对象的垃圾回收，包括大对象堆的垃圾回收}
+	\item{操作系统内存不足时，当应用程序收到操作系统发出的高内存通知时}
+	\item{如果垃圾回收算法认为做二代回收是有收效时会触发二代垃圾回收}
+	\item{每一代对象堆的都有一个所占空间大小阀值的属性，当你分配对象到某一代，
+		你增长了内存总量接近了该代的阀值，或者分配对象导致这一代的堆大小超过了堆阀值，
+		就会发生一次垃圾回收。因此当你分配小对象或者大对象时，会对应消耗0代堆或者大对象堆的阀值。
+		当垃圾回收器将对象代数提升到1代或者2代时，会消耗1、2代的阀值。在程序运行中这些阀值是动态变化的。}
+\end{enumerate}
+
+\subsection{LOH堆}
+
+CLR垃圾回收器根据所占空间大小划分对象。大对象和小对象的处理方式有很大区别。
+比如内存碎片整理 ------ 在内存中移动大对象的成本是昂贵的。
+在.Net 1.0和2.0中，
+如果一个对象的大小超过85000byte=10625Byte$\approx$10KB，
+就认为这是一个大对象。
+这个数字是根据性能优化的经验得到的。当一个对象申请内存大小达到这个阀值，它就会被分配到大对象堆上。
+\url{http://www.cnblogs.com/yukaizhao/archive/2011/11/21/dot_net_gc_large_object_heap.html}
+
 \section{IL(Intermediate Language)}
 
 MSIL是将.NET程序编译成机器语言的一种过程。编译成的代码不专用于任何一种操作系统，
@@ -11809,31 +12555,29 @@ MSIL包括用于加载、存储和初始化对象以及对对象调用方法的�
 	\hline
 	nearer, newobj & 在内存中创建一个新的数组或新的对象类型\\
 	\hline
-\end{tabular}               
-         
- 
+\end{tabular} 
 
 主要的入栈CIL操作码  (ld 加载)
 
-操作码                                           作用
-
-ldarg (及多个变化形式)                     加载方法的参数到栈中。除了泛型ldarg(需要一个索引作为参数），还有后其他很多的变化形式。
-
-                                                   eg. 有个数字后缀的ldarg操作码来指定需要加载的参数。同时还有很多ldarg的变化形式允许加载
-
-                                                   指定的数据类型(ldarg\_i4, 加载int32)和值(ldarg\_i4\_5 加载一个值为5的int32)
-
-ldc (及多个变化形式）                      加载一个常数到栈中
-
-ldfld (及多个变化形式)                      加载一个对象实例的成员到栈中
-
-ldloc (及多个变化形式)                      加载一个本地变量到栈中
-
-ldobj                                            获得一个堆对象的所有数据，并将它们放置到栈中
-
-ldstr                                             加载一个字符串数据到栈中
-
- 
+\begin{tabular}{l|p{10cm}}
+	\multirow{1}{*}{}			
+	& \multicolumn{1}{c}{}\\
+	操作码 & 作用\\
+	\hline
+	ldarg (及多个变化形式) & 加载方法的参数到栈中。除了泛型ldarg(需要一个索引作为参数），还有后其他很多的变化形式 eg. 有个数字后缀的ldarg操作码来指定需要加载的参数。同时还有很多ldarg的变化形式允许加载
+	
+	指定的数据类型(ldarg\_i4, 加载int32)和值(ldarg\_i4\_5 加载一个值为5的int32)\\
+	\hline	
+	ldc (及多个变化形式） & 加载一个常数到栈中(load const)\\
+	\hline
+	ldfld (及多个变化形式) & 加载一个对象实例的成员到栈中\\
+	\hline
+	ldloc (及多个变化形式) & 加载一个本地变量到栈中\\
+	\hline
+	ldobj & 获得一个堆对象的所有数据，并将它们放置到栈中\\
+	\hline
+	ldstr & 加载一个字符串数据到栈中\\
+\end{tabular}
 
 主要的弹出栈操作码 (st 存储)
 
@@ -11849,6 +12593,54 @@ stobj                                            从栈中复制一个特定的�
 
 stfld                                             用从栈中获得的值替换对象成员的值
 
+\subsection{简单的IL示例}
+
+
+\begin{lstlisting}[language={[Sharp]C}]
+.class private auto ansi beforefieldinit ConsoleApplication1.Program
+extends [mscorlib]System.Object
+{
+	// Methods
+	.method private hidebysig static 
+	void Main (
+	string[] args
+	) cil managed 
+	{
+		// Method begins at RVA 0x2050
+		// Code size 4 (0x4)
+		.maxstack 1
+		.entrypoint
+		.locals init (
+		[0] int32 i
+		)
+		
+		IL_0000: nop
+		IL_0001: ldc.i4.1
+		IL_0002: stloc.0
+		IL_0003: ret
+	} // end of method Program::Main
+	
+	.method public hidebysig specialname rtspecialname 
+	instance void .ctor () cil managed 
+	{
+		// Method begins at RVA 0x2060
+		// Code size 7 (0x7)
+		.maxstack 8
+		
+		IL_0000: ldarg.0
+		IL_0001: call instance void [mscorlib]System.Object::.ctor()
+		IL_0006: ret
+	} // end of method Program::.ctor
+
+} // end of class ConsoleApplication1.Program
+\end{lstlisting}
+
+对于同样的IL，JIT会把它编译为不同的CPU架构（如x86/IA64等等）生成不同的机器码。
+.entrypoint //该指令代表该函数程序的入口函数。每一个托管应用程序都有且只有一个入口函数，CLR加载程序时，首先从.entrypoint函数开始执行。
+.maxstack 2 //执行构造函数时，评估堆栈可容纳数据项的最大个数。评估堆栈是保存方法中所需要变量的值的一个内存区域，该区域在方法执行结束时会被清空，或者存储一个返回值。
+//hidebysig指令表示如果当前类为父类，用该指令标记的方法将不会被子类继承
+
+
 \subsection{属性(Attribute)}
 
 本质上，属性和Get/Set实现方法没有区别，
@@ -11863,12 +12655,12 @@ C\#编译器在编译时，会把属性转换成一对GetXXX和SetXXX方法，
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.8]{DumpDllUsingILDasm.jpg}
+	\includegraphics[scale=0.6]{DumpDllUsingILDasm.jpg}
 	\caption{Dump dll}
 	\label{fig:DumpDllUsingILDasm}
 \end{figure}
 
-用记事本打开转储后的文件，
+用记事本打开转储后的文件(中间语言文件，文件后缀是il)，
 编辑后保存，使用ilasm.exe工具编译成dll，
 ilasm.exe的路径为：C:/Windows/Microsoft.NET/Framework64/v4.0.30319，
 ILAsm (IL Assembler) generates a portable executable (PE) file from Common Intermediate Language (CIL) code.
@@ -11896,6 +12688,8 @@ dll参数表示编译成dll文件，如果不指定参数，默认编译成exe�
 修改完成后点击OK，导出dll即可。
 \section{调试(Debug)}
 
+如果使用的是 Visual Studio 2013，则 Visual Studio 中的 Windows 调试器支持 SOS.dll，
+但Visual Studio调试器的“即时”窗口不支持 SOS.dll。
 Visual Studio在调试的过程中可以修改代码，可以拖动调试断点。
 调试器可以采用三种模式来调试被调试程序（在下文中，如果没有特别说明的话，简称程序）：
 
@@ -11912,6 +12706,17 @@ Visual Studio在调试的过程中可以修改代码，可以拖动调试断点�
 然后你可以在自己的开发机上调试这个文件，找到程序错误的原因。
 
 \subsection{调试器工作原理}
+
+在Windows平台上调试应用程序首选Windows调试工具箱，该工具箱包含了一套专门用来针对Windows进行很多复杂场景调试所需要的工具和组件。
+需要注意的是此工具箱是针对于非托管.NET平台用的，意思就是说此工具箱的所有工具和组件默认是不能够进行.NET应用程序调试的，
+只能用来对原生Windows程序进行调试。
+
+那么.NET平台也并不是有自己一套专用的调试工具箱，毕竟.NET还是属于Windows平台的，
+所以很大部分的运行时原理还是基于Windows的，要想在原生的调试器中对.NET这个具有虚拟运行时程序进行调试就需要专门的翻译器才能够执行。
+SOS.DLL、SOSEX.DLL这两个就是用来对.NET程序在Windows调试工具中起到翻译作用的调试器扩展。
+简单讲就是，这两个组件是.NET项目组专门开发出来用来对.NET应用程序进行方便调试用的，
+当然不用这两个扩展也能调试.NET程序，只不过就会很困难，会被很多细节束缚住。有了这个调试扩展之后，
+我们就可以让原生Windows调试器正确的翻译出.NET相关概念。
 
 \subsection{符号文件(Symbol File)}
 
@@ -12032,6 +12837,35 @@ SOS.dll是Microsoft提供的一种调试扩展，全称是Son of Strike，
 在CLR异常的Thrown列打上勾，那么以后遇到CLR的异常就不再是定位到用户处理代码了，
 而是直接停在抛出异常的代码上。这样可以大大方便我们调试程序的Bug 。
 
+\paragraph{监视变量}
+
+在调试时有时不方便查看一个语句的变量计算结果，那么可以选择一个这个表达式，
+右键添加监视，即可看到这个表达式的值。
+如图\ref{fig:ProbeExpressValue}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{ProbeExpressValue.jpg}
+	\caption{监视表达式的值}
+	\label{fig:ProbeExpressValue}
+\end{figure}
+
+\paragraph{查看调试实时调用栈}
+
+有时一个方法引用(Usage)太多，不知道运行时哪里调用此方法，
+那么可以在IntelliTrace中在运行时查看调用栈，
+打开设置在调试->IntelliTrace->打开IntelliTrace设置，
+打开此设置之后会降低性能，
+如图\ref{fig:IntelliRuntimeInvokeStack}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{IntelliRuntimeInvokeStack.jpg}
+	\caption{查看实时调用Stack}
+	\label{fig:IntelliRuntimeInvokeStack}
+\end{figure}
+
+
 \subsection{不能设置断点的检查步骤}
 
 当Visual Studio提示：“当前不会命中断点，还没有为该文档加载任何符号”时，
@@ -12057,7 +12891,7 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\fa413
 \end{figure}
 
 
-\subsection{内存泄漏（Memory Leak）}
+\subsection{定位内存偏高、内存泄漏（Memory Leak）}
 
 内存泄漏是指内存空间上产生了不再被实际使用却又不能被分配的内存，
 内存泄漏的意义很广泛，例如程序无意义的保持对象内存、内存碎片、不彻底的内存释放等。
@@ -12065,6 +12899,30 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files\root\fa413
 所有的内存泄漏都是需要努力避免。
 .NET的托管堆可能出现内存泄漏现象，
 大对象的频繁分配和释放、不恰当的保留根引用和错误的Finalize方法都可能导致内存泄漏。
+服务程序最怕的性能问题之一就是内存，当内存很高的情况下我们能够通过对dump文件进行查看，
+看哪些对象导致内存一直高。当内存一直高的情况下就会容易导致内存溢出异常，甚至是GC频繁的执行，
+当GC一执行就会导致服务并发下降，因为它要挂起所有的线程（这里指的是服务器模式的.NET CLR，
+相对应的还有工作站模式的.NET CLR）。
+
+在不知道对象类型的情况下比较简单的方式就是使用：!dumpheap -stat命令，
+该命令的意思是统计当前堆的信息，在这里就可以一眼找到哪个对象占用多少内存。
+
+
+\subsection{定位线程问题(CPU过高，线程死锁)}
+
+CPU过高也是线上比较棘手的问题之一，查看CPU过高的步骤一般分为两步，
+查看线程的执行时间，然后切换到线程上下文，执行!ClrStack -a，
+看当前线程在哪里工作，到底做什么操作。
+输入命令查看调试线程，如下。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{DetectDebugProssAllThread.jpg}
+	\caption{查看调试程序运行的线程}
+	\label{fig:DetectDebugProssAllThread}
+\end{figure}
+
+
 
 \subsection{PDB文件}
 
@@ -12136,7 +12994,9 @@ This implementation builds and runs on Windows XP.
 	Ctrl+Shift+B & 生成项目 \\ 
 	Shift + Alt+ C & 添加新类\\
 	Alt + Shift +箭头键(←,↑,↓,→) & 选择代码的自定义部分\\
-	Ctrl + H & 显示替换对话框\\					
+	Ctrl + H & 显示替换对话框\\
+	Ctrl + I & 渐进搜索\\
+	Ctrl + F3 & 搜索当前选择的文本\\	
 \end{tabular}
 
 \subsection{Visual Studio如何查找源文件}
@@ -12194,6 +13054,8 @@ r参数表示覆盖只读文件，y参数表示取消提示以确认要覆盖现
 
 正在处理包含许多项目的解决方案，则可以使用解决方案文件夹将相关的项目组织成组，然后对这些项目组执行操作。
 有关解决方案文件夹的信息（包括它们包含的项目和解决方案项）存储在解决方案文件(.sln)中，
+解决方案文件夹是解决方案资源管理器中的一种组织工具；不会创建相应的 Windows 文件夹。
+建议采用在解决方案中组织项目时所用的方式在磁盘上组织项目。
 添加解决方案文件夹后的项目如图\ref{fig:SolutionFolder}所示。
 
 \begin{figure}[htbp]
@@ -12202,6 +13064,88 @@ r参数表示覆盖只读文件，y参数表示取消提示以确认要覆盖现
 	\caption{解决方案文件夹}
 	\label{fig:SolutionFolder}
 \end{figure}
+
+\subsection{插件}
+
+\begin{itemize}
+	\item{Indent Guides}给每个代码块增加垂直对齐虚线
+\end{itemize}
+
+\subsection{Visual Studio加载外部工具}
+
+在Visual Studio中可以加载外部工具，
+加载外部工具如图\ref{fig:VisualStudioAddExternalTools}所示，
+加载之后在Visual Studio中的菜单Tools中可以直接打开工具，
+非常方便。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{VisualStudioAddExternalTools.jpg}
+	\caption{解决方案文件夹}
+	\label{fig:VisualStudioAddExternalTools}
+\end{figure}
+
+\subsection{Configure Visual Studio 2013 for debugging .NET framework}
+
+调试系统dll有助于理解程序更加深层次的处理逻辑，
+在开发基于网络的应用程序时，
+调试系统dll有助于理解从浏览器构造请求到服务器端经过处理后，
+返回结果到客户端，可以理解服务器的处理流程，
+对于Microsoft以往一直闭源的策略，
+调试系统dll尤其显得更加重要。
+
+\begin{itemize}
+	\item{Disable just my code}
+	\item{Disable step over properties and operators}
+	\item{Disable require source files to exactly match the original version}
+	\item{Enable .NET framework source stepping}
+	\item{Enable source server support}
+\end{itemize}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{EnableNetFrameworkSourceCodeDebugging.jpg}
+	\caption{Enable .NET Framework Souce Code Debugging}
+	\label{fig:EnableNetFrameworkSourceCodeDebugging}
+\end{figure}
+
+具体配置参考\url{http://referencesource.microsoft.com/setup.html}。
+利用Resharper生成系统dll的调试文件（PDB：Program Database）如图\ref{fig:GenerateProgramDebuggingFile}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{GenerateProgramDebuggingFile.jpg}
+	\caption{Generate Program Debugging File}
+	\label{fig:GenerateProgramDebuggingFile}
+\end{figure}
+
+调试System.Web.dll如图\ref{fig:DebuggingSystemWebDll}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{DebuggingSystemWebDll.jpg}
+	\caption{Debugging System.Web.dll}
+	\label{fig:DebuggingSystemWebDll}
+\end{figure}
+
+在.NET Framework 4.5中调试源代码需要下载源代码文件，
+下载链接为\url{http://referencesource.microsoft.com/}，
+下载源码后添加源码安装路径到Visual Studio的符号文件加载路径中即可。
+
+
+\subsection{Visual Studio查看Call Stack}
+
+调用公共方法的上层函数较多，有时在调试时需要查看当前运行时是哪个函数调取的当前方法，
+可以查看调用栈(Call Stack)，在Visual Studio中查看调用栈在调试(Debug)-->窗口(Window)-->调用堆栈(Call Stack)中，
+注意需要启动调试后才能查看，如图\ref{fig:CSharpDebugCallStack}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{CSharpDebugCallStack.jpg}
+	\caption{查看调用堆栈}
+	\label{fig:CSharpDebugCallStack}
+\end{figure}
+
 
 \section{发布(Publish)}
 
@@ -12327,49 +13271,6 @@ The common language runtime locks an assembly file when the assembly is loaded, 
 When an application domain is configured to shadow copy files, assemblies from the application path are copied to another location and loaded from that location. The copy is locked, but the original assembly file is unlocked and can be updated.
 \end{quote}
 
-\subsection{Configure Visual Studio 2013 for debugging .NET framework}
-
-调试系统dll有助于理解程序更加深层次的处理逻辑，
-在开发基于网络的应用程序时，
-调试系统dll有助于理解从浏览器构造请求到服务器端经过处理后，
-返回结果到客户端，可以理解服务器的处理流程，
-对于Microsoft以往一直闭源的策略，
-调试系统dll尤其显得更加重要。
-
-\begin{itemize}
-\item{Disable just my code}
-\item{Disable step over properties and operators}
-\item{Disable require source files to exactly match the original version}
-\item{Enable .NET framework source stepping}
-\item{Enable source server support}
-\end{itemize}
-
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.8]{EnableNetFrameworkSourceCodeDebugging.jpg}
-	\caption{Enable .NET Framework Souce Code Debugging}
-	\label{fig:EnableNetFrameworkSourceCodeDebugging}
-\end{figure}
-
-具体配置参考\url{http://referencesource.microsoft.com/setup.html}。
-利用Resharper生成系统dll的调试文件（PDB：Program Database）如图\ref{fig:GenerateProgramDebuggingFile}所示。
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.8]{GenerateProgramDebuggingFile.jpg}
-	\caption{Generate Program Debugging File}
-	\label{fig:GenerateProgramDebuggingFile}
-\end{figure}
-
-调试System.Web.dll如图\ref{fig:DebuggingSystemWebDll}所示。
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.8]{DebuggingSystemWebDll.jpg}
-	\caption{Debugging System.Web.dll}
-	\label{fig:DebuggingSystemWebDll}
-\end{figure}
 
 
 
@@ -12381,7 +13282,7 @@ When an application domain is configured to shadow copy files, assemblies from t
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.8]{ReplaceInSingleScope.jpg}
+	\includegraphics[scale=0.6]{ReplaceInSingleScope.jpg}
 	\caption{限定项目范围}
 	\label{fig:ReplaceInSingleScope}
 \end{figure}
@@ -12528,8 +13429,8 @@ C\#中没有传统意义上的全局变量，
 	\label{fig:VisualStudioConfigurationManager}
 \end{figure}
 
-新建了2个配置选项，一个是服务器的生产环境配置（Server Production Enviroment），
-一个是服务器的测试环境配置（Server Test Enviroment），
+新建了2个配置选项，一个是服务器的生产环境配置(Server Production Environment)，
+一个是服务器的测试环境配置(Server Test Environment)，
 2个环境所用的Web.config需要各自定义。
 在配置管理器添加完毕配置转换后，
 可在项目的Web.config中点击右键“添加配置转换”，
@@ -12537,7 +13438,7 @@ C\#中没有传统意义上的全局变量，
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=1]{VisualStudioAddConfigurationConvert.jpg}
+	\includegraphics[scale=0.6]{VisualStudioAddConfigurationConvert.jpg}
 	\caption{Visual Studio添加配置转换}
 	\label{fig:VisualStudioAddConfigurationConvert}
 \end{figure}
@@ -12574,7 +13475,7 @@ Transform特性指定要对Locator特性所查找的元素执行哪些操作。
 
 \section{Inversion of Control}
 
-IOC意味着将你设计好的类交给系统去控制，
+IoC意味着将你设计好的类交给系统去控制，
 而不是在你的类内部控制，这称为控制反转，
 就是被调用类的实例由原先的调用类控制创建、销毁现在转变成由容器管理。
 在项目中以数据表生成的类名都需要一一修改，
@@ -12879,6 +13780,23 @@ All方法则确定某一集合中是否所有的元素都满足某一特定条�
 var containsAreadyGone = areadyGoneModel.Any(areadyGome => areadyGome.played == 1 && areadyGome.collectionStatus == 1);
 \end{lstlisting}
 
+取出查询出来的实体直接用foreach循环结果即可。
+
+\subsection{Dictionary转换为List}
+
+\begin{lstlisting}[language={[Sharp]C}]
+var vechicleList = vechicleDicitonary.Select(vechicle => vechicle.Value).ToList();
+\end{lstlisting}
+
+\subsection{Linq查询}
+
+\begin{lstlisting}[language={[Sharp]C}]
+from prod in db.Products
+select prod.UnitPrice)
+.Min()
+\end{lstlisting}
+
+
 \section{异步(Async)}
 
 \subsection{使用IAsyncResult对象的异步操作}
@@ -12898,18 +13816,343 @@ var containsAreadyGone = areadyGoneModel.Any(areadyGome => areadyGome.played == 
 它们用于方法的异步执行，即是在调用BeginInvoke()之后，客户端从线程池中抓取一个闲置线程，
 然后交由这个线程去执行订阅者的方法，而客户端线程则可以继续执行下面的代码。
 
+\subsection{Task}
+
+.NET 4.0推出了新一代的多线程模型Task。async/await特性是与Task紧密相关的，
+所以在了解async/await前必须充分了解Task的使用。这里将以一个简单的Demo来看一下Task的使用，
+同时与Thread的创建方式做一下对比。
+
+\subsection{async/await 特性}
+
 \section{多线程}
 
 \subsection{lock}
 
-lock 关键字可以用来确保代码块完成运行，而不会被其他线程中断。它可以把一段代码定义为互斥段（critical section），
+lock 关键字可以用来确保代码块完成运行，而不会被其他线程中断。它可以把一段代码定义为互斥段（Critical Section），
 互斥段在一个时刻内只允许一个线程进入执行，而其他线程必须等待。这是通过在代码块运行期间为给定对象获取互斥锁来实现的。
+
+\subsection{线程简介}
+
+线程是程序中的一个执行流，每个线程都有自己的专有寄存器(栈指针、程序计数器等)，
+但代码区是共享的，即不同的线程可以执行同样的函数。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{ThreadLifeCircle.png}
+	\caption{线程的生命周期}
+	\label{fig:ThreadLifeCircle}
+\end{figure}
+
+多线程的好处：
+
+可以提高CPU的利用率。在多线程程序中，一个线程必须等待的时候，CPU可以运行其它的线程而不是等待，这样就大大提高了程序的效率。
+
+多线程的不利方面：
+
+线程也是程序，所以线程需要占用内存，线程越多占用内存也越多；
+多线程需要协调和管理，所以需要CPU时间跟踪线程；
+线程之间对共享资源的访问会相互影响，必须解决竞用共享资源的问题；
+线程太多会导致控制太复杂，最终可能造成很多Bug；
+
+\subsection{Timer}
+
+System.Threading.Timer  在线程池启动一个后台任务。
+System.Windows.Forms.Timer  告诉windows把一个计时器和调用它的线程(UI线程)关联起来，
+通过往UI线程的消息队列里放一个WM\_TIMER的消息来实现，所以它的callback一定是在UI线程调用的，
+不存在多线程调用的问题。
+System.Windows.Threading.DispatcherTimer 用在WPF和Silverlight中，
+对应于System.Windows.Forms.Timer。
+使用System.Windows.Forms.Timer如下代码片段所示：
+
+\begin{lstlisting}[language={[Sharp]C}]
+private readonly System.Windows.Forms.Timer _aTimer = new System.Windows.Forms.Timer();
+
+private void SetTimer()
+{
+	_aTimer.Interval = 5000;
+	_aTimer.Enabled = true;
+	_aTimer.Tick += delegate(object o, EventArgs args)
+	{
+		Log.Logger.Info("The Elapsed event was raised at {0:HH:mm:ss.fff}" + args);
+		GetFrontEndData();
+	};
+	_aTimer.Start();
+}
+\end{lstlisting}
+
+Windows.UI.Xaml.Dispatchertimer 用在windows store app中，对应于System.Windows.Forms.Timer。
+System.Timers.Timer 包装了一下System.Threading.Timer，使它有了和System.Windows.Forms.Timer类似的接口，
+而且也能在visual studio的toolbox designer里找到。它也是在线程池中执行，但是如果你是在visual studio的designer中使用它，
+visual studio会自动把它所在的control设为这个timer的SynchronizingObject，这样就会保证callback会在UI线程调用了。
+Jeffrey Richter不建议使用它，建议直接用System.Threading.Timer。
+
+\subsection{线程间操作无效: 从不是创建控件的线程访问它。}
+
+从.NET Framework 2.0开始，为了安全，不允许跨线程操作控件。
+在C\#中只有UI线程才能操作UI控件，如果一个工作线程操作UI控件，
+就会抛这个异常。通常的解决办法很简单，就是使用InvokeRequired。
+如果返回True，说明不在UI线程，需要调用Invoke或者BeginInvoke来扔给UI线程操作。
+在操作Winform窗体时，需要保证是当前窗体的线程操作，
+而不是重新实例化另一个窗体来操作当前窗体，
+如果是这样的话，会报出未创建句柄的错误。
+获取指定窗体的实例代码如下：
+
+\begin{lstlisting}[language={[Sharp]C}]
+var instanceForm=Application.OpenForms["FormName"];
+\end{lstlisting}
+
+Application.OpenForms gets a collection of open forms owned by the application.
+The OpenForms property represents a read-only collection of forms owned by the application. 
+This collection can be searched by index position or by the Name of the Form.
+如果Handle还没有创建好，那么即使在后台工作线程，InvokeRequired也返回False。
+This means that InvokeRequired can return false if Invoke is not required (the call occurs on the same thread), 
+or if the control was created on a different thread but the control’s handle has not yet been created.
+You can protect against this case by also checking the value of IsHandleCreated when InvokeRequired returns false on a background thread.
+这也解释了“在创建窗口句柄之前，不能在控件上调用 Invoke 或 BeginInvoke”错误。
+解决此种问题的方法是调用窗体的方法时传入此窗体的实例。
+
+
+\paragraph{使用delegate和Invoke来从其他线程中调用控件}委托是安全封装方法的类型，类似于C和C++中的函数指针。
+具体的代码如下所示：
+
+\begin{lstlisting}[language={[Sharp]C}]
+private void button2_Click(object sender, EventArgs e)
+{
+	Thread thread1 = new Thread(new ParameterizedThreadStart(UpdateLabel2));
+	thread1.Start("更新Label");
+}
+	
+private void UpdateLabel2(object str)
+{
+	if (label2.InvokeRequired)
+	{
+		// 当一个控件的InvokeRequired属性值为真时，说明有一个创建它以外的线程想访问它
+		Action<string> actionDelegate = (x) => { this.label2.Text = x.ToString(); };
+		// 或者
+		// Action<string> actionDelegate = delegate(string txt) { this.label2.Text = txt; };
+		this.label2.Invoke(actionDelegate, str);
+	}
+	else
+	{
+		this.label2.Text = str.ToString();
+	}
+}
+\end{lstlisting}
+
+第一步先声明一个拥有委托类型的方法，作为代理操作控件的代码：
+
+\begin{lstlisting}[language={[Sharp]C}]
+/// <summary>
+/// 在线程中操作窗体的控件
+/// </summary>
+/// <param name="action"></param>
+private void OpeMainFormControl(Action action)
+{
+	if (InvokeRequired)
+	{
+		this.Invoke(action); //返回主线程（创建控件的线程）
+	}
+	else
+	{
+		action();
+	}
+}
+\end{lstlisting}
+
+在窗体中调用控件：
+
+\begin{lstlisting}[language={[Sharp]C}]
+var t = new Thread(delegate()
+{
+	//线程中操作控件，委托给invoker
+	OpeMainFormControl(delegate
+	{
+		LoadLineIcon("dddd,0");
+	});
+});
+t.Start(); //启动线程
+\end{lstlisting}
+
+也可直接调用委托操作窗体控件。
+
+\begin{lstlisting}[language={[Sharp]C}]
+public void LoadData(object taskList)
+{
+	OpeMainFormControl(delegate()
+	{
+		var driverActionInfos = taskList as List<DriverActionInfo>;
+		if (driverActionInfos == null) return;
+		foreach (var singleTask in driverActionInfos)
+		{
+			var taskIndex = driverActionInfos.IndexOf(singleTask);
+			//Create the new row first and get the index of the new row
+			var rowIndex = this.dataGridViewEx1.Rows.Add();
+			//Obtain a reference to the newly created DataGridViewRow 
+			var dataGridRow = this.dataGridViewEx1.Rows[rowIndex];
+			//Now this won't fail since the row and columns exist 
+			dataGridRow.Cells["vehicleLicense"].Value = singleTask.Carlicense;			
+		}
+	});
+}
+\end{lstlisting}
+
+\subsection{Lambda表达式和委托(delegate)}
+
+名字来自微积分数学中的$\lambda$，其涵义是声明为了表达一个函数具体需要什么。更确切的说，
+它描述了一个数学逻辑系统，通过变量结合和替换来表达计算。所以，基本上我们有 0-n 个输入参数和一个返回值。
+Lambda表达式在.NET 3.5 Framework中引入，所谓Lambda表达式就是delegate和匿名方法的简写形式。
+这种表达式可以取代delegate，作为方法指针来使用。
+在C\# 2.0及C\# 1.x中，需要使用delegate来定义方法指针。
+从C\# 2.0开始支持匿名方法，开发人员可以通过匿名方法用内联代码形式取代delegate。
+从本质上讲，Lamdba表达式经过C\#编译器编译后，仍然会变成delegate的形式，
+也就是说Lamdba表达式只是在语法层次上的改进，并不是IL提供的新的指令。如下面的两行代码是等价的：
+
+\begin{lstlisting}[language={[Sharp]C}]
+public delegate bool Filter(int num);//定义委托
+Filter filter = i => { return (i & 1) == 0; };        
+Filter filter = delegate(int i) { return ((i & 1) == 0); };
+\end{lstlisting}
+
+如果遇到又需要返回值，又需要参数的时候，就可以考虑用异步。
+
+\paragraph{匿名委托(Anonymous Delegate)}
+
+通过使用匿名方法，由于不必创建单独的方法，因此减少了实例化委托所需的编码系统开销。
+例如，如果创建方法所需的系统开销是不必要的，则指定代码块（而不是委托）可能非常有用。
+启动新线程即是一个很好的示例。 无需为委托创建更多方法，线程类即可创建一个线程并且包含该线程执行的代码。
+
+\begin{lstlisting}[language={[Sharp]C}]
+void StartThread() 
+{ 
+	System.Threading.Thread t = new System.Threading.Thread (delegate() 
+	{
+		System.Console.Write("new Thread is running."); 
+	}); 
+	t.Start(); 
+}
+\end{lstlisting}
+
+
+\subsection{System.ObjectDisposedException}
+
+在使用Invoke操作窗体时，
+向窗体中的Panel控件动态添加其他控件时，引发此异常
+
+\begin{lstlisting}
+AccessibilityObject = “(dotNetBarTabControl2.Controls.Owner).AccessibilityObject”引发了“System.ObjectDisposedException”类型的异常
+其他信息: 无法访问已释放的对象。
+\end{lstlisting}
+
+在调用操作Panel的方法中将主窗体的实例传入，使用传入的实例调用方法操作Panel的控件即可。
+
+\subsection{线程退出码(Exit Code)}
+
+Use a non-zero number to indicate an error. In your application, 
+you can define your own error codes in an enumeration, and return the appropriate error code based on the scenario. 
+For example, return a value of 1 to indicate that the required file is not present and a value of 2 to indicate that the file is in the wrong format. 
+For a list of exit codes used by the Windows operating system, see System Error Codes in the Windows documentation.
+This function returns immediately. If the specified thread has not terminated and the function succeeds, 
+the status returned is STILL\_ACTIVE. If the thread has terminated and the function succeeds, 
+the status returned is one of the following values: The exit value specified in the ExitThread or TerminateThread function. 
+The return value from the thread function. The exit value of the thread's process. 
+Important The GetExitCodeThread function returns a valid error code defined by the application only after the thread terminates. Therefore, 
+an application should not use STILL\_ACTIVE (259) as an error code. 
+If a thread returns STILL\_ACTIVE (259) as an error code, 
+applications that test for this value could interpret it to mean that the thread is still running and continue to test for the completion of the thread after the thread has terminated, which could put the application into an infinite loop.
 
 \section{Windows 32接口编程}
 
-\subsection{DllImport}
+\subsection{自动注册COM控件}
 
+将控件放在安装目录下，程序启动时在未注册控件时自动注册ocx控件，
 DllImport会按照顺序自动去寻找的地方：1、exe所在目录 2、System32目录 3、环境变量目录所以只需要你把引用的DLL拷贝到这三个目录下就可以不用写路径。
+有时在通过DLLImport注册控件时提示：无法加载 DLL“../Library/videocx3.ocx”: 找不到指定的模块。
+是因为控件videocx3.ocx依赖于其他控件，而其他控件在此路径下不存在导致。
+使用Dependency Walker查看ocx控件的依赖，
+注意查看ocx控件依赖时最好将之拷贝到单独的目录下，
+这样才能真正看到ocx控件缺少的依赖项，
+如图\ref{fig:VideoControllerDependency}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{VideoControllerDependency.jpg}
+	\caption{查看ocx控件的依赖}
+	\label{fig:VideoControllerDependency}
+\end{figure}
+
+注册ocx控件的代码为：
+
+\begin{lstlisting}[language={[Sharp]C}]
+[DllImport("videocx3.ocx")]
+private static extern int DllRegisterServer();
+
+//在函数中调用注册方法
+public static void IsDllRegisteredSuccess(string[] classId)
+{
+	foreach (var currentClassId in classId)
+	{
+		var registerKey = Registry.ClassesRoot.OpenSubKey("CLSID\\" + currentClassId);
+		if (registerKey != null) continue;
+		var i = DllRegisterServer();
+		if (i < 0)
+		{
+			Log.Logger.Error("Control registered failed");
+		}
+	}
+}
+\end{lstlisting}
+
+
+
+\section{插件(Plug-In)}
+
+\subsection{定义}
+
+插件是一种遵循统一的预定义接口规范编写出来的程序,应用程序在运行时通过接口规范对插件进行调用，
+以扩展应用程序的功能。插件在英文中通常称为plug-in、plugin或者plug in。
+插件最典型的例子是Microsoft的ActiveX控件和COM（Component Object Model，
+部件对象模型）实际上ActiveX控件不过是一个更高继承层次的COM而已。此外还有Photoshop的滤镜（Filter）也是一种比较常见的插件。
+
+关于ActiveX和COM
+在Microsoft的.Net Framework 推出的之前（大约是2003年之前吧），ActiveX和COM可是炙手可热的技术啊！
+在那个年代，一个顶尖的VC++高手的标志是什么?是会COM编程！不知道IUnknown接口和QueryInterface函数，
+你怎么可能通过Microsoft的MCSD认证考试?
+现在当然不同了，我曾经见过不少断言COM和ActiveX已经消亡或终将消亡的文章。但是不管怎么说，
+个人认为，ActiveX和COM代表了插件技术的最高境界，通过对ActiveX和COM的研究,我们可以对插件有更深刻的认识。
+关于ActiveX控件和COM技术的详细介绍，有兴趣的朋友不妨去“百度一下”，相信能够获得很多相关信息的。
+
+插件技术过时了吗?
+COM技术的逐渐淡出，使不少程序员产生了困惑：插件技术已经过时了吗?
+NO！至少我不这样认为！毕竟，没有了插件技术，我们还有什么更好的方法为应用程序提供运行时的功能扩展呢? 
+COM的没落自然有其原因，例如编程实在是太复杂而难以掌握，还有就是在这个病毒和木马肆虐的年代，
+其安全性也令人堪忧。但至少我们可以看到，插件技术的成功应用还是有的：比如PhotoShop的滤镜，比如各大主流工控软件的功能扩展。
+对于插件的理解，我们应该注意以下几点：
+一、插件是遵循统一的预定义接口规范编写的。
+
+\subsection{插件的优缺点}
+
+二、应用程序是在运行时调用插件以实现功能扩展的
+插件最吸引人的地方当然就是其所实现“运行时(run-time)"功能扩展。
+这意味着软件开发者可以通过公布插件的预定义接口规范，从而允许第三方的软件开发者通过开发插件对软件的功能进行扩展，
+而无需对整个程序代码进行重新编译。
+运行时(run-time)是相对于编译时(assembly-time)而言的。一般来说，软件开发者对软件功能更新时，
+是在源代码级别进行更新，然后对整个程序或部分动态链接库(DLL)进行重新编译，进而发布应用程序的新版本，
+这就是编译时（assembly-time）的软件更新。
+三、插件技术的优缺点
+运行时的软件功能扩展其优点是显而易见的：
+1、对软件的开发者而言，只需对主程序和某些常用插件进行更新和维护，然后通过公布插件接口吸引第三方的软件开发者对主程序的功能进行扩展，
+这是一种“我为人人，人人为我”的双赢策略；
+2、对最终用户而言，可以通过有选择地购买第三方提供的插件实现自己所需要的功能，从而实现最佳性价比组合，以节省不必要的开支。
+但是，运行时的软件功能扩展也有其弊端：
+1、为实现运行时的软件扩展，程序开发者必须编写更多、更复杂的代码，从而会对程序的执行效率产生一定的影响。关于这一点，我会在第二讲中详细论述；
+2、由于插件是在运行时加载的，因此第三方插件可能对用户造成危害。这种危害通常可以分为两类：
+（1）由于插件开发者的技术水平原因导致的插件BUG，这种BUG可能导致内存泄露、死机、数据丢失等等故障，从而影响到用户对软件的使用；
+（2）插件开发者恶意开发类似于病毒和木马的插件，窃取或毁坏用户数据，使用户遭受不必要的损失；
+为了避免此类缺点，软件开发者可能需要付出额外的代价，如需要对第三方插件进行检验和认证，或者干脆不对外提供插件开发接口，仅由自己提供插件。
+
+\subsection{插件的实现}
+
+反射(reflection)机制可以用来加载插件，接口和抽象类可以用于和插件通信。
 
 \section{常见问题}
 
@@ -12917,6 +14160,11 @@ DllImport会按照顺序自动去寻找的地方：1、exe所在目录 2、Syste
 一般情况下都是由于架构不一致导致的此种问题。
 
 \paragraph{没有注册类 (异常来自 HRESULT:0x80040154 (REGDB\_E\_CLASSNOTREG))}将项目改为x86平台。
+
+
+
+
+
 
 \chapter{基础引擎(Fundation Engine)}
 
@@ -13155,7 +14403,7 @@ Web服务描述语言（Web Services Description Language，WSDL）
 本人更倾向于用一些架构原理来描述它，因为架构原理是相对抽象和稳定的，
 而具体实现可以千差万别。微服务原理和软件工程，面向对象设计中的基本原理相通，体现如下：
 
-\textbf{单一职责（Single Responsibility）}，一个服务应当承担尽可能单一的职责，
+\textbf{单一职责（Single Responsibility）}一个服务应当承担尽可能单一的职责，
 服务应基于有界的上下文（bounded context，通常是边界清晰的业务领域）构建，
 服务理想应当只有一个变更的理由（类似Robert C. Martin讲的：
 A class should have only one reason to change），
@@ -13190,6 +14438,21 @@ Dan North对此还补充说：“Those system then constrain the options for org
 通过使用 Java™ API for XML Web Services (JAX-WS) 技术设计和开发 Web 服务，
 可以带来很多好处，能简化 Web 服务的开发和部署，并能加速 Web 服务的开发。
 
+\subsection{Google调试WebSocket}
+
+在Google浏览器中查看Socket。
+
+
+\begin{lstlisting}[language=HTML]
+chrome://net-internals/#sockets
+\end{lstlisting}
+
+当你访问localhost:8080时,也就是访问root下面的文件。
+所以展示不出主页时，确认下root文件夹内容。
+
+Usage: java javassist.tools.web.Webserver <port number>
+
+
 \section{MyEclipse}
 
 \subsection{常用操作}
@@ -13202,6 +14465,12 @@ Maven is a software tool that helps you manage Java projects,
 and automate application builds. IntelliJ IDEA fully integrates with Maven version 2.2 and later versions, 
 allowing you to create or import Maven modules, download artifacts and perform the goals 
 of the build lifecycle and plugins.
+
+人们离不开Maven，其实是离不开它这两个功能1.包管理2.项目打包。
+Maven是个独立的工具，安装之后可以在命令行界面使用。
+IDE 需要安装Maven插件，关联上已经安装的Maven之后，才能在IDE中调用Maven的功能。
+其中Eclipse的Maven插件为m2eclipse。Intellij则默认自带了Maven插件，直接做相应的关联配置即可。
+
 
 \section{Apache MINA(Multipurpose Infrastructure for Network Applications)}
 
@@ -13290,11 +14559,313 @@ mysql.server脚本在MySQL安装目录下的share/mysql目录中，如果是采�
 \begin{lstlisting}[language=Bash]
 #查找名为support-files的文件夹
 find / -type d -name support-files
+
+#查找名为my的文件
+find . -name 'my'
+#从根目录开始查找名为lan.conf的文件
+find / -name "lam.conf"
 \end{lstlisting}
+
+
+\section{Apache Tomcat}
+
+\subsection{常识(Common Sense)}
+
+Apache Tomcat部署的项目存在于webapps目录下，
+按照项目名称进行组织，启动项目后可根据项目名称进行访问，
+例如部署了一个新的项目名字叫DeviceGPS，下有一个文件Index.jsp，
+那么相应的访问URL路径为：
+
+
+\begin{lstlisting}[language=HTML]
+http://192.168.24.79:8081/DeviceGPS/index.jsp
+\end{lstlisting}
+
+\chapter{Python}
+
+Python的拟人化表示如图\ref{code:PythonVirtual}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{PythonVirtual.jpg}
+	\caption{Python拟人化理解}
+	\label{code:PythonVirtual}
+\end{figure}
+
+Python，是一种面向对象、直译式的计算机程序语言，具有近二十年的发展历史。
+它包含了一组功能完备的标准库，能够轻松完成很多常见的任务。它的语法简单，
+与其它大多数程序设计语言使用大括号不一样，它使用缩进来定义语句块。
+
+与Scheme、Ruby、Perl、Tcl等动态语言一样，Python具备垃圾回收功能，
+能够自动管理内存使用。它经常被当作脚本语言用于处理系统管理任务和网络程序编写，
+然而它也非常适合完成各种高级任务。Python虚拟机本身几乎可以在所有的作业系统中运行。
+使用一些诸如py2exe、PyPy、PyInstaller之类的工具可以将Python源代码转换成可以脱离Python解释器运行的程序。
+
+Python的官方解释器是CPython，该解释器用C语言编写，是一个由社区驱动的自由软件，目前由Python软件基金会管理。
+
+Python支持命令式程序设计、面向对象程序设计、函数式编程、面向侧面的程序设计、泛型编程多种编程范式。
+Python的设计哲学是“优雅”、“明确”、“简单”。Python开发者的哲学是“用一种方法，
+最好是只有一种方法来做一件事”，也因此它和拥有明显个人风格的其他语言很不一样。
+在设计Python语言时，如果面临多种选择，Python开发者一般会拒绝花俏的语法，
+而选择明确没有或者很少有歧义的语法。这些准则被称为“Python格言”。
+
+\section{框架}
+
+\subsection{Django}
+
+pip is a package manage for Python. 
+It makes installing and uninstalling Python packages (such as Django!) very easy. 
+For the rest of the installation, we’ll use pip to install Python packages from the command line.
+
+安装的过程中可能会出现“ImportError: No module named setuptools”的错误提示，
+这是新手很常遇见的错误提示。不用担心，这是因为Windows环境下Python默认是没有安装setuptools这个模块的，
+这也是一个第三方模块。下载地址为http://pypi.python.org/pypi/setuptools。
+如果是Windows环境的话，下载exe形式的安装程序就可以了（傻瓜式安装，非常快）。
+安装了setuptools之后，再运行“python setup.py install”就可以方便地安装各种第三方模块了。
+
+\subsection{paramiko}
+
+paramiko是用python语言写的一个模块，遵循SSH2协议，支持以加密和认证的方式，进行远程服务器的连接。
+由于使用的是python这样的能够跨平台运行的语言，所以所有python支持的平台，
+如Linux, Solaris, BSD, MacOS X, Windows等，paramiko都可以支持，
+因此，如果需要使用SSH从一个平台连接到另外一个平台，进行一系列的操作时，paramiko是最佳工具之一。
+从远程服务器上使用ssh下载文件时，不需要对远程服务器进行配置，
+特别是在应对多台服务器时。
+
+\subsection{paramiko安装}
+
+安装paramiko有两个先决条件，python和另外一个名为PyCrypto的模块。
+pycrypto是用Python写的加密工具包。This is a collection of both secure hash functions (such as SHA256 and RIPEMD160), 
+and various encryption algorithms (AES, DES, RSA, ElGamal, etc.).
+
+\paragraph{安装easy\_install工具}安装完毕后记得将路径C:/Python27/Scripts添加到环境变量中。
+
+
+\paragraph{安装PyCrypto模块}运行python.exe，在提示符下输入：Import  Crypto，
+如果没有出现错误则证明安装成功。
+
+\paragraph{安装paramiko}
+
+使用如下命令安装paramiko：
+
+\begin{lstlisting}[language=Bash]
+#使用easy\_install安装
+easy_install paramiko
+
+#使用pip安装
+pip install paramiko
+\end{lstlisting}
+
+安装时提示：Microsoft Visual C++ 9.0 is required (Unable to find vcvarsall.bat).
+按照提示安装相应的C++版本(Microsoft Visual C++ Compiler for Python 2.7)即可。
+安装paramiko时提示：安装时提示：ImportError: No module named cryptography.hazmat.backends。
+通过如下命令安装pyOpenSSL可以解决：
+
+\begin{lstlisting}[language=Bash]
+easy_install pyOpenSSL==0.13
+
+pip install pyOpenSSL==0.13
+\end{lstlisting}
+
+安装pyOpenSSL可能出现错误，可尝试按照命令行提示升级pip(python -m pip install --upgrade pip)。
+
+\section{工具}
+
+\subsection{编码风格}
+
+不要在行尾加分号, 也不要用分号将两条命令放在同一行.\subsection{Python Tools for Visual Studio}
+
+\subsection{PyCharm}
+
+显示行号:File->Settings->Editor->General->Appearance->Show line numbers。
+
+\section{初级任务}
+
+\subsection{Python进制转换}
+
+\begin{lstlisting}[language=Python]
+#十进制转换二进制 
+>>> bin(10) 
+'0b1010' 
+
+#十进制转换十六进制 
+>>> hex(10) 
+'0xa' 
+
+#二进制转换十进制 
+>>> int('1010',2) 
+10 
+
+#十六进制转换十进制 
+>>> int('0xa',16) 
+10 
+
+#十六进制转换二进制 
+>>> bin(0xa) 
+'0b1010' 
+
+#二进制转换十六进制 
+>>> hex(0b1010) 
+'0xa' 
+\end{lstlisting}
+
+\subsection{使用Python下载文件}
+
+使用Python的paramiko模块下载文件，可以不用在服务器上配置，
+多台服务器上下载文件时优势明显。
+
+\begin{lstlisting}[language=Python]
+#!/usr/bin/python
+
+import sys
+import paramiko
+import ssh
+
+def download():
+	print("scan")
+	sshClient=ssh.SSHClient()
+	sshClient.set_missing_host_key_policy(ssh.AutoAddPolicy())
+	sshClient.connect("10.6.12.14",port = 21,username = "root",password = "123456")
+	stdin,stdout,stderr = sshClient.exec_command("ls -alh")
+	stdout.read()
+	sftp = sshClient.open_sftp()
+	sftp.get('/root/package/scripts/log/log.log','G:\\a.log')
+
+if __name__=="__main__":
+	print("main")
+	download()
+\end{lstlisting}
+
+\subsection{Python引入目录下文件}
+
+要包含目录下的文件时需要在目录下声明一个\_\_init\_\_.py文件，即使这个文件是空的也可以。
+当然这个文件也可以初始一些数据。
+
+\begin{lstlisting}[language=Python]
+#!/usr/bin/python
+
+import Ssh.SshDown
+
+def sshdownload():
+	Ssh.SshDown.downfile()
+\end{lstlisting}
+
+\subsection{python xml解析}
+
+
+
+\section{常见问题}
+
+\subsection{TabError: inconsistent use of tabs and spaces in indentation}
+
+Python的代码块通过缩进对齐表达代码逻辑，而不是使用大括号（从此告别神圣的大括号战争了），
+Python支持制表符缩进和空格缩进，但Python社区推荐使用四空格缩进。也可以使用制表符缩进，但切不可以混用两种缩进符号。
 
 \chapter{Linux}
 
+\section{shell}
+
+\subsection{风格}
+
+Shell的风格推荐\footnote{\url{http://zh-google-styleguide.readthedocs.io/en/latest/google-shell-styleguide/formatting/}}。
+
+
+\paragraph{缩进两个空格，没有制表符}
+\paragraph{请将 ; do , ; then 和 while , for , if 放在同一行}
+\paragraph{所有的错误信息都应该被导向STDERR}
+推荐使用类似如下函数，将错误信息和其他状态信息一起打印出来。
+
+\begin{lstlisting}[language=Bash]
+err() {
+	echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@" >&2
+}
+
+if ! do_something; then
+	err "Unable to do_something"
+	exit "${E_DID_NOTHING}"
+fi
+\end{lstlisting}
+
+\subsection{常用Shell脚本}
+
+\paragraph{判断文件夹是否存在}判断文件夹是否存在如下脚本所示：
+
+\begin{lstlisting}[language=Bash]
+#!/bin/sh
+if [ ! -d "/root/package/my" ] ;then
+mkdir /root/package/my
+fi
+\end{lstlisting}
+
+注意条件判断语句的中括号两边都需要留有空格。
+
+\paragraph{使用tcpdump抓取包}如下代码使用tcpdump抓取指定的包，
+并按照时间存放到不同的目录下。
+
+\begin{lstlisting}[language=Bash]
+#!/bin/bash
+currentDate='date '+%Y-%m-%d''
+currentTime='date +'%Y%m%d%H%M%S''
+packageStoreDir=/root/package/location/$currentDate
+if [ ! -d "$packageStoreDir" ] ; then
+mkdir "$packageStoreDir"
+fi
+#tcpdump -i eth1 port 6973 and host 12.26.32.14 -w $packageStoreDir/$currentTime.cap
+tcpdump -i eth1 port 6973 and host 12.26.32.14 -w $packageStoreDir/$currentTime.cap
+\end{lstlisting}
+
+要让进程在后台运行，一般情况下，我们在命令后面加上\&即可，实际上，这样是将命令放入到一个作业队列中。
+但是如上方到后台执行的进程，其父进程还是当前终端shell的进程，而一旦父进程退出，
+则会发送hangup信号给所有子进程，子进程收到hangup以后也会退出。
+如果我们要在退出shell的时候继续运行进程，则需要使用nohup忽略hangup信号，
+或者setsid将将父进程设为init进程(进程号为1)。
+
+\begin{lstlisting}[language=Bash]
+nohup ./capture.sh &
+\end{lstlisting}
+
+可以使用jobs命令查看后台的进程。
+
+\paragraph{批量终止进程}批量终止指定的进程如下命令所示：
+
+\begin{lstlisting}[language=Bash]
+#!/bin/bash
+for processId in $(ps -ef|grep "tcpdump"|grep -v grep|cut -c 10-15); do	
+if [ $processId != 1 ] ;then
+kill -9 $processId
+echo "kill $processId success" >> ./log/log.log
+fi
+done
+\end{lstlisting}
+
+此脚本用于结束计算机中所有的tcpdump进程，cut -c 10-15用于过滤出进程的ID集合。
+
+\paragraph{判断进程是否存在}
+
+有时在启动一个进程时，需要判断启动的进程是否已经存在从而进行不同的操作，
+判断进程是否存在如下代码片段所示。
+
+\begin{lstlisting}[language=Bash]
+#!/bin/bash
+process_exists=false
+for processId in $(ps -ef|grep "tcpdump"|grep -v grep|cut -c 10-15); do
+if [ $processId != 1 ] ;then
+process_exists=true
+echo "tcpdump process aready exists,will not start capture process" >> ./log/capture.log
+fi
+done
+if [ "$process_exists" != true ] ;then
+nohup /root/package/scripts/capture.sh &
+fi
+\end{lstlisting}
+
+shell变量名字是大小写敏感的。给变量赋值时，等号周围不能有任何空白符。
+如此处的:process\_exists=true。
+
+
 \section{基础}
+
+Linux下安装应用程序时它的默认安装路径。默认目录一般建议为/usr所有的软件都仍这里。
 
 \subsection{常用命令}
 
@@ -13303,6 +14874,16 @@ find / -type d -name support-files
 
 \begin{lstlisting}[language=Bash]
 tar -zxvf 压缩文件名.tar.gz
+
+#查看Linux发行版本
+cat /proc/version
+
+#查看进程
+ps -aux
+
+#开机自动启动Apach和MySQL
+chkconfig httpd on
+chkconfig mysqld on
 \end{lstlisting}
 
 x代表从文件中extract，
@@ -13310,6 +14891,19 @@ f是文件(file)的意思，
 z参数代表gzip，
 filter the archive through gzip，
 v代表verbosse，即输出详细的信息。
+
+\subsection{日志查看}
+
+\begin{lstlisting}[language=Bash]
+#查看位置上报信息
+tail -f Device.log |grep "7E 02 00"
+
+#过滤设备的报警信息
+tail -f MVSP_DeviceServer.log |grep "7E 02 00 00 .. .. .. .. .. .. .. .. .. [^0][^0] [^0][^0] [^0][^0] [^0][^0]"
+
+#查看设备上报的GPS信息
+
+\end{lstlisting}
 
 \subsection{网络}
 
@@ -13373,16 +14967,19 @@ ifconfig eth0
 \paragraph{iptables(防火墙)配置}iptables是一个强大的Linux防火墙，使用频率极高。
 
 \begin{lstlisting}[language=Bash]
+#CentOS iptables
+nano /etc/sysconfig/iptables
+
 #查看配置情况，可显示相应的端口
 iptables -L -n
-#记得保存
-/etc/init.d/iptables save
-#在CentOS上执行如下命令，需要加上路径
-/etc/rc.d/init.d/iptables save
 #添加input记录
 /sbin/iptables -I INPUT -p tcp --dport 8080 -j ACCEPT
 #添加output记录
 iptables -A OUTPUT -p tcp –sport 22 -j ACCEPT
+#记得保存
+/etc/init.d/iptables save
+#在CentOS上执行如下命令，需要加上路径
+/etc/rc.d/init.d/iptables save
 \end{lstlisting}
 
 
@@ -13408,12 +15005,205 @@ mysql端口3306
 
 nfs端口111
 
-\subsection{mysql}
+\subsection{tcpdump}
+
+使用tcpdump时需要看看目前服务器一共多少网卡，抓取所有经过eth1，目的或源地址是12.26.32.14的网络数据：
 
 \begin{lstlisting}[language=Bash]
-mysql -uroot -hlocalhost -p
-SET PASSWORD FOR 'root'@'localhost' = PASSWORD('newpass');
+tcpdump -i eth1 host 12.26.32.14 -vv
 \end{lstlisting}
+
+抓取所有经过eth1，目的地址是12.26.32.14，且端口是6973的网络数据：
+
+\begin{lstlisting}[language=Bash]
+tcpdump -i eth1 dst host 12.26.32.14 and port 6973 -vv
+\end{lstlisting}
+
+抓取所有经过eth1，数据包类型是TCP，目的地址是12.26.32.14，且端口是6973的网络数据：
+
+\begin{lstlisting}[language=Bash]
+tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 -vv
+\end{lstlisting}
+
+抓取所有经过eth1，数据包类型是TCP，目的地址是12.26.32.14，端口是6973,且数据包长度大于140字节的网络数据：
+
+\begin{lstlisting}[language=Bash]
+tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>140' -vv
+\end{lstlisting}
+
+抓取所有经过eth1，数据包类型是TCP，目的地址是12.26.32.14，端口是6973,且数据包长度大于140字节的网络数据：
+
+\begin{lstlisting}[language=Bash]
+tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>140' -vv -X
+\end{lstlisting}
+
+-X选项告诉tcpdump命令，需要把协议头和包内容都原原本本的显示出来（tcpdump会以16进制和ASCII的形式显示），
+这在进行协议分析时是绝对的利器。抓取所有经过eth1，数据包类型是TCP，目的地址是12.26.32.14，
+端口是6973,数据包长度大于140字节，抓取100个数据包的网络数据：
+
+\begin{lstlisting}[language=Bash]
+tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>140' -vv -X -c 100
+\end{lstlisting}
+
+抓取所有经过eth1，数据包类型是TCP，目的地址是12.26.32.14，端口是6973,数据包长度大于140字节，
+且IP包40位的后两位数据是7e02的网络数据(位置信息上报)，注意过滤时需要添加0x前缀：
+
+\begin{lstlisting}[language=Bash]
+tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>140 and ip[40,2]=0x7e02' -vv -X -c 100
+\end{lstlisting}
+
+抓取所有经过eth1，数据包类型是TCP，目的地址是12.26.32.14，端口是6973,数据包长度大于140字节，
+且IP包40位的后两位数据是7e02的网络数据(位置信息上报)，注意过滤时需要添加0x前缀：
+
+\begin{lstlisting}[language=Bash]
+tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>140 and ip[40,2]=0x7e02' -vv -X -c 100
+\end{lstlisting}
+
+抓取所有经过eth1，数据包类型是TCP，目的地址是12.26.32.14，端口是6973,数据包长度大于140字节，
+且IP包40位的后两位数据是7e02的网络数据(位置信息上报)，查看终端报警情况：
+
+\begin{lstlisting}[language=Bash]
+tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>0 and ip[41:2]=0x0200 and ip[53:4]!=0x00000000' -vv -X -c 100
+\end{lstlisting}
+
+抓取所有经过eth1，数据包类型是TCP，目的地址是12.26.32.14，端口是6973,数据包长度大于140字节，
+且IP包40位的后两位数据是7e02的网络数据(位置信息上报)，报警终端电话号码不是0x41310718，查看终端报警情况：
+
+\begin{lstlisting}[language=Bash]
+tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>0 and ip[41:2]=0x0200 and ip[53:4]!=0x00000000 and ip[46:4]!=0x41310718' -vv -X -c 100
+tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>100 and ip[41:2]=0x0200 and ip[53:4]==0x200000 and ip[46:4]!=0x41310718' -vv -X -c 10000
+\end{lstlisting}
+
+终端电话号码的后7位为设备ID。
+
+\subsubsection{tcpdump包写入文件}
+
+当tcpdump指定-w参数时，可将抓取的包写入文件，默认是1,000,000 bytes。
+Savefiles after the first  save-file  will  have  the name specified with the -w flag, 
+with a number after it, starting at 1 and continuing upward.  
+The units of file\_size are millions of bytes (1,000,000 bytes, not 1,048,576 bytes).
+所以持续的捕获消息会生成许多差不多大小的包。
+
+\subsubsection{tcpdump详细日期}
+
+有时dump下的包需要查看报文捕获的详细时间，可以在tcpdump后添加-tttt参数，
+如下代码片段所示。
+
+\begin{lstlisting}[language=Bash]
+/usr/sbin/tcpdump -i eth1 port 6973 and host 12.26.32.14 -tttt -s0 -w $packageStoreDir/$currentTime.cap
+\end{lstlisting}
+
+此种方式捕获的数据包导入Wireshark即可看到详细的捕获时间。
+
+\subsection{vi}
+
+\begin{tabular}{l|p{10cm}}
+	\multirow{1}{*}{操作码}			
+	& \multicolumn{1}{c}{作用}\\	 
+	\hline
+	vi + filename & 打开一个文件，将光标置于最后一行首\\
+	\hline
+	\textasciicircum f & 下一页(forward)\\
+	\hline 
+	\textasciicircum b & 上一页(before)\\
+	\hline
+	\textasciicircum d & 往下半个屏幕(down)\\
+	\hline
+	\textasciicircum u & 往上半个屏幕(up)\\
+	\hline
+	\textasciicircum n & 输入斜线查询后，按n查找下一个(next)匹配\\
+	\hline
+	\textasciicircum N & 输入斜线查询后，按N查找上一个匹配\\
+	\hline
+	u & 撤销(undo)上一步的操作\\
+	\hline
+	Ctrl+r & 恢复(redo)上一步被撤销的操作\\
+	\hline
+	\end{tabular}
+
+
+\subsection{anacron}
+
+\subsection{cron执行定时任务}
+
+Ubuntu下定时运行任务使用cron表达式，切换到/etc目录,使用vi crontab命令打开配置
+文件，配置文件如下所示。
+
+\begin{lstlisting}
+/etc/crontab: system-wide crontab
+Unlike any other crontab you don't have to run the 'crontab'
+command to install the new version when you edit this file
+and files in /etc/cron.d. These files also have username fields,
+that none of the other crontabs do.
+
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+\end{lstlisting}
+
+打开Cron日志记录：
+
+修改rsyslog文件，将/etc/rsyslog.d/50-default.conf 文件中的\#cron.*前的\#删掉；
+重启rsyslog服务service rsyslog restart；
+重启cron服务service cron restart；
+
+more /var/log/cron.log；查看Cron日志文件。日志文件将通过邮件服务器发送，如果没有邮件
+服务器的话，会提示：No MTA installed, discarding output。
+可以通过以下命令将日志写到指定的文件中：
+
+\begin{lstlisting}[language=Bash]
+* * * * * dolphin /home/dolphin/cron.sh >>$HOME/cronlog.log 2>&1
+\end{lstlisting}
+
+crontab常用指令如下：
+
+\begin{lstlisting}[language=Bash]
+#启动crontab
+/etc/init.d/cron start
+
+#重新启动crontab
+/etc/init.d/cron restart
+
+#查看cron运行状态
+ps -eaf|grep cron
+
+#列出crontab任务
+crontab -l
+
+#每天早上8点执行capture.sh脚本
+0 8 * * * root /root/package/scripts/start_capture.sh >> /root/package/capture.log
+\end{lstlisting}
+
+\subsection{CentOS安装PHP 5.4}
+
+RHEL / CentOS 4 預設的 PHP 版本是 5.3, 以下會介紹在 CentOS 6 透過 Yum 安裝 PHP 5.4 的方法:
+
+1. 安裝 SCL repo
+
+\begin{lstlisting}[language=Bash]
+yum install centos-release-SCL
+\end{lstlisting}
+
+
+2. 安裝 php 5.4
+
+\begin{lstlisting}[language=Bash]
+yum install php54
+\end{lstlisting}
+
+Step 3. 在系統使用 PHP 5.4
+開啟 /etc/profile 並加入以下一行:
+
+\begin{lstlisting}[language=Bash]
+source /opt/rh/php54/enable
+\end{lstlisting}
+
+並執行以下指令:
+
+\begin{lstlisting}[language=Bash]
+source /etc/profile
+\end{lstlisting}
+
+完成後可以用php -v檢查是否升級到 PHP 5.4.
 
 \section{Angile}
 
@@ -13426,6 +15216,14 @@ SET PASSWORD FOR 'root'@'localhost' = PASSWORD('newpass');
 \paragraph{冲刺订单(sprint backlog)}是大大细化了的文档，包含团队如何实现下一个冲刺的需求的信息。
 任务被分解为以小时为单位，没有任务可以超过16个小时。如果一个任务超过16个小时，那么它就应该被进一步分解。
 冲刺订单上的任务不会被分派，而是由团队成员签名认领他们喜爱的任务。
+
+\section{Code Review}
+
+\subsection{Tools}
+
+
+\subsection{Install Review Board}
+
 
 
 \clearpage
@@ -13564,6 +15362,10 @@ CREATE TABLE [dbo].[Log](
    <appendToFile value="true" />
    <rollingStyle value="Date" />
    <datePattern value="yyyyMMdd'.txt'" />
+   <!--设置无限备份=-1 ，最大备份数为1000-->
+   <param name="MaxSizeRollBackups" value="10"/>
+   <!--每个文件的大小-->
+   <param name="MaximumFileSize" value="50MB"/>   
    <staticLogFileName value="false" />
    <layout type="log4net.Layout.PatternLayout">        
      <ConversionPattern value="%date [%thread] %-5level %logger [%ndc] - %message%newline" />
@@ -13638,6 +15440,9 @@ CREATE TABLE [dbo].[Log](
 
 \subsection{初始化配置文件}
 
+如果遇到初始化配置时间太长的情况，
+检查是否添加了ADONetAppender，
+当数据库无法成功连接时会造成初始化日志时间非常长。
 初始化配置文件的一种方式为在启动项目的AssemblyInfo.cs文件中添加如下语句：
 \begin{lstlisting}[language={[Sharp]C}]
 [assembly: log4net.Config.XmlConfigurator(Watch = true, ConfigFile = "./config/log4net.config")]
@@ -13672,8 +15477,14 @@ log4net.Config.XmlConfigurator.Configure(new System.IO.FileInfo(Server.MapPath("
 	Write this code in Global.asax
 	Global.asax文件（也叫做 ASP.NET 应用程序文件）是一个可选的文件，该文件包含响应 ASP.NET 或 HTTP 模块引发的应用程序级别事件的代码
 */
-log4net.Config.XmlConfigurator.Configure();            
+log4net.Config.XmlConfigurator.Configure(); 
+
+/*在新版的Log4net中，可以通过此语句简单配置即可*/
+BasicConfigurator.Configure();           
 \end{lstlisting}
+
+在配置完成后，需要至少初始化一次，
+这样日志才能够成功输出。
 在MVC中配置log4net需在Global.asax中的Application\_Start方法中添加类似配置初始化log4net配置文件。
 在类中可以通过
 
@@ -13683,14 +15494,50 @@ private static readonly log4net.ILog logger = log4net.LogManager.GetLogger("FrmT
 
 语句获取一个logger对象。此种方式在每个类中写成类属性时都需要更改类名，
 比较麻烦。也可通过如下语句利用反射来初始化日志实例：
+
 \begin{lstlisting}[language={[Sharp]C}]
 private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 \end{lstlisting}
+
 注意引用using System.Reflection命名空间。此种写法可以成为类的通用属性，
 引用时可避免手动更改类名。
 DeclaringType获取声明此方法的类（Gets the class that declares this member）。
 避免在每个类中定义logger实例，
 可将logger在基类中实例化，其他类继承基类即可。
+使用的过程中发现初次初始化log4net时非常缓慢，
+可采用异步的方式进行初始化，如下代码片断所示：
+
+\begin{lstlisting}[language={[Sharp]C}]
+Task.Run(() => AsyncLog4Net());
+\end{lstlisting}
+
+AsyncLog4Net方法为初始化log4net的相关代码，
+不过是放入线程池运行。
+另外如果在使用异步方式记录日志时，
+将记录日志的语句放入线程池中，而不是线程中，详细的原因如下代码片断所示。
+
+\begin{lstlisting}[language={[Sharp]C}]
+//应该避免的写法
+for (int n = 1; n <= 5; n++)
+{
+	Task.Run(() => logger.DebugFormat("Log entry {0}", n));
+}
+
+/*
+输出的结果为：
+DEBUG Log entry 6
+DEBUG Log entry 6
+DEBUG Log entry 6
+DEBUG Log entry 6
+DEBUG Log entry 6
+*/
+
+//推荐写法
+public void Debug(string message)
+{
+	ThreadPool.QueueUserWorkItem(task => logger.Debug(message));
+}
+\end{lstlisting}
 
 
 \subsection{log文件名累加}
@@ -13926,6 +15773,17 @@ public static class PublicAttribute<T>
 公共类中传入泛型参数，带来的好处是日志显示的类是记录日志实际的类，
 而不是定义的公共类PublicAttribute，不方便的地方是调用记录时需要传入类名。
 
+\subsection{记录建议(Logging Advisor)}
+
+\begin{itemize}
+	\item{不要记录后又重新向外抛出}~~记录日志后重新抛出异常是一个异常反模式(anti-pattern)。
+	\item{日志信息应该用英语}~~英语意味着你的log是用ASCII编码的。这非常重要，因为你不会真正知道log信息会发生什么，或是它被归档前经过何种软件层和介质。如果你的信息里面使用了特殊字符集，乃至UTF-8，它可能并不会被正确地显示(render)，更糟的是，它可能在传输过程中被损坏，变得不可读。不过这还有个问题，log用户输入时，可能有各种字符集或者编码。
+\end{itemize}
+
+\subsection{远程Tail日志}
+
+log.io rTail
+
 \subsection{常见问题}
 
 log4net在本地可以正常写日志，
@@ -13963,6 +15821,90 @@ ELMAH既支持ASP.NET Web Forms又支持ASP.NET MVC。
 
 Real-time log monitoring in your browser.
 
+\section{ELK}
+
+\subsection{logstash简介}
+
+Logstash是一款轻量级的日志搜集处理框架，可以方便的把分散的、多样化的日志搜集起来，
+并进行自定义的处理，然后传输到指定的位置，比如某个服务器或者文件。
+Elasticsearch + Logstash + Kibana（ELK）是一套开源的日志管理方案，
+分析网站的访问情况时我们一般会借助Google/百度/CNZZ等方式嵌入JS做数据统计，
+但是当网站访问异常或者被攻击时我们需要在后台分析如Nginx的具体日志，
+而Nginx日志分割/GoAccess/Awstats都是相对简单的单节点解决方案，
+针对分布式集群或者数据量级较大时会显得心有余而力不足，而ELK的出现可以使我们从容面对新的挑战。
+Logstash：负责日志的收集，处理和储存
+Elasticsearch：负责日志检索和分析
+Kibana：负责日志的可视化。
+关于安装文档，网络上有很多，可以参考，不可以全信，而且三件套各自的版本很多，差别也不一样，需要版本匹配上才能使用。
+
+\paragraph{elasticsearch安装}
+
+elasticsearch安装过程如下：
+
+\begin{lstlisting}[language=Bash]
+#下载安装包
+wget https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.3.3/elasticsearch-2.3.3.tar.gz
+
+#解压
+tar -xzvf elasticsearch-2.3.3.tar.gz
+
+#放到安装目录下
+mv elasticsearch-2.3.3 /usr/local
+
+#创建软链接
+ln -s /usr/local/elasticsearch-2.3.3 /usr/local/elasticsearch
+
+#测试elasticsearch
+./elasticsearch -e 'input { stdin { } } output { stdout {} }'
+
+#创建配置文件目录
+mkdir -p /usr/local/logstash/etc
+
+#创建配置文件
+vim /usr/local/logstash/etc/hello_search.conf
+
+#启动
+/usr/local/logstash/bin/logstash -f /usr/local/logstash/etc/hello_search.conf
+
+#运行logstach agent
+./logstach agent
+\end{lstlisting}
+
+\paragraph{logstash安装}
+
+logstach安装过程如下：
+
+\begin{lstlisting}[language=Bash]
+#下载安装包
+wget https://download.elastic.co/logstash/logstash/logstash-2.3.3.tar.gz
+
+#解压
+tar -xzvf logstash-2.3.3.tar.gz
+
+#放到安装目录下
+mv logstash-2.3.3 /usr/local
+
+#创建软链接
+ln -s /usr/local/logstash-2.3.3 /usr/local/logstash
+
+#测试logstash
+./logstash -e 'input { stdin { } } output { stdout {} }'
+
+#创建配置文件目录
+mkdir -p /usr/local/logstash/etc
+
+#创建配置文件
+vim /usr/local/logstash/etc/hello_search.conf
+
+#测试配置文件
+./logstash --configtest -f ../etc/hello_search.conf
+
+#启动
+/usr/local/logstash/bin/logstash -f /usr/local/logstash/etc/hello_search.conf
+
+#运行logstach agent
+./logstach agent
+\end{lstlisting}
 
 
 \newpage
@@ -13980,6 +15922,9 @@ Real-time log monitoring in your browser.
 SVN的缺点是没有良好的Code Review工具，
 速度比较慢(因为有许多远程操作比如Commit、Update等等。
 
+\subsection{SVN Revert}
+
+svn revert — Undo all local edits。
 
 \subsection{svn cleanup failed–previous operation has not finished; run cleanup if it was interrupted}
 
@@ -14252,6 +16197,15 @@ GEQ - 大于或等于
 1.7.X之后只是在检出的根目录下有一个.svn，
 这就是Subversion 1.7的新特性。
 
+\subsection{diff和patch}
+
+diff 和 patch是一对工具，在数学上来说，diff是对两个集合的差运算，
+patch是对两个集合的和运算。 diff 比较两个文件或文件集合的差异，并记录下来，生成一个diff文件，这也是我们常说的patch文件，即补丁文件。 
+
+patch能将diff文件运用于 原来的两个集合之一，从而得到另一个集合。
+举个例子来说文件A和文件B,经过diff之后生成了补丁文件C, 那么着个过程相当于 A - B = C ,那么patch的过程就是B+C = A 或A-C =B。 
+因此我们只要能得到A, B, C三个文件中的任何两个，就能用diff和patch这对工具生成另外一个文件。这就是diff和patch的妙处。
+
 \section{Git}
 
 \subsection{基本使用}
@@ -14259,6 +16213,15 @@ GEQ - 大于或等于
 如下代码片段是Git的常见用法。
 
 \begin{lstlisting}[language=Bash]
+#查看本地所有分支
+git branch
+
+#查看所有分支
+git branch -a
+
+#查看远程所有分支
+git branch -r
+
 # 在当前目录新建一个Git代码库
 $ git init
 
@@ -14358,6 +16321,9 @@ ssh-agent bash
 在GitHub上添加第一个Git仓库，配置项目名称和相关信息。
 
 \begin{lstlisting}[language=Bash]
+#第一次推送的时候要添加远程的代码库到配置
+git remote add origin master https://github.com/jiangxiaoqiang/DolphinDevManual.git
+
 #将远程代码库克隆到本地
 git clone https://github.com/jiangxiaoqiang/DolphinDevManual.git
 
@@ -14472,7 +16438,7 @@ CruiseControl.NET-CCTray-1.8.5.0-Setup.exe为客户端，
 
 持续集成的单位是以项目为单位，在ccnet.config文件里添加Project。
 
-\begin{lstlisting}
+\begin{lstlisting}[language=XML]
 <project name="HotMark" description="RRMall advertise by print machine." queue="Q1">
 <webURL>http://127.0.0.1/ccnet</webURL>
 <workingDirectory>D:\Dailybuild</workingDirectory>	
@@ -14504,7 +16470,7 @@ triggers配置节里说明持续集成的触发条件，seconds表示
 对于使用SVN的源码管理器，持续集成插件会自动检出源码
 进行编译，向Project配置节下添加源代码控制相关配置：
 
-\begin{lstlisting}
+\begin{lstlisting}[language=XML]
 <!--自动获取源码-->
 <sourcecontrol 	type="svn">
 	<!--该项目的SVN路径-->
@@ -14526,7 +16492,7 @@ CruiseControl定时检测源代码的变化，当检测到变化时，
 \subsection{自动Build}
 
 实现自动Build，向Project节点下增加tasks节点，如下:
-\begin{lstlisting}
+\begin{lstlisting}[language=XML]
 <msbuild>			 
 	<executable>C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe</executable>         
 	<workingDirectory>D:\Dailybuild\Source</workingDirectory> 
@@ -14543,7 +16509,7 @@ CruiseControl定时检测源代码的变化，当检测到变化时，
 
 \subsection{自动化回归测试}
 
-\begin{lstlisting}
+\begin{lstlisting}[language=XML]
 <nunit> 
 	<path>C:\Program Files (x86)\NUnit 2.6.4\bin\nunit-console.exe</path>          
 	<outputfile>D:\Dailybuild\buildlogs\NunitLog\nunit-results.xml</outputfile> 
@@ -14560,7 +16526,7 @@ CruiseControl定时检测源代码的变化，当检测到变化时，
 
 其中sourceDir为测试通过的程序的地址
 
-\begin{lstlisting}
+\begin{lstlisting}[language=XML]
 <!--发布到站点-->
 <buildpublisher>
 	<sourceDir>D:\Dailybuild\BuildOutput</sourceDir>
@@ -14635,7 +16601,7 @@ publishDir是需要发布到的地址。
 
 由于本项目Visual Studio使用的版本是2012版，将csproj文件用导入的项目路径更改即可。原路径：
 
-\begin{lstlisting}
+\begin{lstlisting}[language=XML]
 <PropertyGroup>
 	<VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
 	<VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -14650,7 +16616,7 @@ publishDir是需要发布到的地址。
 
 修改为：
 
-\begin{lstlisting}
+\begin{lstlisting}[language=XML]
 <PropertyGroup>
 	<VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
 	<VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -14844,8 +16810,43 @@ VisualStudioVersion=11.0 表示VS2012。
 \subsection{自动打包}
 
 
+\subsection{Jenkins执行批处理命令}
 
+在编译成功后，将编译成功的文件发布到网络文件夹。
+在Jenkins中添加构建后操作，批处理脚本如下。
 
+\begin{lstlisting}[language=Bash]
+xcopy D:\ClientRelease\JenkinRelease\*.* \\192.168.24.253\公共区\Client\2.0\Release /S /R /Y
+\end{lstlisting}
+
+初始执行时提示无效的驱动器规格。
+将Jenkins服务的启动登录账户权限修改下即可(因为Jenkins登录账户还没有保存登录远程账户的凭据)，
+如下图\ref{fig:JenkinsChangeLoginAccount}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{JenkinsChangeLoginAccount.jpg}
+	\caption{Jenkins配置登录账户}
+	\label{fig:JenkinsChangeLoginAccount}
+\end{figure}
+
+有时希望每次构建的的版本有一个类似于版本号标记的标识，
+测试部门更加容易明白构建具体的版本，
+在执行xcopy处理命令时创建带日期的文件夹，
+命令如下所示：
+
+\begin{lstlisting}[language=Bash]
+#生成的文件夹形如：Client2.0-Release-20160524010923
+xcopy D:\ClientRelease\JenkinRelease\*.* \\192.168.24.253\公共区\Client\2.0\Client2.0-Release-%date:~0,4%%date:~5,2%%date:~8,2%0%time:~1,1%%time:~3,2%%time:~6,2% /S /R /Y /I
+\end{lstlisting}
+
+其中/I参数在目标文件夹不存在时创建目标文件夹，
+也可以使用Jenkins的变量，用构建的版本号(Build Number)作为文件夹名称：
+
+\begin{lstlisting}[language=Bash]
+#生成的文件夹形如：Client2.0-Release-20160524-315
+xcopy D:\ClientRelease\JenkinRelease\*.* \\192.168.24.253\公共区\Client\2.0\Client2.0-Release-%date:~0,4%%date:~5,2%%date:~8,2%-%BUILD_NUMBER% /S /R /Y /I
+\end{lstlisting}
 
 \section{Travis CI}
 
@@ -14854,7 +16855,7 @@ VisualStudioVersion=11.0 表示VS2012。
 
 \subsection{生成更新文件}
 
-\begin{lstlisting}[language={[Sharp]C}]
+\begin{lstlisting}[language=Bash]
 @echo off
 title 生成更新文件
 set sourcePath=D:\软件共享\走喔热印部署软件\V0.0.4-Stable-Release20150710\Debug
@@ -14996,7 +16997,12 @@ WinDebug是微软发布的一款相当优秀的源码级(source-level)调试工�
 在弹出的框中输入
 
 \begin{lstlisting}[language=Bash]
-cache*c:\MySymbol;srv*http://msdl.microsoft.com/download/symbols
+#srv后的内容是设置的目的是下载该程序用到的操作系统相关的库函数的符号表到本地
+D:\testdmp;srv*d:\symbolslocal*http://msdl.microsoft.com/download/symbols
+
+cache*D:\MySymbol;srv*http://msdl.microsoft.com/download/symbols
+#存放到局域网共享目录(未测试成功)
+srv*\\192.168.24.253\研发部\公用\Develop\Debug*http://msdl.microsoft.com/download/symbols
 \end{lstlisting}
 
 按照这样设置，WinDbg将先从本地文件夹C:\textbackslash MySymbol中查找Symbol，
@@ -15018,6 +17024,45 @@ cache*c:\MySymbol;srv*http://msdl.microsoft.com/download/symbols
 	\label{fig:WinDbgAutoWrapWord}
 \end{figure}
 
+
+\subsection{dump文件}
+
+他的英文翻译就是“转存”。也就是说把内存中或者其他的输入转存到另一个位置，
+当然对于我们现在说的dump就是把内存中运行的PE进程的数据，从内存中抓取出来，然后在用文件的形式保存下来。 
+根据上面的分析我们基本上得到了一个这样的思维。Dump程序要做的事分几个基本的步骤： 
+1．  在系统中找到目标进程 
+2．  在进程中确定进程的大小imagesize 
+3．  把进程中的数据保存到文件 
+
+Dump文件是进程的内存镜像。可以把程序的执行状态通过调试器保存到dump文件中。
+Dump文件是用来给驱动程序编写人员调试驱动程序用的，这种文件必须用专用工具软件打开，
+比如使用WinDbg打开。当我们的程序发布出去之后，在客户机上是无法跟踪自己代码的bug的，
+所以Dump（扩展名是 .dmp）文件对于我们来说特别有用。我们可以通过.dmp文件把出现bug 的情况再现，、
+然后根据再现的状况（包括堆栈调用等情况），可以找到出现bug的行号，甚至是出现bug的点。
+
+\subsection{获取dump文件}
+
+由于dump文件记录的是进程某一时刻的具体信息，所以保存dump的时机非常重要。
+比如程序崩溃，dump应该选在引发崩溃的指令执行时（也就是1st chance exception发生的时候）获取，
+这样分析dump的时候就能够看到问题的直接原因。
+Adplus是跟Windbg在同一个目录的VBS脚本。Adplus主要是用来抓取dump文件。
+使用如下的命令跟踪程序，在程序Crash时生成dump文件：
+
+\begin{lstlisting}[language=Bash]
+adplus.exe -crash -pn OneDrive.exe -fullonfirst -o D:\dumps
+\end{lstlisting}
+
+加上-fullonfirst参数后，无论是1st chance exception还是2nd chance exception，都会生成full dump文件。
+Adplus更灵活的方法就是用-c参数带配置文件。在配置文件里面，可以选择exception发生的时间，
+生成的dump是mini dump还是full dump，还可以设定断点等等。
+
+打开WinDbg， File/Attach to a process/  然后再列表中显示需要监视的进程（.exe）
+当程序崩溃之后执行 DUMP 命令产生 dmp文件，命令有：.dump /m C:/dumps/myapp.dmp 、
+.dump /ma C:/dumps/myapp.dmp、 .dump /mFhutwd C:/dumps/myapp.dmp
+
+执行以上就产生了dmp文件
+
+\subsection{调试dump文件}
 \subsection{WinDbg加载SOS}
 
 SOS调试扩展(SOS.dll)通过提供有关内部公共语言运行库(CLR)环境的信息，
@@ -15041,13 +17086,28 @@ If you use the .loadby command, DLLName should include only the file name.
 如果出现了“Unable to find module 'clr'”这样的错误。
 请键入g让调试程序运行一会儿，停下来的时候再尝试命令.loadby sos clr，这时一般都会成功。
 
+\subsection{symstore}
+
+SymStore (symstore.exe) 是用于创建符号存储的工具。它被包含在Windows调试工具包中。
+SymStore按照某种格式存储符号，使得调试器可以通过时间戳、映像大小(对于.dbg或可执行文件)、签名和寿命(.pdb文件)来查找符号。
+使用符号存储而不是常规的符号存储格式的好处是，所有符号都可以在同一个服务器上进行存储或引用，
+而调试器不需要知道具有哪些产品对应的符号。
+注意，不同版本的.pdb符号文件(例如共有和私有符号)不能保存在相同的符号服务器中，因为他们具有相同的签名和寿命。
+添加符号文件到符号服务器：
+
+\begin{lstlisting}[language=Bash]
+symstore.exe add /r /f D:\Source\2.0\*.pdb /s \\192.168.24.253\研发部\公用\Develop\Debug\Symbol /t BRProduct /z pri
+\end{lstlisting}
+
+symstore.exe在Windows SDK调试文件夹下。
+
 \section{Fiddler(Free,Not Open Source)}
 
 Fiddler（中文名称：小提琴）是一个HTTP的调试代理，以代理服务器的方式，
 监听系统的Http网络数据流动，Fiddler可以也可以让你检查所有的HTTP通讯，
 设置断点。Fiddler默认监听端口为8888，有时8888端口会被其他程序占用，
 Fiddler会选择一个随机的端口。查看Fiddler的监听端口在：
-Tools->Fiddler Options->Connections下。如图所示：
+Tools->Fiddler Options->Connections下。如图\ref{fig:FiddlerListeningPort}所示：
 
 \begin{figure}[htbp]
 	\centering
@@ -15059,11 +17119,6 @@ Tools->Fiddler Options->Connections下。如图所示：
 在浏览器中将代理端口设置为Fiddler相应端口值即可。
 
 \subsection{Fiddler Capture}
-
-[Fiddler] The connection to the upstream proxy/gateway failed. 
-Closing Fiddler, changing your system proxy settings, and restarting Fiddler may help. 
-Error: ConnectionRefused (0x274d). 
-System.Net.Sockets.SocketException No connection could be made because the target machine actively refused it 127.0.0.1:8787
 
 Fiddler暂时没有找到暂停抓包的选项，
 有时为了仔细分析某个特定的请求，需要停止抓包或者说是暂停抓包(过多的包干扰分析)，
@@ -15504,7 +17559,18 @@ string tempPath = Application.StartupPath + @"\temp\";
 \subsection{使用xUnit}
 
 注意xUnit从.NET Framework 4.5开始支持，最低版本为.NET Framework 4.5。
-安装xUnit在项目右键菜单“程序包管理器”，输入xUnit。简单的单元测试Demo如下:
+安装xUnit在项目右键菜单“程序包管理器”，输入xUnit。
+安装xUnit:
+
+\begin{lstlisting}[language=Bash]
+#安装最新版本
+Install-Package xunit
+#安装2.1.0版本
+Install-Package xunit -Version 2.1.0
+\end{lstlisting}
+
+
+简单的单元测试Demo如下:
 
 \begin{lstlisting}[language={[Sharp]C}]
 public class UnitTest1
@@ -15519,6 +17585,34 @@ public class UnitTest1
 
 有时在编写了xUnit的代码之后在单元测试管理器中依然无法看到单元测试用例，
 可安装xunit.runner.visualstudio插件，即可看到测试用例。
+引用xunit.execution.desktop.dll之后，
+Visual Studio可以自动发现测试并运行。
+有时引用了xunit.execution.desktop.dll之后也未出现测试，
+那么可以重新生成一下项目进行尝试。调试测试用例如图\ref{fig:DebugTestCase}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{DebugTestCase.jpg}
+	\caption{调试选定测试}
+	\label{fig:DebugTestCase}
+\end{figure}
+
+\subsection{常用功能}
+
+更改测试用例名称：
+
+[ Fact(DisplayName = "Max 函数测试 " )]
+
+跳过测试用例：
+
+[ Fact(Skip = " 重构未完成 " )]
+
+分组：
+
+[ Trait("Group", "Category")]
+
+
+
 
 \section{MiniProfiler}
 
@@ -15593,6 +17687,13 @@ https://www.jetbrains.com/help/profiler/10.0/Introduction.html?origin=old\_help
 Profile Application选择IIS，右侧Open Url填写网站本机访问的Url。
 Profier Options选择TimeLine，接下来dotTrace会启动网站并进行跟踪。
 
+\section{CLR Profiler}
+
+CLR Profiler的下载地址：\url{https://www.microsoft.com/en-us/download/details.aspx?id=16273}。
+The CLR Profiler allows developers to see the allocation profile of their managed applications.
+
+
+
 
 \section{JustDecompile}
 
@@ -15628,6 +17729,192 @@ SoapUI provides complete test coverage and supports all the standard protocols
 and technologies. There are simply no limits to what you can do with your tests. 
 Meet SoapUI, the world's most complete testing tool!
 
+\section{Wireshark(GNU General Public License)}
+
+为了安全考虑，wireshark只能查看封包，而不能修改封包的内容，或者发送封包。
+端口过滤。如过滤80端口，在Filter中输入，
+tcp.port==80，这条规则是把源端口和目的端口为80的都过滤出来。
+使用tcp.dstport==80只过滤目的端口为80的，
+tcp.srcport==80只过滤源端口为80的包；
+
+\subsection{常用过滤语句}
+
+
+Wireshark提供了两种过滤器：
+捕获过滤器：在抓包之前就设定好过滤条件，然后只抓取符合条件的数据包。
+显示过滤器：在已捕获的数据包集合中设置过滤条件，隐藏不想显示的数据包，只显示符合条件的数据包。
+使用捕获过滤器的主要原因就是性能。如果你知道并不需要分析某个类型的流量，
+那么可以简单地使用捕获过滤器过滤掉它，从而节省那些会被用来捕获这些数据包的处理器资源。当处理大量数据的时候，使用捕获过滤器是相当好用的。
+
+\begin{lstlisting}[language=Bash]
+#过滤端口6002、6003的数据，IP为12.26.32.14
+tcp port 6003 or tcp port 6002 or host 12.26.32.14
+\end{lstlisting}
+
+捕获过滤器应用于Winpcap，并使用Berkeley Packet Filter（BPF）语法，其语法规则如下：协议 方向 类型 数据
+过滤目标IP语句如下：
+
+\begin{lstlisting}[language=Bash]
+#源端口，目标端口6002
+ip.src == 192.168.24.79 && tcp.dstport == 6002
+
+ip.dst == 192.168.1.222 or ip.dst ==183.230.47.195
+
+#过滤出终端交互信息
+tcp.port == 6002
+\end{lstlisting}
+
+过滤协议直接输入协议名称即可。如果想看关于HTTP协议的数据包，
+使用如下过滤语句：
+
+\begin{lstlisting}[language=Bash]
+http || tcp.port == 80
+\end{lstlisting}
+
+了解包列表不同协议的含义，在View菜单的Coloring Rules(倒数第三个)，可以看到对应的颜色规则。
+
+\subsubsection{TCP数据过滤}
+
+根据时间过滤语句如下所示，过滤出时间在2016年6月29日09点之后的数据包：
+状态
+\begin{lstlisting}[language=Bash]
+frame.time > "June 29, 2016 09:00:01.009638000"
+\end{lstlisting}报文长度大于16
+
+\begin{lstlisting}[language=Bash]
+tcp.len > 16 and tcp.segment_data contains 7e:80:01:00
+
+#位置信息上报报文
+data.data contains 7e:02:00
+
+#某一设备的位置信息上报信息
+data.data contains 7e:02:00 and data.data contains 41:31:07
+
+#某一设备的位置信息上报信息(包含报警信息)
+data.data contains 7e:02:00 and data.data contains 41:31:07 and !data.data[53,4] == 00:00:00:00
+\end{lstlisting}
+
+还有一点是，如果不知道过滤语句如何写的，那么可以在报文列表中右键点击选择Apply as Filter，
+会自动生成过滤语句。
+
+\subsection{各层报文理解}
+
+Wireshark捕获的报文与网络7层协议的报文关系如图\ref{fig:SevenModelInWireshark}所示。
+从上到下依次为物理层、数据链路层、网络层、传输层、应用层。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{SevenModelInWireshark.jpg}
+	\caption{网络7层模型和封包对应关系}
+	\label{fig:SevenModelInWireshark}
+\end{figure}
+
+\paragraph{数据链路层(Data Link Layer)}传输有地址的帧以及错误检测功能 SLIP，CSLIP，PPP，ARP，RARP，MTU，
+数据链路层是对物理层传输原始比特流的功能的加强，
+将物理层提供的可能出错的物理连接改造成为逻辑上无差错的数据链路，
+使之对网络层表现为一无差错的线路。如果您想用尽量少的词来记住数据链路层，
+那就是：“帧和介质访问控制”。
+数据链路层对应Wireshark捕获的Ethernet \uppercase\expandafter{\romannumeral2}，
+Ethernet \uppercase\expandafter{\romannumeral2} Header的结构如图\ref{fig:ethernetheader}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.4]{ethernet-header.jpg}
+	\caption{Ethernet头}
+	\label{fig:ethernetheader}
+\end{figure}
+
+\paragraph{网络层(Network Layer)}网络层的任务就是选择合适的网间路由和交换结点，
+确保数据及时传送。网络层将数据链路层提供的帧组成数据包，
+包中封装有网络层包头，其中含有逻辑地址信息- -源站点和目的站点地址的网络地址。
+如果你在谈论一个IP地址，那么你是在处理第3层的问题，这是“数据包”问题，
+而不是第2层的“帧”。IP是第3层问题的一部分，此外还有一些路由协议和地 址解析协议（ARP）。有关路由的一切事情都在这第3层处理。
+地址解析和路由是3层的重要目的。网络层还可以实现拥塞控制、网际互连等功能。
+在这一层，数据的单位称为数据包（packet）。为数据包选择路由 IP，ICMP，RIP，OSPF，BGP，IGMP，
+网络层对应IP协议，
+Wireshark捕获的封包结构如图\ref{fig:IPDiagram}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{IPDiagram.jpg}
+	\caption{网络7层模型和封包对应关系}
+	\label{fig:IPDiagram}
+\end{figure}
+
+\paragraph{传输层(Transport Layer)}第4层的数据单元也称作数据包（packets）。
+但是，当你谈论TCP等具体的协议时又有特殊的叫法，TCP的数据单元称为段 （segments）而UDP协议的数据单元称为“数据报（datagrams）”。
+这个层负责获取全部信息，因此，它必须跟踪数据单元碎片、乱序到达的 数据包和其它在传输过程中可能发生的危险。
+第4层为上层提供端到端（最终用户到最终用户）的透明的、可靠的数据传输服务。
+所为透明的传输是指在通信过程中传输层对上层屏蔽了通信传输系统的具体细节。
+传输层协议的代表包括：TCP、UDP、SPX等。
+TCP Header的结构如图\ref{fig:TCPHeaderStructure}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{TCPHeaderStructure.jpg}
+	\caption{TCP头}
+	\label{fig:TCPHeaderStructure}
+\end{figure}
+
+
+TCP Header和Wireshark报文的对应关系如图所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.4]{TCPHeaderAndWireshark.jpg}
+	\caption{TCP头和Wireshark捕获对应关系}
+	\label{fig:TCPHeaderAndWireshark}
+\end{figure}
+
+\paragraph{应用层(Application Layer)}应用层为操作系统或网络应用程序提供访问网络服务的接口。
+应用层协议的代表包括：Telnet、FTP、HTTP、SNMP等。应用层的协议有许多，
+以HTTP协议为例。
+
+\subsection{删除Filter}
+
+在路径C:/Users/Dolphin/AppData/Roaming/Wireshark下的preferences文件中，
+找到Filter Expressions编辑即可。
+在GUI页面上的路径为：Edit->Preferences->Filter Expressions，
+如图所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{WireSharkFilterManagement.jpg}
+	\caption{WireShark Filter Management}
+	\label{fig:WireSharkFilterManagement}
+\end{figure}
+
+\subsection{抓取本机包}
+
+在进行通信开发的过程中，我们往往会把本机既作为客户端又作为服务器端来调试代码，
+使得本机自己和自己通信。但是wireshark此时是无法抓取到数据包的，需要通过简单的设置才可以。
+
+1.以管理员身份运行cmd
+2.route add 本机ip mask 255.255.255.255 网关ip
+
+\begin{lstlisting}[language=Bash]
+#打印路由表
+route print
+#添加路由
+route add 192.168.24.79 mask 255.255.255.255 192.168.24.1
+\end{lstlisting}
+
+使用完毕后用route delete 172.16.51.115 mask 255.255.255.255 172.16.1.1删除，
+否则所有本机报文都经过网卡出去走一圈回来很耗性能。
+此时再利用wireshark进行抓包便可以抓到本机自己同自己的通信包，
+这样配置的原因是将发往本机的包发送到网关，而此时wireshark可以捕获到网卡驱动的报文实现抓包。
+但这样有一个缺点，那就是本地请求的URL的IP只能写本地的IP地址，
+不能写localhost或127.0.0.1，写localhost或127.0.0.1还是抓不到包。
+
+
+\subsection{常见问题}
+
+\paragraph{The temporary file to which the capture would be saved ("") could not be opened: Invalid argument}
+
+在Capture的option选项下，填写输出文件路径即可，
+如：C:\textbackslash a.cap。
+
+
 \chapter{辅助组件}
 
 \clearpage
@@ -15636,7 +17923,9 @@ Meet SoapUI, the world's most complete testing tool!
 
 \subsection{Putty}
 
-\subsection{Vi}\section{GMap.NET}
+\subsection{Vi}
+
+\section{GMap.NET}
 
 GMap.NET is great and Powerful, Free, cross platform, open source .NET control. 
 Enable use routing, geocoding, directions and maps from Coogle, Yahoo!, 
@@ -15645,6 +17934,29 @@ Maps.lt, iKarte.lv, NearMap, OviMap, CloudMade, WikiMapia,
 MapQuest in Windows Forms \& Presentation, supports caching and runs on windows mobile!
 
 http://greatmaps.wikia.com/wiki/Main\_Page
+
+\section{DotNetBar(Commercial)}
+
+\subsection{Introduce}
+
+DotNetBar是一款带有56个Windows Form 控件的工具箱，使开发人员可以轻而易举地创建出专业美观的Windows Form应用程序用户界面，
+控件全部采用C\#编写，引入了全部Office 2007 style Ribbon控件、Office 2003 office2010 样式、支持windows7,Windows XP主题等。
+
+\subsection{加载DotNetBar控件到Visual Studio工具箱}
+
+在Visual Studio工具箱中单击右键，新建DotNetBar分组，
+到DotNetBar安装目录下将DevComponents.DotNetBar2.dll文件拖动到分组下即可加载所有DotNetBar控件，
+如图\ref{fig:DotNetBarControlLoadIntoToolBox}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{DotNetBarControlLoadIntoToolBox.jpg}
+	\caption{DotNetBar加载到工具箱}
+	\label{fig:DotNetBarControlLoadIntoToolBox}
+\end{figure}
+
+将DotNetBar控件添加到工具箱中相对来说更加直观化，
+重新启动Visual Studio后分组控件依然存在。
 
 \section{ildasm.exe(MSIL Disassembler)}
 
@@ -15751,7 +18063,7 @@ DisableWelcomePage=no
 
 \section{Graphviz}
 
-Graphviz is open source graph visualization software. 
+Graphviz\footnote{下载链接：\url{http://www.graphviz.org/pub/graphviz/stable/windows/graphviz-2.38.msi}} is open source graph visualization software. 
 Graph visualization is a way of representing structural 
 information as diagrams of abstract graphs and networks. 
 It has important applications in networking, bioinformatics,
@@ -15782,14 +18094,14 @@ C:\>dot -Tps a.dot -o 1.ps
 dot -T[output\_filetype] [-G[option\_name]] -o [output\_filename] [input\_filename] 
 
 \begin{lstlisting}[language=Bash]
-D:\项目\hotmark\doc\Design>dot -Tjpg Sign.dot -o Sign.jpg
+dot -Tjpg Sign.dot -o Sign.jpg
 \end{lstlisting}
 
 Graphviz可以改变生成图片的质量，需要生成的图形更加清晰，参数指定dpi即可，
 编译的命令格式为：
 
 \begin{lstlisting}[language=Bash]
-D:\项目\hotmark\Image>dot -Tjpg -Gdpi=331 PhotoPrintWorkflow.dot -o ppw.jpg
+dot -Tjpg -Gdpi=331 PhotoPrintWorkflow.dot -o ppw.jpg
 \end{lstlisting}
 
 \subsection{中文乱码}
@@ -15867,7 +18179,7 @@ digraph G{
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.2]{YZLogic.jpg}
+	\includegraphics[scale=0.15]{YZLogic.jpg}
 	\caption{有赞系统订单导入逻辑}
 	\label{YZLogic}
 \end{figure}
@@ -16424,7 +18736,21 @@ ReSharper还为C\#和VB.NET提供了增强的交叉语言功能，它使开发�
 关闭其中暂时不用的特性即可，设置完毕重新启动Visual Studio 2013即可，
 可以发现内存少了500MB左右。
 
+\paragraph{自动换行}Resharper长代码自动换行有时会造成阅读不便，
+Resharper Options=>
+C\#=>
+Formatting Style=>
+Line Breaks and Wrapping=>
+Right margin(columns)=> 把这个数字改大些就好了,比如360
+
 \subsection{快捷操作}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.3]{ReSharperShortcut.png}
+	\caption{Resharper快捷键}
+	\label{fig:ReSharperShortcut}
+\end{figure}
 
 \begin{itemize}
 \item{帮你实现某个接口或抽象基类的方法}
@@ -16525,41 +18851,7 @@ ILSpy and Telerik's JustDecompile.
 Reflexil is using Mono.Cecil, 
 written by Jb Evain and is able to manipulate IL code and save the modified assemblies to disk. Reflexil also supports C\#/VB.NET code injection.
 
-\section{Wireshark(GNU General Public License)}
 
-端口过滤。如过滤80端口，在Filter中输入，
-tcp.port==80，这条规则是把源端口和目的端口为80的都过滤出来。
-使用tcp.dstport==80只过滤目的端口为80的，
-tcp.srcport==80只过滤源端口为80的包；
-
-\subsection{常用过滤语句}
-
-过滤目标IP语句如下：
-
-\begin{lstlisting}
-ip.dst == 192.168.1.222 or ip.dst ==183.230.47.195
-\end{lstlisting}
-
-\subsection{删除Filter}
-
-在路径C:/Users/Dolphin/AppData/Roaming/Wireshark下的preferences文件中，
-找到Filter Expressions编辑即可。
-在GUI页面上的路径为：Edit->Preferences->Filter Expressions，
-如图所示。
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.6]{WireSharkFilterManagement.jpg}
-	\caption{WireShark Filter Management}
-	\label{fig:WireSharkFilterManagement}
-\end{figure}
-
-\subsection{常见问题}
-
-\paragraph{The temporary file to which the capture would be saved ("") could not be opened: Invalid argument}
-
-在Capture的option选项下，填写输出文件路径即可，
-如：C:\textbackslash a.cap。
 
 \section{Gulp}
 
@@ -16841,6 +19133,34 @@ private void btn_ExecuteJob_Click(object sender, EventArgs e)
 \section{ThunderBird}
 
 通讯录确切位置在用户目录下AppData/Thunderbird/下面的abook.mab
+
+\section{PuTTY}
+
+\subsection{PuTTY保存密码}
+
+下载putty修改版。
+
+\subsection{psftp}
+
+\begin{lstlisting}[language=Bash]
+#登录
+open hostname
+open username@hostname
+
+#切换本地目录
+lcd
+\end{lstlisting}
+
+\subsection{putty退出全屏}
+
+putty全屏之后点击缩略图可退出全屏，如图\ref{fig:puttyExistsFullScreen}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{puttyExistsFullScreen.png}
+	\caption{putty退出全屏}
+	\label{fig:puttyExistsFullScreen}
+\end{figure}
 
 
 \chapter{科学上网}
@@ -17589,29 +19909,6 @@ public string GetMacAddress()
 }
 \end{lstlisting}
 
-\section{问题处理}
-
-\subsection{重复打印一张照片}
-
-\subsubsection{原因分析}
-
-\subsubsection{应急解决方案}
-
-查看当前请求的照片数据：http://api.zouwo.net/weixin/printdata?id=2008。
-直接修改数据库中的出问题图片的状态和步骤标识。将状态改为1，步骤改为6，
-1表示打印成功，6表示打印完成。SQL语句如下所示：
-
-\begin{lstlisting}
-update tb_photoPrint
-set [status]=1
-	,step=6
-where printId=25980
-\end{lstlisting}
-
-\subsection{程序意外结束}
-
-程序在Windows XP里启动后自动关闭，log4net日志未捕获到
-意外信息，此时可进入Windows系统日志查看程序崩溃原因。
 
 \clearpage
 \mbox{}         
@@ -18039,7 +20336,7 @@ C A D [ V L 9 0 , J o h 9 2 ]。另一个框架也许能帮助你建立针对不
 
 
 
-\section{编程语言}
+\section{编程语言漫谈}
 
 你应该首先回答的问题是：你准备从事什么方面的编程工作？
 是想创造美丽的网站还是喜欢设计iOS和Android上的手机游戏？
@@ -18099,14 +20396,14 @@ C语言、C++、Object-C这些软件更多是用在系统软件开发，嵌入�
 各展所长，同步开发。但所以在刚入门的时候，建议您先为自己选择一种合适的开发工具，
 “专注地投入学习，全力一击”。
 
+
+
+
 \chapter{经验汇总}
 
 1.建立良好的Profile工具
 
 2.避免数据库的join操作，表与表之间的join尽量在应用层解决
-
-\section{规划}
-
 
 
 \section{Windows搜索}
@@ -18129,39 +20426,12 @@ C语言、C++、Object-C这些软件更多是用在系统软件开发，嵌入�
 C\#中属性这种机制使得在保证封装性的基础上实现了访问私有成员的便捷性。
 一个支持属性的语言将有助于获得更好的抽象。
 
-\subsection{Ubuntu下执行定时任务}
-
-Ubuntu下定时运行任务使用cron表达式，切换到/etc目录,使用vi crontab命令打开配置
-文件，配置文件如下所示。
-
-\begin{lstlisting}
-/etc/crontab: system-wide crontab
-Unlike any other crontab you don't have to run the `crontab'
-command to install the new version when you edit this file
-and files in /etc/cron.d. These files also have username fields,
-that none of the other crontabs do.
-
-SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-\end{lstlisting}
-
-打开Cron日志记录：
-
-修改rsyslog文件，将/etc/rsyslog.d/50-default.conf 文件中的\#cron.*前的\#删掉；
-重启rsyslog服务service rsyslog restart；
-重启cron服务service cron restart；
-
-more /var/log/cron.log；查看Cron日志文件。日志文件将通过邮件服务器发送，如果没有邮件
-服务器的话，会提示：No MTA installed, discarding output。可以通过以下命令将日志写道指定的文件中：
-
-\begin{lstlisting}
-* * * * * dolphin /home/dolphin/cron.sh >>$HOME/cronlog.log 2>&1
-\end{lstlisting}
 
 
-\subsubsection{批处理脚本启动服务}
 
-\begin{lstlisting}
+\subsection{批处理脚本启动服务}
+
+\begin{lstlisting}[language=Bash]
 ::Description:This script help you start and stop database service quickly
 ::Author:jiangtingqiang@gmail.com
 ::Date:2013-08
@@ -18633,6 +20903,10 @@ interface ISystemOperHelperFactory
 
 \section{逆向工程(Reverse Engineering)}
 
+\subsection{radare2}
+
+radare2是一款开放源代码的逆向工程平台，它可以反汇编、调试、分析和操作二进制文件。
+
 \subsection{反混淆dll(Deobfuscation dll)}
 
 目前比较常用的混淆(加壳)有Dotfuscator,MaxToCode,Xenocode,ThemIDA. 
@@ -18703,7 +20977,11 @@ de4dot.exe dllFullPath
 
 \paragraph{@}关键字前加@符号，查找社交网站上相关结果。
 
-\subsection{合理使用Using子句}
+\paragraph{站内搜索}站内搜索语法如下：
+
+\begin{lstlisting}
+php site:http://stackoverflow.com/
+\end{lstlisting}\subsection{合理使用Using子句}
 
 如果你明确知道某个对象在进行完某些操作后，不再有用，需要回收，你可以使用'using' 语句来销毁对象。
 
@@ -18991,6 +21269,23 @@ RunTime using activator:00:00:00:20
 	\hline	
 \end{tabular}
 
+\paragraph{动态创建对象}
+
+\begin{enumerate}
+	\setcounter{enumi}{0}
+	\item{Type.InvokeMember}
+	\item{ContructorInfo.Invoke}
+	\item{Activator.CreateInstance(Type)}
+	\item{Activator.CreateInstance(assemblyName, typeName)}
+	\item{Assembly.CreateInstance(typeName)}
+\end{enumerate}
+
+最快的是方式3，与Direct Create的差异在一个数量级之内，约慢7倍的水平。
+其他方式，至少在40倍以上，最慢的是方式4，要慢三个数量级。 
+
+
+
+
 \paragraph{避免隐式转换(Avoid Implicity Conversion)}
 
 隐式转换会发生装箱操作，损耗程序性能，
@@ -19006,7 +21301,26 @@ RunTime using activator:00:00:00:20
 	\label{fig:AvoidUsingImplicityConvert}
 \end{figure}
 
+\paragraph{减少Switch条件判断个数}
+
+有时会根据条件去判断执行某个方法，
+如果条件分支过多，相应的Switch分支会变多，
+将对应关系存放在字典中，通过方法激活会更加简捷。
+也可以通过反射实现。定义一个字典表保存分支和调用方法的对应关系，
+如下代码所示。
+
+\begin{lstlisting}[language={[Sharp]C}]
+/// <summary>
+/// 保存消息类型和对应消息调用的方法
+/// </summary>
+private Dictionary<EnumMessageType, Action<int, Dictionary<string, IPlugin>, EnumMessageType, MVSPJSONMessage>> handleAction = new Dictionary<EnumMessageType, Action<int, Dictionary<string, IPlugin>, EnumMessageType, MVSPJSONMessage>>();
+\end{lstlisting}
+
+
 \subsection{表驱动法}
+
+
+
 
 \section{常用资源}
 
@@ -19138,7 +21452,66 @@ RunTime using activator:00:00:00:20
 	\hline
 	2 & \url{http://www.ctex.org/documents/shredder/tex_frame.html} & & LaTex宣传页\\
 	\hline
-\end{longtable}\chapter{Open Source}
+\end{longtable}
+
+\subsection{LDAP(Lightweight Directory Access Protocol)}
+
+LDAP 不是個軟體是個協定，由RFC4511所定義，他還有個較为复杂的哥哥 DAP （Directory Access Protocol），
+以樹狀的架構存放資料，資料的部分可以放帳密、通讯录......等等階層式的存放方式。
+The Lightweight Directory Access Protocol (LDAP; /ˈɛldæp/) is an open, 
+vendor-neutral, industry standard application protocol for accessing and 
+maintaining distributed directory information services over an Internet Protocol (IP) network.
+Directory services play an important role in developing intranet and Internet applications by allowing the sharing of information about users, 
+systems, networks, services, and applications throughout the network.[2] As examples, 
+directory services may provide any organized set of records, often with a hierarchical structure, 
+such as a corporate email directory. Similarly, a telephone directory is a list of subscribers with an address and a phone number.
+使用轻量级目录访问协议（LDAP）构建集中的身份验证系统可以减少管理成本，增强安全性，
+避免数据复制的问题，并提高数据的一致性。随着 Linux® 的不断成熟，
+已经出现了很多工具用来简化用户帐号信息到 LDAP 目录的迁移。
+还开发了一些工具用来在客户机和目录服务器之间启用加密通信配置，并通过复制提供容错性。
+OpenLDAP 是 LDAP 协议的一个开源实现。LDAP 服务器本质上是一个为只读访问而优化的非关系型数据库。
+它主要用做地址簿查询（如 email 客户端）或对各种服务访问做后台认证以及用户数据权限管控。
+（例如，访问 Samba 时，LDAP 可以起到域控制器的作用；
+或者 Linux 系统认证 时代替 /etc/passwd 的作用。）
+
+\paragraph{openldap常用命令}openldap默认端口是389，openldap常用命令
+
+\begin{lstlisting}[language=Bash]
+#启动openldap
+service slapd start
+
+#验证配置，OpenLDAP从传统的扁平的配置文件(slapd.conf)切换到OLC风格的配置文件
+#并且将是缺省的配置方法。
+#使用OLC风格的配置文件的一大好处是当配置需要被更改时
+#这一动态的后台配置（cn=config）不需要重启服务就可以生效。
+slaptest -v -d 1 -F /etc/openldap/slapd.d
+\end{lstlisting}
+
+\paragraph{区分名(DN,Distinguished Name)}和自然界中的树不同，
+文件系统/LDAP/电话号码簿目录的每一片枝叶都至少有一个独一无二的属性，
+这一属性可以帮助我们来区别这些枝叶。 
+在文件系统中， 这些独一无二的属性就是带有完整路径的文件名。
+比如/etc/passwd，该文件名在该路径下是独一无二的。
+当然我们可以有/usr/passwd, /opt/passwd，但是根据它们的完整路径，它们仍然是唯一的。 
+类似于DNS系统的FQDN正式域名，FQDN也是唯一的。 
+在LDAP中，一个条目的区分名称叫做“dn”或者叫做区分名。
+在一个目录中这个名称总是唯一的。比如，我的dn是"uid=aghaffar, ou=People, o=developer.ch"。
+不可能有相同的dn，但是我们可以有诸如"uid=aghaffar, ou=Administrators, o=developer.ch"的dn。
+这同上面文件系统中/etc/passwd 和 /usr/passwd的例子很类似。 
+我们有独一无二的属性，在"ou=Administrators, o=developer.ch" 中uid和在"ou=People, o=developer.ch"中的uid。这并不矛盾。 
+
+\subsubsection{LDAP Account Manager (LAM) }
+
+LDAP Account Manager (LAM) is a webfrontend for managing entries (e.g. users, groups, DHCP settings) stored in an LDAP directory. LAM was designed to make LDAP management as easy as possible for the user. It abstracts from the technical details of LDAP and allows persons without technical background to manage LDAP entries. If needed, power users may still directly edit LDAP entries via the integrated LDAP browser.
+
+配置文件的位置：
+
+\begin{lstlisting}[language=Bash]
+vim /var/lib/ldap-account-manager/config/lam.conf
+\end{lstlisting}
+
+
+\chapter{Open Source}
 
 \section{参与开源项目}
 
@@ -19918,6 +22291,17 @@ C\#中的委托相当于C++中的函数指针，也就说两者是有区别的�
 类型安全的，是引用类型（开始就说了委托是个类），
 所以在使用委托时首先要 定义——>声明——>实例化——>作为参数传递给方法——>使用委托。
 
+\begin{lstlisting}[language={[Sharp]C}]
+//定义
+public delegate void InvokeDateComplete();
+//声明
+FrmCompleteList.InvokeDateComplete delegateInstance;
+//实例化,作为参数传递给方法
+delegateInstance = FrmCompleteList.LoadGridViewData;
+//使用委托
+delegateInstance();
+\end{lstlisting}
+
 引入委托后，编程人员可以把方法的引用封装在委托对象中（把过程的调用转化为对象的调用，
 充分体现了委托加强了面向对象编程的思想。），然后把委托对象传递给需要引用方法的代码，
 这样在编译的过程中我们并不知道调用了哪个方法，这样一来，
@@ -19949,20 +22333,6 @@ localhost
 联网
 网卡传输 ，受防火墙和网卡限制
 本机或外部访问 
-
-\subsection{动态创建对象}
-
-\begin{enumerate}
-\setcounter{enumi}{0}
-\item{Type.InvokeMember}
-\item{ContructorInfo.Invoke}
-\item{Activator.CreateInstance(Type)}
-\item{Activator.CreateInstance(assemblyName, typeName)}
-\item{Assembly.CreateInstance(typeName)}
-\end{enumerate}
-
-最快的是方式3，与Direct Create的差异在一个数量级之内，约慢7倍的水平。
-其他方式，至少在40倍以上，最慢的是方式4，要慢三个数量级。 
 
 \subsection{Struct和Class的区别}
 
@@ -20181,6 +22551,19 @@ Tree based set (SortedSet<T>)
 \end{figure}
 
 可以看到此时进程包含了46个线程。
+进程和线程都包含有同样的状态，
+当进程所需的资源没有到位时会是阻塞状态，当进程所需的资源到位时但CPU没有到位时是就绪状态，
+当进程既有所需的资源，又有CPU时，就为运行状态。
+进程有自己独立的内存地址空间，而线程共享进程的内存地址空间。
+在运行于32位处理器上的32位Windows操作系统中，可将一个进程视为一段大小为4GB（232字节）的线性内存空间，
+它起始于0x00000000结束于0xFFFFFFFF。
+一个线程包含以下内容。
+一个指向当前被执行指令的指令指针；
+一个栈；
+一个寄存器值的集合，定义了一部分描述正在执行线程的处理器状态的值；
+一个私有的数据区。
+线程(Thread)是进程的一个实体，是CPU调度和分派的基本单位。
+进程是操作系统分配资源的单位。
 
 \subsection{Form表单中onclick/submit/onsubmit的关系}
 
@@ -20564,6 +22947,104 @@ OCX 是对象类别扩充组件（Object Linking and Embedding (OLE) Control eXt
 则要增加许多没有其他意义、只负责读或写的行为。这会为编程工作增加负担，增加运行开销，并且使程序显得臃肿。
 2）性能低。由于面向更高的逻辑抽象层，使得面向对象在实现的时候，不得不做出性能上面的牺牲，
 计算时间和空间存储大小的都开销很大。
+
+\subsection{Why is Dictionary preferred over HashTable}
+
+
+Dictionary是类型安全安全的，HashTable不是。
+Dictinary没有装箱拆箱，HashTable可能有。
+
+\subsection{dll和COM的区别}
+
+1） dll是以函数集合的方式来调用的，是编程语言相关的，如：VC必须加上extern "C"。
+而COM是以interface的方式提供给用户使用的是一种二进制的调用规范,是与编程语言无关的。
+2） DLL只有DLL一种形势, 里面可任意定义函数无限制, 只能运行在本机上 ，而COM
+有DLL和EXE两种存在形势。
+3) COM所在的DLL中必须导出四个函数:1. dllgetobjectclass, 2. dllregisterserver, 
+3. dllunregisterserver, 4. dllunloadnow.
+Com补充：
+COM解决了版本、模块化开发，所有语言使用，当然只能在WINDOWS平台上。
+COM载体：DLL、EXE（不常用），OCX（用于activex控件），activex实际上是COM的一种变体，
+但本质上没变，当然ACTIVEX控件也能以DLL作载体。
+DLL，ACTIVEX，COM，插件区别：
+DLL（基于名字导入的，名字就是符号，DLL有符号表的。根据约定好的名字调用函数）
+接口是按照规划定义的规则集合
+简单说来呢，这好比一棵树，
+COM（组件是基于接口的，根据约定好的接口对COM对象进行控制）是树根，
+组件（软件的组成部分.）是树干，
+控件（具有用户界面的组件）和ActiveX都是树枝，
+插件（网页中用到的,flash插件,没有它浏览器不能播放flash.）就是树上引来的一只鸟。
+ACTIVEX和COM的区别：
+两者没有质的区别，前者主要用于客户端，后者用于服务器端。
+前者可以有界面而后者决没有界面
+ActiveX的作用：可轻松方便的在 Web页中插入多媒体效果、 交互式对象、以及复杂程序， 
+ActiveX插件安装的一个前提是必须经过用户的同意及确认。
+
+\subsection{Func<T, TResult> 委托的由来和调用和好处}
+
+Func<T, TResult>是系统的内置委托的中最常用的一个。特点就是必须有一个返回值。
+（func委托有多个重载，所有重载的最后一个参数就是返回值的类型，前面的是参数类型）。
+注：没有返回值的系统内置委托是Action<T>
+
+Func委托的作用就是当我们需要传入n参数并有返回值时，我们不用再去定义一个委托，直接调用func即可。
+
+\subsection{为什么要使用LINQ技术}
+
+为了实现数据的查询，并跟上技术的进步，开发人员不得不针对特定查询语言所支持的数据源或数据格式，而花费大量时间学习如何使用它们。
+然而，LINQ （语言集成查询）通过采用一种跨多种数据源和数据格式使用数据的一致模型，简化了这一情况。在 LINQ 查询中，始终会用到对象。
+为此，可以使用相同的基本编码模式来查询和转换 XML 文档、SQL 数据库、ADO.NET 数据集、.NET 集合中的数据，以及对其有 LINQ 提供程序可用的任何其他格式的数据。
+LINQ把查询和设置等操作封装起来，实现了更加灵活的数据查询机制。它定义了一组多用途的标准查询操作符，
+可以在任何一种基于.NET平台的开发语言查询操作符中，采用一些简洁明了的语法实现数据访问、过滤、发送等操作。
+同时，为了满足LINQ需要，C\#也进行了较大调整，诸如隐式类型化局部变量和匿名类，都被添加到语言之中。
+
+LINQ 是 .NET 3.5 導入的一種新的資料存取技術，這個技術可以讓開發人員透過一致的方法，存取各種型態的資料來源。
+
+.NET 2.0導入了對泛型的支援，LINQ 在泛型基礎上，從集合類型資料的搜尋功能出發，逐步發展為支援物件、資料庫、XML以及實體資料等等不同資料來源的新技術。
+
+針對集合類型資料的操作，無論是篩選、計量、關聯或是切割等等，LINQ 為我們提供了一套出色的解決方案。
+
+你可以將 LINQ 視為一套專門用來對付集合類型資料的搜尋操作語法，只要將資料儲存於集合，就便可以如同資料庫一般進行操作，
+例如，你可以載入硬碟檔案系統資訊，與資料庫中的資料透過 LINQ 合併作處理。
+
+有了 LINQ ，我們可以針對關聯式資料庫或是 XML 等各種不同結構的資料統一以 LINQ 進行處理，在原有的基礎上提供更好的資料整合能力，
+更有效率的處理各種不同來源的資料，而當你只是要針對特定的資料來源進行存取，原來的技術還是可以運作的很好。
+
+
+所以，重點不在於LINQ可以存取這些資料來源，LINQ 真正的精神，在於它終於正視了集合物件元素的存取操作這件事。
+
+電腦這門行業之所以稱為資訊工業，在於它是人類為了處理資料而發展出來的一門技術，資料只有經過有效的整理歸納與萃取之後，
+才能成為有用的資訊，我們所開發的軟體，都是為了處理各種資料而設計，而為了應付資料處理的需求，所以有了資料庫，有了XML文件，
+然後有了存取這些資料來源的相關的技術。
+
+回到源頭，早期程式語言剛開始發展出來的時候，並沒有上述談到的這些東西，最早期的資料處理，一般均透過所謂的陣列與集合進行操作，
+一直到現在，只要資料被載入記憶體處理，我們所依賴的依然是這些技術。
+
+瞭解問題在那裏了嗎，集合，長久以來，一直沒有足夠「好」的技術，可以針對儲存在集合中的元素執行存取維護作業，
+.NET 2.0導入了對泛型的支援，也僅是讓資料的存取更為嚴謹靈活，如此而已，一直到LINQ，這個問題終於有了好的解答。
+
+你很難想像，將集合物件當作資料庫來操作，無論是篩選、計量、關聯或是切割等資料操作，這些 SQL 的基本功能，
+傳統的程式語言都很難、或是不容易在集合身上辦到，LINQ 為我們提供了一套出色的解決方案。
+
+你可以將 LINQ 視為一套專門用來對付集合物件的資料操作語法，想像有了LINQ，只要將資料儲存於集合，
+就可以如同資料庫一般進行操作，例如，你可以載入硬碟檔案系統資訊，與資料庫中的資料透過 LINQ 合併作處理，多麼美好的技術，不是嗎。
+
+即然對於集合物件元素的存取有了好的方案，SQL 與 XML 同時一併納入處理最大的好處，是可以在原有的基礎上，
+提供更好的資料整合能力，而非我們原先認為的，LINQ 的出現只是為了取代這些技術，相反的，它可以讓我們更有效的處理各種不同來源的資料，
+而當你只是要針對特定的資料來源進行存取，原來的技術還是可以運作的很好。
+
+在Linq To Sql正式推出之前，很多人只是把sql语句形成一个string，然后，通过ADO.NET传给SQL Server，返回结果集.这里的缺陷就是，
+假如你sql语句写的有问题，只有到运行时才知道.而且并不是所有的人都懂数据库的。Linq To SQl 在一切围绕数据的项目内都可以使用。
+特别是在项目中缺少sql server方面的专家时，Linq To SQl的强大的功能可以帮我们快速的完成项目。Linq To SQl的推出，
+是让大家从烦琐的技术细节中解脱出来，更加关注项目的逻辑。Linq To Sql的出现，大大降低了数据库应用程序开发的门楷，
+它实质是事先为你构架了数据访问层，势必将加快数据库应用程序的开发进度。Linq To Sql解放了众多程序员，
+让他们的把更多的精力放到业务逻辑以及code上，而不是数据库。对于初学者来讲，Linq To Sql可以让他们迅速进入数据库应用程序开发领域，节约了培训成本。
+
+\subsection{c\#引用类型与值类型的区别}
+
+值类型包括C\#的基本类型（用关键字int、char、float等来声明），结构（用struct关键字声明的类型），
+枚举（用enum关键字声明的类型）；而引用类型包括类（用class关键字声明的类型）和委托（用delegate关键字声明的特殊类）。
+C\#中的每一种类型要么是值类型，要么是引用类型。所以每个对象要么是值类型的实例，要么是引用类型的实例。
+值类型的实例通常是在线程栈上分配的（静态分配），但是在某些情形下可以存储在堆中。引用类型的对象总是在进程堆中分配（动态分配）。
 
 \section{非技术类}
 
