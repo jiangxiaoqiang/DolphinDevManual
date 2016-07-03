@@ -14873,6 +14873,14 @@ Linux下安装应用程序时它的默认安装路径。默认目录一般建议
 解压tar.gz文件：
 
 \begin{lstlisting}[language=Bash]
+#查看当前登录用户的组内成员，/etc/group文件包含所有组
+yum install texlive-scheme-full
+
+#改变文件夹所属用户和组
+#v表示输出详细信息
+#R表示递归(recursive)
+chmod -vR dolphin:dolphin DolphinDevMannual
+
 tar -zxvf 压缩文件名.tar.gz
 
 #查看Linux发行版本
@@ -14891,6 +14899,16 @@ f是文件(file)的意思，
 z参数代表gzip，
 filter the archive through gzip，
 v代表verbosse，即输出详细的信息。
+
+\paragraph{从服务器拷贝文件}
+
+scp是有Security的文件copy，基于ssh登录。 
+
+\begin{lstlisting}[language=Bash]
+scp -r -P 50000 root@hostip:/root/package/scripts ./
+\end{lstlisting}
+
+P参数指定端口为自定义端口，此处为50000。
 
 \subsection{日志查看}
 
@@ -18204,7 +18222,9 @@ set fileencodings=utf-8,chinese,latin-1
 
 打开终端，执行下述命令安装TexLive和常用的一些Latex宏包（可以根据自己的需要增改）：
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Bash]
+#完整安装
+yum install texlive-scheme-full
 sudo apt-get install texlive texlive-math-extra texlive-latex-extra texlive-latex-recommended texlive-pictures texlive-science texlive-bibtex-extra latex-beamer
 \end{lstlisting}
 
