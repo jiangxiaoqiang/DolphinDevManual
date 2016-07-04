@@ -14862,6 +14862,9 @@ fi
 shell变量名字是大小写敏感的。给变量赋值时，等号周围不能有任何空白符。
 如此处的:process\_exists=true。
 
+\subsection{shell日志处理}
+
+
 
 \section{基础}
 
@@ -17817,10 +17820,27 @@ data.data contains 7e:02:00 and data.data contains 41:31:07 and !data.data[53,4]
 还有一点是，如果不知道过滤语句如何写的，那么可以在报文列表中右键点击选择Apply as Filter，
 会自动生成过滤语句。
 
+\paragraph{TCP根据内容过滤}
+
+根据TCP的内容来过滤语法如下：
+
+\begin{lstlisting}[language=Bash]
+tcp[0:2]==3e:88
+data[0,2]==3e:88
+\end{lstlisting}
+
+以上语句的含义为过滤tcp包从0开始的2个字节为3e88的数据包，
+3e与88之间的冒号可以省略。
+
 \subsection{各层报文理解}
 
+
 Wireshark捕获的报文与网络7层协议的报文关系如图\ref{fig:SevenModelInWireshark}所示。
-从上到下依次为物理层、数据链路层、网络层、传输层、应用层。
+从上到下依次为物理层(Frame)、数据链路层(Ethernet \Roman{2})、
+网络层(Internet Protocol Version 4)、传输层(Transmission Control Protocol)、应用层。
+在Wireshark下方显示的是所有层的封包数据，
+当在列表中选择封包的不同层时，下方相应的数据包会相应的高亮显示。
+当在列表中选择对应层数据包详细信息(如端口)时，底部相应的端口数据包会高亮显示。
 
 \begin{figure}[htbp]
 	\centering
