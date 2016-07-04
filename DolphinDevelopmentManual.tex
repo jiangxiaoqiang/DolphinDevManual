@@ -14557,6 +14557,11 @@ mysql.server脚本在MySQL安装目录下的share/mysql目录中，如果是采�
 则可以在support-files目录里找到。
 
 \begin{lstlisting}[language=Bash]
+find <指定目录> <指定条件> <指定动作>
+
+#搜索home目录（含子目录）中所有文件名以a开头的文件并显示它们的详细信息
+find /home -type f -mmin -10
+
 #查找名为support-files的文件夹
 find / -type d -name support-files
 
@@ -15142,6 +15147,20 @@ The units of file\_size are millions of bytes (1,000,000 bytes, not 1,048,576 by
 	\hline
 	\end{tabular}
 
+
+\subsection{grep}
+
+grep(缩写来自Globally search a Regular Expression and Print)是一种强大的文本搜索工具，
+它能使用正则表达式搜索文本，并把匹配的行打印出来。
+过滤多个关键字时(任意一个关键字满足条件)使用如下语句：
+
+\begin{lstlisting}[language=Bash]
+#过滤包含vid[10]或vid[11]的行
+grep -E 'vid\[10\]|vid[\11\]'
+
+#过滤不包含vid[10]的行
+grep -v 'vid\[10\]'
+\end{lstlisting}
 
 \subsection{anacron}
 
@@ -16312,9 +16331,14 @@ $ ls -al ~/.ssh
 
 \begin{lstlisting}[language=Bash]
 #生成密钥
-ssh-keygen -t rsa -C "jiangtingqiang@gmail.com" 
+ssh-keygen -t rsa -C "jiangtingqiang@gmail.com"
+
+#验证是否成功配置Github公钥
+ssh -T git@github.com 
 \end{lstlisting}
 
+在执行命令时如找不到ssh-keygen命令时，
+需要将ssh-keygen的路径添加到系统的环境变量中。
 在github.com的网站上到ssh密钥管理页，添加新公钥并取名，内容粘贴本地生成的公钥。
 在push时可能出现错误：fatal: could not read Username for ‘https://github.com’: No such file or directory。运行命令设置git的远程url即可解决问题，
 在Url中添加用户名，注意用户名是大小写敏感的:
@@ -16341,6 +16365,8 @@ ssh-agent bash
 
 \subsection{推送到GitHub}
 
+每次启动Git后切换到工作目录是非常浪费时间的，
+可右键Git Bash在属性页中设置初始启动目录。
 在GitHub上添加第一个Git仓库，配置项目名称和相关信息。
 
 \begin{lstlisting}[language=Bash]
@@ -17802,7 +17828,9 @@ http || tcp.port == 80
 状态
 \begin{lstlisting}[language=Bash]
 frame.time > "June 29, 2016 09:00:01.009638000"
-\end{lstlisting}报文长度大于16
+\end{lstlisting}
+
+报文长度大于16
 
 \begin{lstlisting}[language=Bash]
 tcp.len > 16 and tcp.segment_data contains 7e:80:01:00
@@ -17815,6 +17843,9 @@ data.data contains 7e:02:00 and data.data contains 41:31:07
 
 #某一设备的位置信息上报信息(包含报警信息)
 data.data contains 7e:02:00 and data.data contains 41:31:07 and !data.data[53,4] == 00:00:00:00
+
+#Wireshark data slice
+data[0,1-2,5-6] == 7e:02:00:01:41
 \end{lstlisting}
 
 还有一点是，如果不知道过滤语句如何写的，那么可以在报文列表中右键点击选择Apply as Filter，
@@ -17826,7 +17857,9 @@ data.data contains 7e:02:00 and data.data contains 41:31:07 and !data.data[53,4]
 
 \begin{lstlisting}[language=Bash]
 tcp[0:2]==3e:88
-data[0,2]==3e:88
+
+#Data层满足第一位数据为3e，第2到3位数据为88:90的所有数据包
+data[0,2-3]==3e:88:90
 \end{lstlisting}
 
 以上语句的含义为过滤tcp包从0开始的2个字节为3e88的数据包，
@@ -17834,9 +17867,8 @@ data[0,2]==3e:88
 
 \subsection{各层报文理解}
 
-
 Wireshark捕获的报文与网络7层协议的报文关系如图\ref{fig:SevenModelInWireshark}所示。
-从上到下依次为物理层(Frame)、数据链路层(Ethernet \Roman{2})、
+从上到下依次为物理层(Frame)、数据链路层(Ethernet \uppercase\expandafter{\romannumeral2})、
 网络层(Internet Protocol Version 4)、传输层(Transmission Control Protocol)、应用层。
 在Wireshark下方显示的是所有层的封包数据，
 当在列表中选择封包的不同层时，下方相应的数据包会相应的高亮显示。
