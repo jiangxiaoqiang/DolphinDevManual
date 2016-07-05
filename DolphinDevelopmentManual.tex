@@ -3810,6 +3810,7 @@ wantGoIds = wantGoIds.Distinct(new WantGoPlaceCompare()).ToList();
 \begin{lstlisting}[language={[Sharp]C}]
 var sortedDriverActionInfos = from items in driverActionInfos orderby items.Starttime descending select items;
 \end{lstlisting}
+
 \subsection{Unix时间戳格式转换}
 
 经常发现很多地方使用一个时间戳\footnote{时间戳,又叫Unix Stamp. 
@@ -3844,7 +3845,9 @@ private long DateTimeToStamp(System.DateTime time)
 }
 \end{lstlisting}
 
-\subsection{Linq分页}
+\subsection{Linq操作}
+
+\paragraph{Linq分页}
 
 使用Linq分页，如下代码所示：
 
@@ -3889,6 +3892,57 @@ private List<T> QueryByPage<T>(int PageSize, int CurPage, List<T> objs)
 采用泛型的方式做到分页时与传入的具体对象无关。
 Linq中的take方法从序列开头传回指定的连接项目数目。
 skip方法跳过序列中指定数量的元素，然后返回剩余的元素。
+
+\paragraph{Linq非空判断}
+
+有时在用Linq时，需要确定搜索的元素不为空，Linq如下：
+
+\begin{lstlisting}[language={[Sharp]C}]
+var resultRows = (from DataGridViewRow row in gridAlarmInfo.Rows.Cast<DataGridViewRow>().Where(row => row.Cells[12].Value != null)
+				  where row.Cells[12].Value.ToString() == e.SerialNo.ToString()
+				  select row).ToList();
+\end{lstlisting}
+
+
+\paragraph{Linq中的Any和All方法}
+
+LINQ提供了两个布尔方法：Any()和All()，它们可以快速确定对于数据而言，
+某个条件是true还是false。Any用于判断集合中是否有元素满足某一条件；不延迟。
+（若条件为空，则集合只要不为空就返回True，否则为False）。
+有2种形式，分别为简单形式和带条件形式，
+下面是一个示例。
+
+\begin{lstlisting}[language={[Sharp]C}]
+var wantGoResult = from query in areadyGoneModel
+where query.played == 1 && query.collectionStatus == 1
+select query;
+var isContains = wantGoResult.Any<tour_wantToPlacesModel>();
+\end{lstlisting}
+
+以上代码通过Linq语句根据条件查询一个集合areadyGoneModel，
+使用any方法(返回bool)获得这个集合中是否有满足条件的元素(tour\_wantToPlacesModel)。
+All方法则确定某一集合中是否所有的元素都满足某一特定条件。
+以上语句可以简化为：
+
+\begin{lstlisting}[language={[Sharp]C}]
+var containsAreadyGone = areadyGoneModel.Any(areadyGome => areadyGome.played == 1 && areadyGome.collectionStatus == 1);
+\end{lstlisting}
+
+取出查询出来的实体直接用foreach循环结果即可。
+
+\paragraph{Dictionary转换为List}
+
+\begin{lstlisting}[language={[Sharp]C}]
+var vechicleList = vechicleDicitonary.Select(vechicle => vechicle.Value).ToList();
+\end{lstlisting}
+
+\paragraph{Linq查询}
+
+\begin{lstlisting}[language={[Sharp]C}]
+from prod in db.Products
+select prod.UnitPrice)
+.Min()
+\end{lstlisting}
 
 \subsection{分页查询语句}
 
@@ -13655,7 +13709,7 @@ else
 可将Spring.NET\textbackslash doc\textbackslash schema目录下的spring-objects-1.3.xsd文件
 拷贝到Visual Studio的Xml\textbackslash Schemas目录中。
 
-\subsection{Castle Windsor（ Apache License Version 2.0）}
+\subsection{Castle Windsor(Apache License Version 2.0)}
 
 Castle Windsor\footnote{官方地址：http://www.castleproject.org/} is a best of breed, 
 mature Inversion of Control container available for .NET and Silverlight.
@@ -13672,7 +13726,11 @@ We aspire to simplify the development of enterprise and/or web applications.
 
 Castle helps you get more done with less code and in less time 
 (but not in the traditional code generator mess that some preach).
+Castle Windsor安装命令如下：
 
+\begin{lstlisting}[language=Bash]
+Install-Package Castle.Windsor
+\end{lstlisting}
 
 \subsection{Autofac}
 
@@ -13728,7 +13786,7 @@ AOP(Aspect-Oriented Programming)面向切面编程，看着是跟OOP（面向对
 于是我们引入了AOP的模式。我们通常在实现一个页面逻辑的时候，通常伴随着操作日志，
 安全监测，事务处理等几个逻辑，在实现逻辑的时候都要写一大堆这种代码。
 而AOP就是将这些与主体业务无关，但又有为业务提供服务的逻辑代码封装起来，
-降低模块之间的耦合度。如图所示中的圆柱体好比如我们的业务流程，aop代表的是那个横向的操作，
+降低模块之间的耦合度。如图所示中的圆柱体好比如我们的业务流程，AOP代表的是那个横向的操作，
 俗称切面编程。或许上面的这些理论有点头疼，对于AOP我的大体理解是：
 将那些与业务核心不大相关的杂七杂八的东西独立开，每次实现了业务核心之前或之后，调用一下对应的方法。
 AOP这种切面编程能干很多事情，例如验证登陆，权限，性能检测，错误信息记录等等，
@@ -13757,49 +13815,6 @@ The current stable release of iMacros is version 0.9.0.2,
 released on July 7, 2007. As of July 14, 
 2007 iMacros is one of the TOP 10 most popular Firefox extensions in the Bookmark, 
 Web Data, Alerts, and Widgets and Social and Sharing categories.
-
-\section{LINQ}
-
-\subsection{Linq中的Any和All方法}
-
-LINQ提供了两个布尔方法：Any()和All()，它们可以快速确定对于数据而言，
-某个条件是true还是false。Any用于判断集合中是否有元素满足某一条件；不延迟。
-（若条件为空，则集合只要不为空就返回True，否则为False）。
-有2种形式，分别为简单形式和带条件形式，
-下面是一个示例。
-
-\begin{lstlisting}[language={[Sharp]C}]
-var wantGoResult = from query in areadyGoneModel
-                   	where query.played == 1 && query.collectionStatus == 1
-                   	select query;
-var isContains = wantGoResult.Any<tour_wantToPlacesModel>();
-\end{lstlisting}
-
-以上代码通过Linq语句根据条件查询一个集合areadyGoneModel，
-使用any方法(返回bool)获得这个集合中是否有满足条件的元素(tour\_wantToPlacesModel)。
-All方法则确定某一集合中是否所有的元素都满足某一特定条件。
-以上语句可以简化为：
-
-\begin{lstlisting}[language={[Sharp]C}]
-var containsAreadyGone = areadyGoneModel.Any(areadyGome => areadyGome.played == 1 && areadyGome.collectionStatus == 1);
-\end{lstlisting}
-
-取出查询出来的实体直接用foreach循环结果即可。
-
-\subsection{Dictionary转换为List}
-
-\begin{lstlisting}[language={[Sharp]C}]
-var vechicleList = vechicleDicitonary.Select(vechicle => vechicle.Value).ToList();
-\end{lstlisting}
-
-\subsection{Linq查询}
-
-\begin{lstlisting}[language={[Sharp]C}]
-from prod in db.Products
-select prod.UnitPrice)
-.Min()
-\end{lstlisting}
-
 
 \section{异步(Async)}
 
@@ -17865,13 +17880,9 @@ data[0,1-2,5-6] == 7e:02:00:01:41
 
 \begin{lstlisting}[language=Bash]
 tcp[0:2]==3e:88
-<<<<<<< HEAD
-data[0,2]==3e:88
-=======
 
 #Data层满足第一位数据为3e，第2到3位数据为88:90的所有数据包
 data[0,2-3]==3e:88:90
->>>>>>> origin/master
 \end{lstlisting}
 
 以上语句的含义为过滤tcp包从0开始的2个字节为3e88的数据包，
@@ -17881,11 +17892,7 @@ data[0,2-3]==3e:88:90
 
 
 Wireshark捕获的报文与网络7层协议的报文关系如图\ref{fig:SevenModelInWireshark}所示。
-<<<<<<< HEAD
-从上到下依次为物理层(Frame)、数据链路层(Ethernet \Roman{2})、
-=======
 从上到下依次为物理层(Frame)、数据链路层(Ethernet \uppercase\expandafter{\romannumeral2})、
->>>>>>> origin/master
 网络层(Internet Protocol Version 4)、传输层(Transmission Control Protocol)、应用层。
 在Wireshark下方显示的是所有层的封包数据，
 当在列表中选择封包的不同层时，下方相应的数据包会相应的高亮显示。
@@ -20005,234 +20012,6 @@ public string GetMacAddress()
 \mbox{}         
 \clearpage
 
-\part{微信API}
-
-\clearpage
-\mbox{}         
-\clearpage	
-
-\chapter{配置}
-
-\subsection{照片裁剪}
-
-头像裁剪是一个经常用到的功能，实现原理也较为简单，
-就是在本地选择好所需裁剪图片的坐标，将坐标发送到服务器，由服务器执行图片裁剪操作。
-
-jQuery插件Jcrop\footnote{Jcrop is the quick and easy way to add image cropping functionality to your web application.
-It combines the ease-of-use of a typical jQuery plugin with a powerful cross-platform DHTML cropping engine that 
-is faithful to familiar desktop graphics applications.详细信息请参阅：http://jcrop.org/}（Version~0.9.12）
-提供了强大的图片裁剪坐标选择插件。本处采用了AJAX本地上传一张图片的方法让用户裁剪。Jcrop是一款免费的软件，采用MIT License发布。
-
-\subsubsection{模拟照片发送}
-
-\begin{lstlisting}
-<xml>
-	<ToUserName><![CDATA[gh_6f9611ae8be0]]></ToUserName>
-	<FromUserName><![CDATA[oresesyGW7S3t2NUSy3Nw7IFcZcA]]></FromUserName>
-	<CreateTime>12345678</CreateTime>
-	<MsgType><![CDATA[image]]></MsgType>
-	<PicUrl>
-	<![CDATA[http://mmbiz.qpic.cn/mmbiz/
-	YK2AEAaIQttiaDdiagTAcERulBTmLtOaoXR2Sca6tLUA
-	zbjo1abHdASrfdRAKS8waIRGZ7sMaxbBY4SwqVOTibIQA/0]]>
-	</PicUrl>
-</xml>
-\end{lstlisting}
-
-\subsubsection{图片地址动态}
-
-图片裁剪过程中，前端图片地址动态从服务器获取，前端HTML代码为：
-
-\begin{lstlisting}
-<img src="$imageUrl" id="target" alt="[Jcrop Example]">div style="margin-top:1em; width:500px;">
-\end{lstlisting}
-
-\subsubsection{实现步骤}
-
-\begin{enumerate}
-\setcounter{enumi}{0}
-
-\item{前端页面中引入Jcrop脚本和css样式，其中cropImageHelper.js样式为自定义JavaScript脚本，包含自定义定义方法}
-
-\begin{lstlisting}
-<link rel="stylesheet" href="/static/css/main.css" type="text/css" />
-<link rel="stylesheet" href="/static/css/demos.css" type="text/css" />
-<link rel="stylesheet" href="/static/css/jquery.Jcrop.css" type="text/css" />
-<script src="/static/js/jquery.min.js"></script>
-<script src="/static/js/jquery.Jcrop.js"></script>
-<script src="/static/js/jquery.color.js"></script>
-<script src="/static/js/cropImageHelper.js"></script>
-\end{lstlisting}
-
-\item{获取用户上传的图片链接，将用户上传的图片加载到跳转后的页面}
-
-
-
-\item{利用Jcrop插件裁剪图片，获取图片坐标，获取图片坐标在Jcrop的onSelect时触发}
-
-\begin{lstlisting}
-//启动裁剪操作，触发裁剪框显示，让用户选择图片区域
-$('#target').Jcrop({
-    setSelect: [0, 100, 150, 150],//设定4个角的初始位置
-    onSelect: showCoords,//当选中区域的时候，执行对应的回调函数 
-    onchange: showCoords,
-    minSize: [400, 400],
-    maxSize: [400, 400]
-});
-\end{lstlisting}
-
-触发时调用showCoords方法获取图片裁剪的x，y坐标，将坐标存入前端的页面中，通过POST方法传入后台。
-showCoords方法如下所示：
-\begin{lstlisting}
-//当裁剪框变动时，将左上角相对图片的X坐标与Y坐标，宽度以及高度放到<input type="hidden">中(上传到服务器上裁剪会用到)
-function showCoords(c) {
-    $("#x1").val(c.x);
-    $("#y1").val(c.y);
-    $("#cw").val(c.w);
-    $("#ch").val(c.h);
-};
-\end{lstlisting}
-
-
-将图片的坐标传入后台页面，此处传入后台通过JavaScript的post操作进行参数进行传递，如下代码所示：
-\begin{lstlisting}
-$(function () {
-    $("#cropComplete").click(function () {
-        //http://test.weixin.com:5507/weixin/ImageCrop
-        var url = window.location.href;       
-        $.post(
-                url,
-                {
-                    imageUrl: "dd",
-                    action: "post",
-                    x1: $("#x1").val(),
-                    y1: $("#y1").val(),
-                    cw: $("#cw").val(),//crop width
-                    ch: $("#ch").val()//crop heigth                    
-                },
-                function () //回传函数
-                {
-                    alert("回调函数，OK");
-                });
-    })
-})
-\end{lstlisting}
-
-在后台获取post裁剪的范围而进行图片裁剪操作，裁剪方法如下代码片段所示。
-\begin{lstlisting}
-#region 裁剪操作
-/// <summary>
-/// 裁剪图片
-/// </summary>
-/// <param name="fromFile">输入图片二进制流</param>
-/// <param name="fileSaveUrl">图片存储路径</param>
-/// <param name="xPosition">x坐标</param>
-/// <param name="yPosition">y坐标</param>
-/// <param name="width">裁剪图片高度</param>
-/// <param name="height">裁剪图片宽度</param>
-/// <param name="quality">裁剪质量（1-100）</param>
-public static void Cut(Stream fromFile, string fileSaveUrl, int xPosition, int yPosition, int width, int height, int quality)
-{
-    //创建目录
-    //原始图片（获取原始图片创建对象，并使用流中嵌入的颜色管理信息）
-    Image initImage = Image.FromStream(fromFile, true);
-    Image pickedImage = null;
-    Graphics pickedG = null;
-    EncoderParameters ep = null;
-    try
-    {
-        //原始图片的宽、高
-        int initWidth = initImage.Width;
-        int initHeight = initImage.Height;
-        if (xPosition + width > initWidth)
-            width = initWidth - xPosition;
-        if (yPosition + height > initHeight)
-            height = initHeight - yPosition;
-        //与原图相等直接保存
-        if ((width >= initWidth && height >= initHeight) || (width < 1 && height < 1))
-        {
-            string folder = fileSaveUrl.Substring(0, fileSaveUrl.LastIndexOf("\\"));
-
-            initImage.Save(fileSaveUrl, ImageFormat.Jpeg);
-        }
-        else
-        {
-            //对象实例化
-            pickedImage = new Bitmap(width, height);
-            pickedG = Graphics.FromImage(pickedImage);
-            //设置质量
-            pickedG.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            pickedG.SmoothingMode = SmoothingMode.HighQuality;
-            //定位
-            Rectangle fromR = new Rectangle(xPosition, yPosition, width, height);
-            Rectangle toR = new Rectangle(0, 0, width, height);
-            //画图
-            pickedG.DrawImage(initImage, toR, fromR, GraphicsUnit.Pixel);
-            //关键质量控制
-            //获取系统编码类型数组,包含了jpeg,bmp,png,gif,tiff
-            ImageCodecInfo[] icis = ImageCodecInfo.GetImageEncoders();
-            ImageCodecInfo ici = null;
-            foreach (ImageCodecInfo i in icis)
-            {
-                if (i.MimeType == "image/jpeg" || i.MimeType == "image/bmp" || i.MimeType == "image/png" || i.MimeType == "image/gif")
-                {
-                    ici = i;
-                }
-            }
-            ep = new EncoderParameters(1);
-            ep.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, (long)quality);
-            //保存缩略图
-            pickedImage.Save(fileSaveUrl, ici, ep);  
-        }
-    }
-    catch (Exception e)
-    {
-        logger.Error("裁剪图片时遇到错误，详细信息为", e);                
-    }
-    finally
-    {
-        //释放关键质量控制所用资源
-        ep.Dispose();
-        pickedG.Dispose();
-        //释放截图资源 
-        pickedImage.Dispose();
-        //释放原始图片资源
-        initImage.Dispose();
-    }
-}
-#endregion
-\end{lstlisting}
-
-
-
-\item{裁剪完成后的图片保存到服务器的文件夹中，同时向数据库中写入裁剪后图片的地址}
-
-\end{enumerate}
-
-
-\section{常见问题}
-
-\subsection{注意事项}
-
-\begin{itemize}
-\item{与微信交互的Json需要小写}
-\end{itemize}
-
-
-\subsection{config:invalid url domain}
-
-1.确保用于签名的Url正确
-
-2.确保用于签名的公众号在微信公众平台中绑定了“JS接口安全域名”，狗日的微信，整些设置
-
-
-\clearpage
-\mbox{}         
-\clearpage
-
-\printglossaries
-
-\clearpage
 \part{附录}
 
 \epigraph{Stay Hungry. Stay Foolish.}
@@ -21518,6 +21297,8 @@ private Dictionary<EnumMessageType, Action<int, Dictionary<string, IPlugin>, Enu
 	46 & \url{http://wangjianshuo.com/}	& 2016-04-22 & 王建硕的博客\\
 	\hline
 	47 & \url{https://channel9.msdn.com} & 2016-04-22 & 第九频道\\
+	\hline
+	48 & \url{https://www.yandex.com/} & 2016-07-05 & 俄罗斯最大的搜索引擎\\
 	\hline	
 \end{longtable}
 
