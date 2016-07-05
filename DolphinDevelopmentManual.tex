@@ -1057,6 +1057,16 @@ and not interpreters (step-by-step executors of source code, where no pre-runtim
     Rest客户端 & RestSharp & latest\\		
     \end{tabular}
 
+\subsubsection{Visual Studio Code}
+
+在Fedora中安装完毕后的路径为：
+
+\begin{lstlisting}
+/usr/share/code
+\end{lstlisting}
+
+运行文件夹下的code文件即可。
+
 \subsection{Web Server}
 
 \subsubsection{OpenResty(BSD)}
@@ -5122,6 +5132,17 @@ Optionally, when you need to specify credentials and a method to access the virt
 方便性的提升性能。
 
 \section{HTTP}
+
+\subsection{浏览器的请求流程}
+
+\paragraph{DNS解析}导航的第一步是通过访问的域名找出其IP地址。
+
+\paragraph{301重定向}为什么服务器一定要重定向而不是直接发会用户想看的网页内容呢？这个问题有好多有意思的答案。
+其中一个原因跟搜索引擎排名有 关。你看，如果一个页面有两个地址，
+就像http://www.igoro.com/ 和http://igoro.com/，搜索引擎会认为它们是两个网站，
+结果造成每一个的搜索链接都减少从而降低排名。而搜索引擎知道301永久重定向是什么意思，
+这样就会把访问带www的和不带www的地址归到同一个网站排名下。
+还有一个是用不同的地址会造成缓存友好性变差。当一个页面有好几个名字时，它可能会在缓存里出现好几次。
 
 \subsection{完整的HTTP请求流程}
 
@@ -15166,6 +15187,19 @@ The units of file\_size are millions of bytes (1,000,000 bytes, not 1,048,576 by
 	\hline
 	\end{tabular}
 
+\paragraph{多行复制与粘贴}
+
+1）单行复制
+
+在命令模式下，将光标移动到将要复制的行处，按“yy”进行复制；
+
+2）多行复制
+
+在命令模式下，将光标移动到将要复制的首行处，按“nyy”复制n行；其中n为1、2、3……
+
+2、粘贴
+
+在命令模式下，将光标移动到将要粘贴的行处，按“p”进行粘贴
 
 \subsection{grep}
 
@@ -16385,6 +16419,34 @@ ssh-agent bash
 在ssh bash中添加RSA key之后退出即可。
 要保持新生成的密匙文件的名字同“ssh\_config”中“IdentityFile”字段的值一致即可。
 在生成密钥的时候，请在 “ ~/.ssh/ ”目录下操作。或者生成后把文件移动到“ ~/.ssh/ ”目录下。
+
+\paragraph{git pull}git pull命令的作用是，取回远程主机某个分支的更新，
+再与本地的指定分支合并。
+
+\begin{lstlisting}[language=Bash]
+git pull <远程主机名> <远程分支名>:<本地分支名>
+\end{lstlisting}
+
+为了便于管理，Git要求每个远程主机都必须指定一个主机名。git remote命令就用于管理主机名。
+不带选项的时候，git remote命令列出所有远程主机。
+使用-v选项，可以参看远程主机的网址。
+
+\begin{lstlisting}[language=Bash]
+git remote -v
+\end{lstlisting}
+
+加上-a参数可以查看远程分支，远程分支会用红色表示出来(如果开了颜色支持的话)：
+
+\begin{lstlisting}[language=Bash]
+git branch -a
+\end{lstlisting}
+
+\paragraph{git push}git push命令用于将本地分支的更新，
+推送到远程主机。它的格式与git pull命令相仿。
+
+\begin{lstlisting}[language=Bash]
+git push <远程主机名> <本地分支名>:<远程分支名>
+\end{lstlisting}
 
 \subsection{推送到GitHub}
 
@@ -18016,6 +18078,11 @@ route add 192.168.24.79 mask 255.255.255.255 192.168.24.1
 \clearpage
 
 \section{Linux有关工具}
+
+
+
+
+
 
 \subsection{Putty}
 
