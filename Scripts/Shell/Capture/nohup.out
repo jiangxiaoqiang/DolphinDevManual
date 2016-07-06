@@ -1,0 +1,38 @@
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 96 bytes
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 96 bytes
+./capture.sh: line 9: 24904 Killed                  tcpdump -i eth1 port 6973 and host 120.26.132.144 -w $packageStoreDir/$currentTime.cap
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 96 bytes
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 96 bytes
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 96 bytes
+/root/package/scripts/capture.sh: line 9:  9720 Killed                  tcpdump -i eth1 port 6973 and host 120.26.132.144 -w $packageStoreDir/$currentTime.cap
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 96 bytes
+/root/package/scripts/capture.sh: line 9: 31177 Killed                  tcpdump -i eth1 port 6973 and host 120.26.132.144 -w $packageStoreDir/$currentTime.cap
+/root/package/scripts/capture.sh: line 10: Time.cap: command not found
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 96 bytes
+/root/package/scripts/capture.sh: line 9: 27391 Killed                  /usr/sbin/tcpdump -i eth1 port 6973 and host 120.26.132.144 -w $packageStoreDir/$currentTime.cap
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes
+/root/package/scripts/capture.sh: line 9: 20397 Killed                  /usr/sbin/tcpdump -i eth1 port 6973 and host 120.26.132.144 -s0 -w $packageStoreDir/$currentTime.cap
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes
+/root/package/scripts/capture.sh: line 9:  2156 Killed                  /usr/sbin/tcpdump -i eth1 port 6973 and host 120.26.132.144 -tttt -s0 -w $packageStoreDir/$currentTime.cap
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes
+tcpdump: pcap_loop: The interface went down
+28133 packets captured
+28133 packets received by filter
+0 packets dropped by kernel
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes
+/root/package/scripts/capture.sh: line 9: 14274 Killed                  /usr/sbin/tcpdump -i eth1 port 6973 and host 120.26.132.144 -tttt -s0 -w $packageStoreDir/$currentTime.cap
+/root/package/scripts/capture.sh: line 9: 16022 Killed                  /usr/sbin/tcpdump -i eth1 port 6973 and host 120.26.132.144 -tttt -s0 -w $packageStoreDir/$currentTime.cap
+/root/package/scripts/capture.sh: line 9: 16594 Killed                  /usr/sbin/tcpdump -i eth1 port 6973 and host 120.26.132.144 -tttt -s0 -w $packageStoreDir/$currentTime.cap
+/root/package/scripts/capture.sh: line 9: 18201 Killed                  /usr/sbin/tcpdump -i eth1 port 6973 and host 120.26.132.144 -tttt -s0 -w $packageStoreDir/$currentTime.cap
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes
+/root/package/scripts/capture.sh: line 9: 18782 Killed                  /usr/sbin/tcpdump -i eth1 port 6973 and host 120.26.132.144 -tttt -s0 -w $packageStoreDir/$currentTime.cap
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes
+/root/package/scripts/capture.sh: line 9: 16443 Killed                  /usr/sbin/tcpdump -i eth1 port 6973 and host 120.26.132.144 -tttt -s0 -w $packageStoreDir/$currentTime.cap
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes
+/root/package/scripts/capture.sh: line 9: 18533 Killed                  /usr/sbin/tcpdump -i eth1 port 6973 and host 120.26.132.144 -tttt -s0 -w $packageStoreDir/$currentTime.cap
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes
+/root/package/scripts/capture.sh: line 9: 10239 Killed                  /usr/sbin/tcpdump -i eth1 port 6973 and host 120.26.132.144 -tttt -s0 -w $packageStoreDir/$currentTime.cap
+tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes

@@ -11839,8 +11839,9 @@ JSON-RPC 虽然有规范，但是却没有统一的实现。在不同语言中�
 \end{figure}
 
 
+\section{委托(Delegate)}
 
-
+查看BeginIvoke调用的方法，可查找委托事件添加的位置。
 
 \section{泛型（Generic）与集合（Collection）}
 
@@ -15200,6 +15201,22 @@ The units of file\_size are millions of bytes (1,000,000 bytes, not 1,048,576 by
 2、粘贴
 
 在命令模式下，将光标移动到将要粘贴的行处，按“p”进行粘贴
+
+\subsection{Vim}
+
+\begin{tabular}{l|p{10cm}}
+	\multirow{1}{*}{操作码}			
+	& \multicolumn{1}{c}{作用}\\	 
+	\hline
+	gg & 光标跳到第一行\\
+	\hline
+	\$ & 光标移动到一行的结尾\\
+	\hline
+	[N]yy & 复制一行或者N行\\
+	\hline
+	G & 光标跳到最后一行\\
+	\hline
+\end{tabular}
 
 \subsection{grep}
 
@@ -19996,54 +20013,6 @@ public int GetPrinterStatusInt(string printerName)
         logger.Error("Get printer status encount an error", e);
     }
     return intRet;
-}
-#endregion
-\end{lstlisting}
-
-\subsubsection{同步打印成功提示}
-
-打印成功后程序立即触发打印完成事件，
-打印机的打印速度慢于程序运行速度，
-导致打印成功提示用户时，
-照片实际还未打印完毕，
-故将打印成功消息延后30秒发送。
-
-\begin{lstlisting}
-#region 发送打印完成信号
-/// <summary>
-/// 发送打印完成信号
-/// </summary>
-/// <param name="sender"></param>
-/// <param name="e"></param>
-private void printDocument_EndPrint(object sender, PrintEventArgs e)
-{
-    Thread thread = new Thread(new ParameterizedThreadStart(SendPrintEndSingal));
-    thread.Name = "SendPrintEndSingal";
-    thread.Start(30000);
-}
-#endregion
-\end{lstlisting}
-
-消息发送执行的方法为：
-
-\begin{lstlisting}
-#region 发送打印完成信号-延迟执行
-/// <summary>
-/// 发送打印完成信号-延迟执行
-/// </summary>
-/// <param name="seconds">延迟时间（秒）</param>
-public void SendPrintEndSingal(object seconds)
-{            
-    try
-    {
-        Thread.Sleep((int)seconds);                
-        IGUIDataService dataService = (new GUIDataServiceFactory()).Create();
-        dataService.PrintEndRequest(printModel);
-    }
-    catch (Exception ee)
-    {
-        logger.Error("发送结束打印时遇到错误", ee);
-    }
 }
 #endregion
 \end{lstlisting}
