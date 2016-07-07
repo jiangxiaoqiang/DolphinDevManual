@@ -14954,10 +14954,14 @@ v代表verbosse，即输出详细的信息。
 scp是有Security的文件copy，基于ssh登录。 
 
 \begin{lstlisting}[language=Bash]
-scp -r -P 50000 root@hostip:/root/package/scripts ./
+scp -r -P 50000 root@servername:/root/package/scripts ./
+
+#将本地文件夹上传到服务器
+scp -r /tmp/local_dir username@servername:remote_dir
 \end{lstlisting}
 
-P参数指定端口为自定义端口，此处为50000。
+P参数指定端口为自定义端口，此处为50000，
+服务名称可以是IP地址。
 
 \subsection{日志查看}
 
@@ -15330,6 +15334,18 @@ source /etc/profile
 \paragraph{冲刺订单(sprint backlog)}是大大细化了的文档，包含团队如何实现下一个冲刺的需求的信息。
 任务被分解为以小时为单位，没有任务可以超过16个小时。如果一个任务超过16个小时，那么它就应该被进一步分解。
 冲刺订单上的任务不会被分派，而是由团队成员签名认领他们喜爱的任务。
+
+\subsection{Redmine慢}
+
+是因为在新建问题和更新问题时会发送邮件，而且是同步操作的，就是说需要等到邮件发送成功后才会返回。
+redmime的配置文件存放位置：/var/www/redmine/config/configuration.yml，
+可以通过如下命令查找：
+
+\begin{lstlisting}[language=Bash]
+find / -name configuration.yml
+\end{lstlisting}
+
+找到 delivery\_method: :smtp，将smtp改为async\_smtp，保存退出，重启Apache服务即可。
 
 \section{Code Review}
 
@@ -17028,6 +17044,7 @@ pause
 当批处理文件中有中文时，文件本身的编码需要保存为ANSI编码，
 否则脚本执行时会出现乱码的现象。
 
+
 \section{Gradle}
 
 \subsection{安装}
@@ -17433,7 +17450,7 @@ PC都能够捕获到手机端的请求。
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.8]{FiddlerCaptureMobilePackage.jpg}
+	\includegraphics[scale=0.5]{FiddlerCaptureMobilePackage.jpg}
 	\caption{Fiddler开启远程捕获}
 	\label{fig:FiddlerCaptureMobilePackage}
 \end{figure}
@@ -20133,6 +20150,7 @@ public string GetMacAddress()
 	swagger & 昂首阔步; 夸耀，炫耀\\
 	PR(PR on line or Public Relations) & 线上公关或e公关\\
 	LBS & 位置服务(LBS,Location Based Services)\\
+	ACC & START是方向盘锁，在这个位置方向盘就锁上了。ON是空档，一般停车就是这个也可以停到START位置，有的车停车是强制停到START位置。ACC是一档，也就是打开一些用电器接通电源。LOCK是点火档，着车用的。\\
 \end{longtable}
 
 \footnotetext[5]{In computer science, syntactic sugar is syntax within a 
