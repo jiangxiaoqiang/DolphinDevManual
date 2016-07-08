@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configcontainer>
+    <servers>
+        <server>
+            <name></name>
+            <ip>192.168.24.244</ip>
+            <port></port>
+            <sslport>22</sslport>
+            <sslusername>root</sslusername>
+            <sslpassword>123456</sslpassword>
+        </server>
+    </servers>
+    <clients>
+        <client>
+            <directorys>
+                <dirctory></dirctory>
+            </directorys>
+            <ip></ip>
+        </client>
+    </clients>
+</configcontainer>
+
