@@ -12595,7 +12595,7 @@ MSIL是将.NET程序编译成机器语言的一种过程。编译成的代码不
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.8]{ILDasmblerIcon.png}
+	\includegraphics[scale=0.5]{ILDasmblerIcon.png}
 	\caption{使用IL DASM查看IL}
 	\label{fig:ILDasmblerIcon}
 \end{figure}
@@ -15219,6 +15219,8 @@ The units of file\_size are millions of bytes (1,000,000 bytes, not 1,048,576 by
 	[N]yy & 复制一行或者N行\\
 	\hline
 	G & 光标跳到最后一行\\
+	\hline
+	[n]gg & 光标跳到指定行\\
 	\hline
 \end{tabular}
 
@@ -17965,6 +17967,9 @@ data.data contains 7e:02:00 and data.data contains 41:31:07 and !data.data[53,4]
 
 #Wireshark data slice
 data[0,1-2,5-6] == 7e:02:00:01:41
+
+#过滤进出路线报警
+data[1:2] == 02:00 and data[13:4]==00:20:00:00
 \end{lstlisting}
 
 还有一点是，如果不知道过滤语句如何写的，那么可以在报文列表中右键点击选择Apply as Filter，
@@ -18288,9 +18293,9 @@ C:\>dot -Tps a.dot -o 1.ps
 
 如果需要生成jpg格式的图片，输入以下命令即可，Sign.dot为源代码文件名称，Sign.jpg为输出图片的名称。dot的命令格式为：
 
+\begin{lstlisting}[language=Bash]
 dot -T[output\_filetype] [-G[option\_name]] -o [output\_filename] [input\_filename] 
 
-\begin{lstlisting}[language=Bash]
 dot -Tjpg Sign.dot -o Sign.jpg
 \end{lstlisting}
 
