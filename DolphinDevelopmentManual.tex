@@ -14195,6 +14195,10 @@ COM的没落自然有其原因，例如编程实在是太复杂而难以掌握�
 
 反射(reflection)机制可以用来加载插件，接口和抽象类可以用于和插件通信。
 
+\section{.NET Core}
+
+
+
 \section{常见问题}
 
 \paragraph{不是有效的Win32应用程序}查看程序的架构是否一样，是统一的x86还是x64。
@@ -14798,7 +14802,51 @@ def sshdownload():
 
 \subsection{python xml解析}
 
+\subsection{Python记录日志}
 
+使用 python 的标准日志模块。python社区将日志做成了一个标准模块。它非常简单易用且十分灵活。
+定义一个日志的公共记录模块。
+
+\begin{lstlisting}[language=Python]
+#coding=utf-8
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+#Create a file handler
+handler = logging.FileHandler('output.log')
+handler.setLevel(logging.INFO)
+
+#Create a logging format
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+# add the handlers to the logger
+logger.addHandler(handler)
+
+def loginfo():
+    logger.info('info')
+    return
+\end{lstlisting}
+
+在任意模块导入即可试用公共模块记录日志了，非常方便。
+
+\begin{lstlisting}[language=Python]
+#coding=utf-8
+
+import commonlogger
+
+commonlogger.loginfo()
+\end{lstlisting}
+
+\subsection{试用配置文件定义日志}
+
+可以在python代码中配置你的日志系统，但是这样并不够灵活。
+最好的方法是使用一个配置文件来配置。在Python2.7及之后的版本中，
+你可以从字典中加载logging配置。这也就意味着你可以从JSON或者YAML文件中加载日志的配置。
+尽管你还能用原来.ini文件来配置，但是它既很难读也很难写。
+设置日志记录的话，在程序启动的时候调用log模块的setup\_logging方法就行了。它默认读取logging.json或是 logging.yaml。你可以设置LOG\_CFG环境变量来指定从某个路径中加载日志配置。
 
 \section{常见问题}
 
