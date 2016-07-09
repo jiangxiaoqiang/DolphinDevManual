@@ -10,8 +10,8 @@
 \usepackage{titlesec}
 \usepackage{xcolor}
 \usepackage{listings}
-\usepackage{fontspec,xunicode,xltxtra}
-\usepackage{xeCJK}
+%\usepackage{fontspec,xunicode,xltxtra}
+%\usepackage{xeCJK}
 \usepackage{hyperref}
 \usepackage{enumerate}
 \usepackage{epigraph}
@@ -19,7 +19,7 @@
 \usepackage[xindy]{glossaries}
 \usepackage{fancyhdr}
 \usepackage{amsmath}
-\usepackage{TikZ}
+%\usepackage{TikZ}
 \usepackage{ifthen}
 \usepackage{longtable}
 
@@ -10927,7 +10927,81 @@ classic web vulnerability scanners. DIRB looks for specific web objects that
 other generic CGI scanners can't look for. It doesn't search vulnerabilities 
 nor does it look for web contents that can be vulnerables.
 
+\section{Network}
 
+\subsection{Ubuntu 使用aircrack破解WiFi}
+
+破解原理：直接把这段握手包给截取下来，在本地验证好了再发给热点就行。
+Aircrack是破解WEP/WPA/WPA2加密的主流工具之一，Aircrack-ng套件包含的工具可用于捕获数据包、握手验证。
+可用来进行暴力破解和字典攻击。在Ubuntu 14.02下安装aircrack-ng：
+
+\begin{lstlisting}[language=Bash]
+apt-get install aircrack-ng
+\end{lstlisting}
+
+力破解和字典攻击。
+– Aircrack-ng 无线密码破解
+– Aireplay-ng 流量生成和客户端认证
+– Airodump-ng 数据包捕获
+– Airbase-ng  虚假接入点配置
+
+\paragraph{启动无线网卡的监控模式}
+启动无线网卡的监控模式如下：
+
+\begin{lstlisting}[language=Bash]
+sudo airmon-ng start wlan0
+
+sudo airodump-ng -a --encrypt WPA mon0
+\end{lstlisting}
+
+无线网卡开始抓包并分析附近有那些热点(-a)，
+并且仅显示加密方式为WPA或者WPA2的热点(-- encrypt WPA) – 上图只需要看懂这些参数：
+BSSID指一个热点（PC or Phone），你可以理解为它的ID，PWR指信号强度，越接近0越好，
+但是不能等于0,0表示断线，后面将会用到，CH频道，这个也会用到，ENC加密方式，
+仅显示了PSK/PSK2方式，ESSIS这个就是我们平常看到的热点名称辣
+
+\paragraph{查看无线AP}在终端中输入：
+
+\begin{lstlisting}[language=Bash]
+sudo airodump-ng mon0
+\end{lstlisting}
+
+（mon0 是启动监控模式后无线网的端口）
+查看有哪些采用wep加密的AP在线，然后按 ctrl+c 中止，不要关闭终端。
+
+\paragraph{抓包}
+打开另一个终端，输入：
+
+\begin{lstlisting}[language=Bash]
+sudo airodump-ng --channel 6 --bssid AP’s MAC -w wep mon0
+
+sudo airodump-ng --bssid 28:2C:B2:E4:F5:5A -c 13 -w 619 --ignore-negative-one mon0
+\end{lstlisting}
+
+(-c后面跟着的6是要破解的AP工作频道，–bissid后面跟着的AP’sMAC是要欲破解AP的MAC地址，
+-w后面跟着wep的是抓下来的数据包DATA保存的文件名，具体情况根据步骤2里面的在线AP更改频道和MAC地址，
+DATA保存的文件名可随便命名）
+
+本机Mac：00:25:d3:9a:b6:01
+
+路由Mac：C0:61:18:9A:76:D2
+
+\paragraph{与AP建立虚拟连接}
+再打开一个新终端，输入：
+
+\begin{lstlisting}[language=Bash]
+aireplay-ng -2 -F -p 0841 -c ff:ff:ff:ff:ff:ff -b C0:61:18:9A:76:D2 -h 00:25:d3:9a:b6:01 mon0
+\end{lstlisting}
+
+
+（-h后面跟着的My MAC是自己的无线网卡的MAC地址，即ifconfig命令下wlan0对应的mac地址)
+
+\paragraph{解密}
+收集有15000个以上的DATA之后，另开一个终端，切换到aircrack-ng-1.1目录，执行以下命令
+sudo aircrack-ng wep*.cap
+进行解密
+（如果没算出来的话，继续等，aircrack-ng 会在DATA每增加多15000个之后就自动再运行，
+直到算出密码为至，注意此处文件的名字要与步骤3里面设置的名字一样，且*号是必需的）
 
 
 \chapter{Node.js}
@@ -17193,6 +17267,14 @@ flushprivileges;
 
 \paragraph{破解}
 
+\section{Ansible}
+
+ansible是个什么东西呢？官方的title是“Ansible is Simple IT Automation”——简单的自动化IT工具。
+这个工具的目标有这么几项：让我们自动化部署APP；自动化管理配置项；自动化的持续交付；自动化的（AWS）云服务管理。
+
+
+
+
 \chapter{测试调试组件}
 
 \clearpage
@@ -19455,7 +19537,7 @@ This OpenType font family offers also support for CE languages and even Esperant
 
 \subsection{Avenir Web}
 
-\part{走喔热印}
+\part{待移除模块}
 	
 \clearpage
 \mbox{}         
@@ -21408,7 +21490,8 @@ private Dictionary<EnumMessageType, Action<int, Dictionary<string, IPlugin>, Enu
 	47 & \url{https://channel9.msdn.com} & 2016-04-22 & 第九频道\\
 	\hline
 	48 & \url{https://www.yandex.com/} & 2016-07-05 & 俄罗斯最大的搜索引擎\\
-	\hline	
+	\hline
+	49 & \url{https://freenode.net/} & 2016-07-08 & supporting free and open source communities\\	
 \end{longtable}
 
 
