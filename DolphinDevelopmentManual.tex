@@ -10,8 +10,8 @@
 \usepackage{titlesec}
 \usepackage{xcolor}
 \usepackage{listings}
-%\usepackage{fontspec,xunicode,xltxtra}
-%\usepackage{xeCJK}
+\usepackage{fontspec,xunicode,xltxtra}
+\usepackage{xeCJK}
 \usepackage{hyperref}
 \usepackage{enumerate}
 \usepackage{epigraph}
@@ -19,12 +19,12 @@
 \usepackage[xindy]{glossaries}
 \usepackage{fancyhdr}
 \usepackage{amsmath}
-%\usepackage{TikZ}
+\usepackage{TikZ}
 \usepackage{ifthen}
 \usepackage{longtable}
 
 %When compile under liunx% 
-%\setmainfont{WenQuanYi Micro Hei}  
+\setmainfont{WenQuanYi Micro Hei}  
 %\setmainfont{WenQuanYi Zen Hei Mono} 
 
 \newcounter{coderemarks}   %创建变量
@@ -15095,6 +15095,10 @@ scp -r /tmp/local_dir username@servername:remote_dir
 P参数指定端口为自定义端口，此处为50000，
 服务名称可以是IP地址。
 
+\paragraph{使用命令输出作为参数}
+
+cd |xargs whereis texlive
+
 \subsection{日志查看}
 
 \begin{lstlisting}[language=Bash]
@@ -15275,6 +15279,9 @@ tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>0 and ip
 \begin{lstlisting}[language=Bash]
 tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>0 and ip[41:2]=0x0200 and ip[53:4]!=0x00000000 and ip[46:4]!=0x41310718' -vv -X -c 100
 tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>100 and ip[41:2]=0x0200 and ip[53:4]==0x200000 and ip[46:4]!=0x41310718' -vv -X -c 10000
+
+#抓取所有进出路线报警
+tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>0 and ip[41:2]=0x0200 and ip[53:4]==0x00100000' -vv -X -c 100
 \end{lstlisting}
 
 终端电话号码的后7位为设备ID。
@@ -15355,6 +15362,37 @@ The units of file\_size are millions of bytes (1,000,000 bytes, not 1,048,576 by
 	[n]gg & 光标跳到指定行\\
 	\hline
 \end{tabular}
+
+\paragraph{magic}vim中有个magic的设定。设定方法为：
+
+\begin{lstlisting}[language=Bash]
+#设置magic
+:set magic
+
+#取消magic
+:set nomagic
+
+#查看帮助
+:h magic
+\end{lstlisting}
+
+vim毕竟是个编辑器，正则表达式中包含的大量元字符如果原封不动地引用（像perl 那样）， 势必会给不懂正则表达式的人造成麻烦，比如 /foo(1) 命令， 大多数人都用它来查找foo(1)这个字符串， 但如果按照正则表达式来解释，被查找的对象就成了 foo1 了。
+
+于是，vim就规定，正则表达式的元字符必须用反斜杠进行转义才行， 如上面的例子，
+如果确实要用正则表达式，就应当写成 /foo\textbackslash (1 \textbackslash) 。 
+但是，像 . * 这种极其常用的元字符，都加上反斜杠就太麻烦了。 
+而且，众口难调，有些人喜欢用正则表达式，有些人不喜欢用……
+
+为了解决这个问题，vim设置了 magic 这个东西。简单地说， magic就是设置哪些元字符要加反斜杠哪些不用加的。 
+简单来说：
+magic (\textbackslash m)：除了 \$ . * \^ 之外其他元字符都要加反斜杠。nomagic (\textbackslash M)：
+除了 $ ^ 之外其他元字符都要加反斜杠。
+这个设置也可以在正则表达式中通过 \m \M 开关临时切换。 
+\m 后面的正则表达式会按照 magic 处理，\M 后面的正则表达式按照 nomagic 处理， 而忽略实际的magic设置。
+
+\begin{lstlisting}[language=Bash]
+/type\[22\]
+\end{lstlisting}
 
 \subsection{grep}
 
@@ -18108,8 +18146,8 @@ data.data contains 7e:02:00 and data.data contains 41:31:07 and !data.data[53,4]
 #Wireshark data slice
 data[0,1-2,5-6] == 7e:02:00:01:41
 
-#过滤进出路线报警
-data[1:2] == 02:00 and data[13:4]==00:20:00:00
+#过滤所有进出路线报警
+data[1:2] == 02:00 and data[13:4]==00:10:00:00
 \end{lstlisting}
 
 还有一点是，如果不知道过滤语句如何写的，那么可以在报文列表中右键点击选择Apply as Filter，
