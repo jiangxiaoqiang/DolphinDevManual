@@ -10575,6 +10575,9 @@ nmap -sS -P0 -sV -O <target>
 端口扫描简单示例如下代码片段所示：
 
 \begin{lstlisting}[language=Bash]
+#服务扫描
+nmap-T4 -sV targetip 
+
 #扫描淘宝IP
 nmap -p 0-1000 -v 218.201.46.124
 nmap -T4 -A -v 218.201.46.124
@@ -10932,6 +10935,13 @@ nor does it look for web contents that can be vulnerables.
 \subsection{Ubuntu 使用aircrack破解WiFi}
 
 破解原理：直接把这段握手包给截取下来，在本地验证好了再发给热点就行。
+无线路由器的另一种加密方式为WPA/WPA2加密，相比较于WEP加密，
+暂时未能从一些公开的方法中找到直接破解WPA/WPA2密码的方法，
+只能先抓获握手包，然后对握手包进行暴力破解，但是结合着一些技巧以及普通用户密码策略比较薄弱，成功的机率也比较高。
+抓握手包跑字典，这主要看你的字典给不给力了，拼人品的时间到了，
+和破解wep操作一样的，选中信号点lanch开始抓包，抓包的时候路由器是一定要有用户使用，
+目的是攻击导致对方掉线，在自动重连的过程中抓取WPA认证的四次握手包。
+如果一直没找到在线的客户端，就抓不到包的，只能等有人用的时候再试了。
 Aircrack是破解WEP/WPA/WPA2加密的主流工具之一，Aircrack-ng套件包含的工具可用于捕获数据包、握手验证。
 可用来进行暴力破解和字典攻击。在Ubuntu 14.02下安装aircrack-ng：
 
@@ -21030,11 +21040,14 @@ de4dot.exe dllFullPath
 
 \subsection{搜索技巧(Search Tricks)}
 
-\paragraph{准确搜索(Exact phrase)}最简单、有效的准确搜索方式是在关键词上加上双引号，在这种情况下，搜索引擎只会反馈和关键词完全吻合的搜索结果。比方说在搜索「Joe Bloggs」的时候，在没有给关键词加上双引号的情况，搜索引擎会显示所有分别和「Joe」以及「Bloggs」相关的信息，但这些显然并不是我们想要的结果。但在加上双引号后，搜索引擎则仅会在页面上反馈和「Joe Bloggs」相吻合的信息。准确搜索在排除常见但相近度偏低的信息时非常有用，可以为用户省去再度对结果进行筛选的麻烦。
+\paragraph{准确搜索(Exact phrase)}
+最简单、有效的准确搜索方式是在关键词上加上双引号，在这种情况下，搜索引擎只会反馈和关键词完全吻合的搜索结果。比方说在搜索「Joe Bloggs」的时候，在没有给关键词加上双引号的情况，搜索引擎会显示所有分别和「Joe」以及「Bloggs」相关的信息，但这些显然并不是我们想要的结果。但在加上双引号后，搜索引擎则仅会在页面上反馈和「Joe Bloggs」相吻合的信息。准确搜索在排除常见但相近度偏低的信息时非常有用，可以为用户省去再度对结果进行筛选的麻烦。
 
-\paragraph{排除关键词(Exclude terms)}如果在进行准确搜索时没有找到自己想要的结果，用户可以对包含特定词汇的信息进行排除，仅需使用减号即可。例如在搜索「『Joe Bloggs』-jeans」时，你所得到的结果反馈是不包含「jeans」字眼的「Joe Bloggs」条目。
+\paragraph{排除关键词(Exclude terms)}
+如果在进行准确搜索时没有找到自己想要的结果，用户可以对包含特定词汇的信息进行排除，仅需使用减号即可。例如在搜索「『Joe Bloggs』-jeans」时，你所得到的结果反馈是不包含「jeans」字眼的「Joe Bloggs」条目。
 
-\paragraph{用「Either OR」（或）逻辑进行搜索}在默认搜索下，搜索引擎会反馈所有和查询词汇相关的结果，但通过使用「OR」逻辑，你可以得到和两个关键词分别相关的结果，而不仅仅是和两个关键词都同时相关的结果。巧妙使用「OR」搜索可以让你在未能确定哪个关键词对于搜索结果起决定作用时依然可以确保搜索结果的准确性。[OR]也可以替换成竖线(|)。
+\paragraph{用「Either OR」（或）逻辑进行搜索}
+在默认搜索下，搜索引擎会反馈所有和查询词汇相关的结果，但通过使用「OR」逻辑，你可以得到和两个关键词分别相关的结果，而不仅仅是和两个关键词都同时相关的结果。巧妙使用「OR」搜索可以让你在未能确定哪个关键词对于搜索结果起决定作用时依然可以确保搜索结果的准确性。[OR]也可以替换成竖线(|)。
 
 \paragraph{@}关键字前加@符号，查找社交网站上相关结果。
 
@@ -21042,7 +21055,36 @@ de4dot.exe dllFullPath
 
 \begin{lstlisting}
 php site:http://stackoverflow.com/
-\end{lstlisting}\subsection{合理使用Using子句}
+\end{lstlisting}
+
+site操作符非常有用，可以让google搜索来自指定的网站的网页。
+比如，想在sourceforge.net网站上搜索关于编辑器notepad++的网页，
+可以输入："notepad++"  site:sourceforge.net。
+这样google就能返回来自sourceforge.net的网页。
+又比如，想查找csdn网站上关于端口扫描器Nmap的网页，
+那么可以输入："nmap"  site:csdn.net。　　site操作符，可用于搜索指定网站的上特殊的信息，
+如包含的主要资源，是否暴露出敏感文件等。
+
+\paragraph{文件类型filetype}当用户单独搜索某一类文件时，
+可使用该关键字。比如想搜索关于黑客技巧Hacking的PPT，
+可以搜索：hacking filetype:ppt。如果想要搜索关于黑客大曝光系列图书的PDF，
+可以尝试输入："hacking exposed" filetype:pdf，
+这样就能直接搜索很多该系列图书的PDF文档。　　同理，也可以结合site操作符，搜索指定网站内的资源，
+如word文件、XML文件、excel文件、PPT文档、txt等等。
+
+\paragraph{..时间范围}
+两点操作符用于指定一个网页的时间范围，
+比如用户想搜索的是2011年到2012年内，出现的关于web hacking的PDF资料。
+
+可以输入：web hacking filetype:pdf 2011..2012
+
+\paragraph{intitle:index-of}
+搜索某类资源的索引目录，如想搜索网站的图像、父目录等信息。
+可以在google搜索：intitle:index-of image和intitle:index-of “parent directory”。
+也可以搜索与Admin密切相关的网页：intitle:index-of “admin”。 
+也可以尝试：intitle:index-of mp3/intitle:index-of password等查询，具体查询内容就需要靠自己想象力了。
+
+\subsection{合理使用Using子句}
 
 如果你明确知道某个对象在进行完某些操作后，不再有用，需要回收，你可以使用'using' 语句来销毁对象。
 
