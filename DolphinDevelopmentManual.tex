@@ -24,7 +24,7 @@
 \usepackage{longtable}
 
 %When compile under liunx% 
-\setmainfont{WenQuanYi Micro Hei}  
+%\setmainfont{WenQuanYi Micro Hei}  
 %\setmainfont{WenQuanYi Zen Hei Mono} 
 
 \newcounter{coderemarks}   %创建变量
@@ -15097,7 +15097,12 @@ P参数指定端口为自定义端口，此处为50000，
 
 \paragraph{使用命令输出作为参数}
 
+\begin{lstlisting}[language=Bash]
 cd |xargs whereis texlive
+
+#杀掉进程名称带dolphin的进程
+ps -ef|grep dolphin|grep -v grep|cut -c 9-15|xargs kill -9
+\end{lstlisting}
 
 \subsection{日志查看}
 
@@ -15361,6 +15366,8 @@ The units of file\_size are millions of bytes (1,000,000 bytes, not 1,048,576 by
 	\hline
 	[n]gg & 光标跳到指定行\\
 	\hline
+	Ctrl+G/:file/:ls & 查看当前打开的文件名称\\
+	\hline
 \end{tabular}
 
 \paragraph{magic}vim中有个magic的设定。设定方法为：
@@ -15386,9 +15393,9 @@ vim毕竟是个编辑器，正则表达式中包含的大量元字符如果原�
 为了解决这个问题，vim设置了 magic 这个东西。简单地说， magic就是设置哪些元字符要加反斜杠哪些不用加的。 
 简单来说：
 magic (\textbackslash m)：除了 \$ . * \^ 之外其他元字符都要加反斜杠。nomagic (\textbackslash M)：
-除了 $ ^ 之外其他元字符都要加反斜杠。
-这个设置也可以在正则表达式中通过 \m \M 开关临时切换。 
-\m 后面的正则表达式会按照 magic 处理，\M 后面的正则表达式按照 nomagic 处理， 而忽略实际的magic设置。
+除了 \$ \^ 之外其他元字符都要加反斜杠。
+这个设置也可以在正则表达式中通过 \textbackslash m \textbackslash M 开关临时切换。 
+\m 后面的正则表达式会按照 magic 处理，\textbackslash M 后面的正则表达式按照 nomagic 处理， 而忽略实际的magic设置。
 
 \begin{lstlisting}[language=Bash]
 /type\[22\]
@@ -17526,7 +17533,7 @@ Fiddler被配置为解密HTTPS流量后，
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.7]{FiddlerDecryptHttpsTraffic.jpg}
+	\includegraphics[scale=0.5]{FiddlerDecryptHttpsTraffic.jpg}
 	\caption{Fiddler捕获HTTPS通信}
 	\label{fig:FiddlerDecryptHttpsTraffic}
 \end{figure}
@@ -17635,6 +17642,13 @@ PC都能够捕获到手机端的请求。
 	\label{fig:FiddlerCaptureMobilePackage}
 \end{figure}
 
+\subsection{Fiddler测试API}
+
+Fiddler的接口测试页默认是未显示的(V4.6.2.3)，
+在View->Tabs->APITest中可打开接口测试Tab，
+在请求列表中将需要测试的Api请求拖动到Tab标签中即可。
+测试后需要将测试记录保存为saz结尾的文件，
+下次测试的时候导入即可。
 
 \subsection{图标含义}
 
@@ -18148,6 +18162,9 @@ data[0,1-2,5-6] == 7e:02:00:01:41
 
 #过滤所有进出路线报警
 data[1:2] == 02:00 and data[13:4]==00:10:00:00
+
+#过滤指定设备指定时间的报警
+data[1:2] == 02:00 and data[13:4]==00:10:00:00 and frame.time > "July 8, 2016 10:00:01.009638000" and frame.time < "July 8, 2016 17:00:01.009638000" and data[8:3] == 07:18:13
 \end{lstlisting}
 
 还有一点是，如果不知道过滤语句如何写的，那么可以在报文列表中右键点击选择Apply as Filter，
