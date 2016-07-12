@@ -3,6 +3,9 @@
 
 
 from Tkinter import *
+import sys
+sys.path.append("Tools/Protocol");
+import t808protocol
 
 
 def donothing():
@@ -12,6 +15,9 @@ def donothing():
 
 def sshdownload():
     Source.UI.Ssh.SshDown.downfile()
+
+def ivokeresolveddata():
+    Source.Tools.Protocol.t808protocol.resolvedata()
 
 root = Tk()
 menubar = Menu(root)
@@ -40,6 +46,7 @@ editmenu.add_command(label="Select All", command=donothing)
 toolmenu = Menu(menubar, tearoff=0)
 toolmenu.add_command(label="sshdownload",command=sshdownload)
 toolmenu.add_cascade(label="sshupload",command=donothing)
+toolmenu.add_cascade(label="DataResolver",command=ivokeresolveddata)
 menubar.add_cascade(label="Tool",menu=toolmenu)
 
 menubar.add_cascade(label="Edit", menu=editmenu)
