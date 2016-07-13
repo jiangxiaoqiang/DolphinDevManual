@@ -14872,6 +14872,9 @@ if __name__=="__main__":
 
 \subsection{Python引入目录下文件}
 
+python中，每个py文件被称之为模块，每个具有\_\_init\_\_.py文件的目录被称为包。只要模
+块或者包所在的目录在sys.path中，就可以使用import 模块或import 包来使用。
+如果你要使用的模块（py文件）和当前模块在同一目录，只要import相应的文件名就好。
 要包含目录下的文件时需要在目录下声明一个\_\_init\_\_.py文件，即使这个文件是空的也可以。
 当然这个文件也可以初始一些数据。
 
@@ -14882,6 +14885,15 @@ import Ssh.SshDown
 
 def sshdownload():
 	Ssh.SshDown.downfile()
+\end{lstlisting}
+
+其中Ssh为当前的工作目录。也可以用此种方式导入路径：
+
+\begin{lstlisting}[language=Python]
+#!/usr/bin/python
+
+sys.path.append("D:\\OneDrive\\Document\\doc\\DolphinDev\\DolphinDevManual\\Scripts\\Python\\Source\\Python\\UI\\Widgets")
+import protocolParser
 \end{lstlisting}
 
 \subsection{python xml解析}
@@ -15104,6 +15116,15 @@ cd |xargs whereis texlive
 ps -ef|grep dolphin|grep -v grep|cut -c 9-15|xargs kill -9
 \end{lstlisting}
 
+\paragraph{chown}
+
+改变文件所属：
+
+\begin{lstlisting}[language=Bash]
+#递归改变文件夹所属
+chown -R dolphin:dolphin ./dolphinDevManual/
+\end{lstlisting}
+
 \subsection{日志查看}
 
 \begin{lstlisting}[language=Bash]
@@ -15309,6 +15330,14 @@ The units of file\_size are millions of bytes (1,000,000 bytes, not 1,048,576 by
 \end{lstlisting}
 
 此种方式捕获的数据包导入Wireshark即可看到详细的捕获时间。
+
+\paragraph{tcpdump显示所有数据}
+
+有时候捕获的包太长无法完全展示，添加-s0参数即可：
+
+\begin{lstlisting}[language=Bash]
+tcpdump -i eth1 tcp and host 10.27.13.14 and port 6973 -vv -X -c 1000
+\end{lstlisting}
 
 \subsection{vi}
 
@@ -18101,12 +18130,13 @@ tcp.srcport==80只过滤源端口为80的包；
 
 \subsection{常用过滤语句}
 
-
 Wireshark提供了两种过滤器：
 捕获过滤器：在抓包之前就设定好过滤条件，然后只抓取符合条件的数据包。
 显示过滤器：在已捕获的数据包集合中设置过滤条件，隐藏不想显示的数据包，只显示符合条件的数据包。
 使用捕获过滤器的主要原因就是性能。如果你知道并不需要分析某个类型的流量，
-那么可以简单地使用捕获过滤器过滤掉它，从而节省那些会被用来捕获这些数据包的处理器资源。当处理大量数据的时候，使用捕获过滤器是相当好用的。
+那么可以简单地使用捕获过滤器过滤掉它，从而节省那些会被用来捕获这些数据包的处理器资源。
+当处理大量数据的时候，使用捕获过滤器是相当好用的。
+在Capture->Options->Capture filter for selected interface。
 
 \begin{lstlisting}[language=Bash]
 #过滤端口6002、6003的数据，IP为12.26.32.14
