@@ -4,7 +4,8 @@
 
 from Tkinter import *
 import sys
-sys.path.append("D:\\OneDrive\\Document\\doc\\DolphinDev\\DolphinDevManual\\Scripts\\Python\\Source\\Python\\UI\\Widgets")
+#sys.path.append("D:\\OneDrive\\Document\\doc\\DolphinDev\\DolphinDevManual\\Scripts\\Python\\Source\\Python\\UI\\Widgets")
+sys.path.append("./Widgets")
 import protocolParser
 
 def donothing():
@@ -17,6 +18,9 @@ def sshdownload():
 
 def newform():
     protocolParser.protocolParserinstance()
+
+def ivokeresolveddata():
+    Source.Tools.Protocol.t808protocol.resolvedata()
 
 root = Tk()
 menubar = Menu(root)
@@ -45,7 +49,7 @@ editmenu.add_command(label="Select All", command=donothing)
 toolmenu = Menu(menubar, tearoff=0)
 toolmenu.add_command(label="sshdownload",command=sshdownload)
 toolmenu.add_cascade(label="sshupload",command=donothing)
-toolmenu.add_cascade(label="Protocol",command=newform)
+toolmenu.add_command(label="Protocol",command=newform)
 menubar.add_cascade(label="Tool",menu=toolmenu)
 
 menubar.add_cascade(label="Edit", menu=editmenu)

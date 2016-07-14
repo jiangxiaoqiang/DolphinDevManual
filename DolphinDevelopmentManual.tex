@@ -15116,6 +15116,15 @@ cd |xargs whereis texlive
 ps -ef|grep dolphin|grep -v grep|cut -c 9-15|xargs kill -9
 \end{lstlisting}
 
+\paragraph{chown}
+
+改变文件所属：
+
+\begin{lstlisting}[language=Bash]
+#递归改变文件夹所属
+chown -R dolphin:dolphin ./dolphinDevManual/
+\end{lstlisting}
+
 \subsection{日志查看}
 
 \begin{lstlisting}[language=Bash]
