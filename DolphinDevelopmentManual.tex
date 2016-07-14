@@ -3160,6 +3160,12 @@ string GetAwardCount();
 
 WCF无法访问路由页面
 
+\section{Web Service}
+
+\subsection{SOAP}
+
+
+
 \chapter{ASP.NET Web API(Apache License 2.0)}
 
 \clearpage
@@ -18247,6 +18253,25 @@ data[0,2-3]==3e:88:90
 
 以上语句的含义为过滤tcp包从0开始的2个字节为3e88的数据包，
 3e与88之间的冒号可以省略。
+
+\subsection{抓取SOAP包}
+
+在Wireshark中输入过滤条件：
+
+\begin{lstlisting}[language=Bash]
+tcp port http
+\end{lstlisting}
+
+此时Wireshark会捕获所有的HTTP包。
+在Filter中填写xml，访问腾讯的公共Web Service服务\footnote{http://www.webxml.com.cn/webservices/qqOnlineWebService.asmx?op=qqCheckOnline}查询QQ的在线状态。
+可以看到捕获的SOAP报文如图所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{WiresharkCaptureSoap.png}
+	\caption{Wireshark抓取SOAP报文}
+	\label{fig:WiresharkCaptureSoap}
+\end{figure}
 
 \subsection{各层报文理解}
 
