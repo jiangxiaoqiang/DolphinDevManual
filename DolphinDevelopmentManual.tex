@@ -7706,6 +7706,14 @@ So, to fix this you should:
 4) Open the designer with the debugger attached
 5) The second visual studio will break on your error.
 
+\subsection{程序点击无反应}
+
+如果是在客户的环境上，可以尝试使用dnSpy等反编译工具调试编译完成的dll。
+
+\subsection{程序的界面显示异常}
+
+检查操作系统的字体设置（控制面板/外观和个性化/显示）。
+
 \chapter{ASP.NET MVC(Apache License 2.0)}
 
 MVC模型以低耦合、可重用、可维护性高等众多优点已逐渐代替了WebForm模型。
@@ -8569,6 +8577,17 @@ public static T SaveObject<T>(string relativeUrl, string param)
 
 检查不能加载的程序集生成选项的目标平台是否是Any CPU，
 在64位程序集直接加载单个的特殊的x86程序集会出现此错误。
+
+\subsection{权限不足}
+
+提示权限不足时，可以修改IIS应用程序池的标识，如图\ref{fig:ApplicationPoolIdentify}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{ApplicationPoolIdentify.jpg}
+	\caption{应用程序池权限}
+	\label{fig:ApplicationPoolIdentify}
+\end{figure}
 
 \chapter{JavaScript}
 
@@ -15109,6 +15128,8 @@ P参数指定端口为自定义端口，此处为50000，
 
 \paragraph{使用命令输出作为参数}
 
+在Linux中有时需要将一个命令的输出作为其他命令的参数输入。
+
 \begin{lstlisting}[language=Bash]
 cd |xargs whereis texlive
 
@@ -16779,6 +16800,19 @@ ssh -vT git@github.com
 \end{lstlisting}
 
 出现以上错误，解决方法是将Public Key拷贝到GitHub的设置（SSH Key Settings）中。
+
+\paragraph{error: unable to create file linux\_32?filetype=zip (Invalid argument)}
+是由于在Windows操作系统上文件不允许有问号等特殊字符，
+但是Linux操作系统是允许的，需要Checkout的文件是在Linux上面添加的。
+Windows does not allow you to have a '?' in a filename, 
+just like it does not allow to have a "\textbackslash" or "*". 
+Under Linux it is possible, if you escape those characters. 
+解决办法是删除远程带特殊字符的文件，直接在GitHub中文件详情点击删除即可，
+删除远程文件夹命令（未实验）。
+
+\begin{lstlisting}[language=Bash]
+git rm -r --cached  */src/\* 
+\end{lstlisting}
 
 \section{StyleCop.exe}
 
@@ -18528,7 +18562,7 @@ Graphviz可以改变生成图片的质量，需要生成的图形更加清晰，
 编译的命令格式为：
 
 \begin{lstlisting}[language=Bash]
-dot -Tjpg -Gdpi=331 PhotoPrintWorkflow.dot -o ppw.jpg
+dot -Tjpg -Gdpi=1024 PhotoPrintWorkflow.dot -o ppw.jpg
 \end{lstlisting}
 
 \subsection{中文乱码}
