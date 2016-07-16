@@ -20,7 +20,6 @@ def protocolParserinstance():
     root.mainloop()
 
 def buttonClick():
-    print("click")
     textcontent = text.get('1.0','end')
     print(textcontent)
     protocolParseService.handleDifferentMessage(textcontent)
