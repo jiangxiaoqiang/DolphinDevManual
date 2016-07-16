@@ -5141,7 +5141,11 @@ Optionally, when you need to specify credentials and a method to access the virt
 
 \subsection{浏览器的请求流程}
 
-\paragraph{DNS解析}导航的第一步是通过访问的域名找出其IP地址。
+\paragraph{DNS解析}导航的第一步是通过访问的域名找出其IP地址，
+浏览器请求DNS查询到www.taobao.com对应的IP，
+浏览器向对应的IP服务器发起TCP连接，
+通过建立的TCP连接发送HTTP协议报文，
+服务器发送响应，浏览器展现返回的内容。
 
 \paragraph{301重定向}为什么服务器一定要重定向而不是直接发会用户想看的网页内容呢？这个问题有好多有意思的答案。
 其中一个原因跟搜索引擎排名有 关。你看，如果一个页面有两个地址，
@@ -14969,6 +14973,28 @@ commonlogger.loginfo()
 你可以从字典中加载logging配置。这也就意味着你可以从JSON或者YAML文件中加载日志的配置。
 尽管你还能用原来.ini文件来配置，但是它既很难读也很难写。
 设置日志记录的话，在程序启动的时候调用log模块的setup\_logging方法就行了。它默认读取logging.json或是 logging.yaml。你可以设置LOG\_CFG环境变量来指定从某个路径中加载日志配置。
+
+\section{发布}
+
+\subsection{使用PyInstaller打包}
+
+PyInstaller bundles a Python application and all its dependencies into a single package. 
+The user can run the packaged app without installing a Python interpreter or any modules.
+安装PyInstaller后，输入如下命令：
+
+\begin{lstlisting}[language=Python]
+pyinstaller -F -w -i ./a.icon ./../UI/MainForm.py
+\end{lstlisting}
+
+生成科执行文件后可能提示找不到指定的模块，
+此时需要讲响应的模块路径添加到搜索路径中。
+加入-p(--paths)参数，指定导入的模块。
+
+\begin{lstlisting}[language=Python]
+pyinstaller -F -w -i ./a.icon ./../UI/MainForm.py -p ./../UI/Widgets/
+\end{lstlisting}
+
+再次运行程序即可。
 
 \section{常见问题}
 
