@@ -7300,6 +7300,25 @@ asp.net请求处理，2步的过程如图\ref{fig:IISHandleUserRequest}所示，
 	\label{fig:TheWholeLifeCycleOfHttp}
 \end{figure}
 http://www.cnblogs.com/suizhouqiwei/archive/2012/08/15/2637775.html
+
+\subsection{Chrome使用技巧}
+
+\paragraph{搜索源文件}
+如果查找每个文件，一般都是打开控制台，
+在source控制面板里面一个一个去找，看下面的图你就应该知道，这么多文件，
+你都不知道在哪个目录下面，然后就只能一个一个点开看，
+按Ctrl+P（cmd+p on mac）,就能快速搜寻和打开你项目的文件。
+
+Normal reload
+The same thing as pressing F5. This will use the cache but revalidate everything during page load, looking for "304 Not Modified" responses. If the browser can avoid re-downloading cached JavaScript files, images, text files, etc. then it will.
+
+Hard reload
+Don't use anything in the cache when making the request. Force the browser do re-download every JavaScript file, image, text file, etc.
+
+Empty Cache and Hard Reload
+Obviously if the cache is empty then it will have to do a hard reload. This will again force the browser to re-download everything. However, if the page makes any after-the-fact downloads via JavaScript that weren't part of page load, then these might still use the cache, which is where emptying the cache helps because it makes sure that even these won't use cached files.
+
+
 \section{页面适应多屏}
 
 \subsection{适应手机浏览}
