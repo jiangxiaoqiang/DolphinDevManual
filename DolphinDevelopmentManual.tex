@@ -8595,7 +8595,7 @@ public static T SaveObject<T>(string relativeUrl, string param)
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.8]{ApplicationPoolIdentify.jpg}
+	\includegraphics[scale=0.5]{ApplicationPoolIdentify.jpg}
 	\caption{应用程序池权限}
 	\label{fig:ApplicationPoolIdentify}
 \end{figure}
@@ -15008,7 +15008,8 @@ pyinstaller -F -w -i ./a.icon ./../UI/MainForm.py -p ./../UI/Widgets/
 \subsection{TabError: inconsistent use of tabs and spaces in indentation}
 
 Python的代码块通过缩进对齐表达代码逻辑，而不是使用大括号（从此告别神圣的大括号战争了），
-Python支持制表符缩进和空格缩进，但Python社区推荐使用四空格缩进。也可以使用制表符缩进，但切不可以混用两种缩进符号。
+Python支持制表符缩进和空格缩进，但Python社区推荐使用四空格缩进。也可以使用制表符缩进，
+但切不可以混用两种缩进符号。
 
 \chapter{Linux}
 
@@ -15017,7 +15018,6 @@ Python支持制表符缩进和空格缩进，但Python社区推荐使用四空�
 \subsection{风格}
 
 Shell的风格推荐\footnote{\url{http://zh-google-styleguide.readthedocs.io/en/latest/google-shell-styleguide/formatting/}}。
-
 
 \paragraph{缩进两个空格，没有制表符}
 \paragraph{请将 ; do , ; then 和 while , for , if 放在同一行}
@@ -15113,8 +15113,6 @@ shell变量名字是大小写敏感的。给变量赋值时，等号周围不能
 
 \subsection{shell日志处理}
 
-
-
 \section{基础}
 
 Linux下安装应用程序时它的默认安装路径。默认目录一般建议为/usr所有的软件都仍这里。
@@ -15186,17 +15184,13 @@ ps -ef|grep dolphin|grep -v grep|cut -c 9-15|xargs kill -9
 chown -R dolphin:dolphin ./dolphinDevManual/
 \end{lstlisting}
 
-\subsection{日志查看}
+\paragraph{OpenSUSE安装yum}
+
+Zypper是一个命令行包管理器，用于安装、更新和删除包及管理安装源。
+Zypper的语法与rug的相似。与rug相反，Zypper不需要在场景后运行zmd守护程序。
 
 \begin{lstlisting}[language=Bash]
-#查看位置上报信息
-tail -f Device.log |grep "7E 02 00"
-
-#过滤设备的报警信息
-tail -f MVSP_DeviceServer.log |grep "7E 02 00 00 .. .. .. .. .. .. .. .. .. [^0][^0] [^0][^0] [^0][^0] [^0][^0]"
-
-#查看设备上报的GPS信息
-
+zypper install yum
 \end{lstlisting}
 
 \subsection{网络}
@@ -18182,7 +18176,6 @@ PerfView是一款免费且性能强大的工具，他主要关注影响性能的
 我们能够抓取性能相关的 Event Tracing for Windows(ETW)事件并能以应用程序，
 进程，堆栈，线程的尺度查看这些信息。PerfView能够展示应用程序分配了多少，
 以及分配了何种内存以及应用程序中的函数以及调用堆栈对内存分配的贡献。
-
 
 \section{SoapUI(Apahce Licence 2.0)}
 
