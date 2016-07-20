@@ -14655,6 +14655,63 @@ JavaBeans事实上有三层含义。首先，JavaBeans是一种规范，一种�
 在绝大多数情况下，这应该是一个public类型的类。最后，当JavaBeans这样的一个Java类在我们的具体的Java程序中被实例之后，
 这就是我们面向对象的对象，我们有时也会将这样的一个JavaBeans的实例称之为JavaBeans。总之，就是Java中的接口、类和对象。
 
+\subsection{Oracle JDK和Open JDK}
+
+关于JDK和OpenJDK的区别，可以归纳为以下几点：
+
+授权协议的不同：
+openjdk采用GPL V2协议放出，而JDK则采用JRL放出。
+两者协议虽然都是开放源代码的，但是在使用上的不同在于GPL V2允许在商业上使用，而JRL只允许个人研究使用。
+OpenJDK不包含Deployment（部署）功能：
+部署的功能包括：Browser Plugin、Java Web Start、以及Java控制面板，这些功能在Openjdk中是找不到的。
+OpenJDK源代码不完整：
+这个很容易想到，在采用GPL协议的Openjdk中，sun jdk的一部分源代码因为产权的问题无法开放openjdk使用，
+其中最主要的部份就是JMX中的可选元件SNMP部份的代码。因此这些不能开放的源代码将它作成plug，
+以供OpenJDK编译时使用，你也可以选择不要使用plug。
+而Icedtea则为这些不完整的部分开发了相同功能的源代码(OpenJDK6)，促使OpenJDK更加完整。
+部分源代码用开源代码替换：
+由于产权的问题，很多产权不是SUN的源代码被替换成一些功能相同的开源代码，
+比如说字体栅格化引擎，使用Free Type代替。
+openjdk只包含最精简的JDK：
+OpenJDK不包含其他的软件包，比如Rhino Java DB JAXP……，并且可以分离的软件包也都是尽量的分离，但是这大多数都是自由软件，你可以自己下载加入。 
+OpenJDK (Open Java Development Kit) is a free and open source 
+implementation of the Java Platform, Standard Edition (Java SE).
+It is the result of an effort Sun Microsystems began in 2006. 
+The implementation is licensed under the GNU General Public 
+License (GNU GPL) with a linking exception. 
+Were it not for the GPL linking exception, 
+components that linked to the Java class library would be subject 
+to the terms of the GPL license. 
+OpenJDK is the official reference implementation of Java SE since version 7.
+
+\subsection{JDK and JRE}
+
+JDK
+
+JDK 是整个Java的核心，包括了Java运行环境（Java Runtime Envirnment），一堆Java工具和Java基础的类库（rt.jar）。不论什么Java应用服务器实质都是内置了某个版本的JDK.最主流的JDK是Sun公司发布的JDK，除了Sun之外，还有很多公司和组织都开发了自己的JDK，例如IBM公司开发的JDK，BEA公司的Jrocket，还有GNU组织开发的JDK等等。其中IBM的JDK包含的JVM（Java Virtual Machine）运行效率要比Sun JDK包含的JVM高出许多。而专门运行在x86平台的Jrocket在服务端运行效率也要比Sun JDK好很多。但不管怎么说，我们还是需要先把Sun JDK掌握好。
+
+JDK一般有三种版本：SE（J2SE），standard edition，标准版，是我们通常用的一个版本EE（J2EE），enterpsise edtion，企业版，使用这种JDK开发J2EE应用程序，ME（J2ME），micro edtion，主要用于移动设备、嵌入式设备上的java应用程序Java开发工具（JDK）是许多Java专家最初使用的开发环境。尽管许多编程人员已经使用第三方的开发工具，但JDK仍被当作Java开发的重要工具。JDK由一个标准类库和一组建立，测试及建立文档的Java实用程序组成。其核心Java API是一些预定义的类库，开发人员需要用这些类来访问Java语言的功能。Java API包括一些重要的语言结构以及基本图形，网络和文件I/O.一般来说，Java API的非I/O部分对于运行Java的所有平台是相同的，而I/O部分则仅在通用Java环境中实现。
+
+作为JDK实用程序，工具库中有七种主要程序。
+
+◆Javac：Java编译器，将Java源代码转换成字节码。
+
+◆Java：Java解释器，直接从类文件执行Java应用程序字节代码。
+
+◆appletviewer：小程序浏览器，一种执行HTML文件上的Java小程序的Java浏览器。
+
+◆Javadoc：根据Java源码及说明语句生成HTML文档。
+
+◆Jdb：Java调试器，可以逐行执行程序，设置断点和检查变量。
+
+◆Javah：产生可以调用Java过程的C过程，或建立能被Java程序调用的C过程的头文件。
+
+◆Javap：Java反汇编器，显示编译类文件中的可访问功能和数据，同时显示字节代码含义。
+
+JRE
+
+JRE（Java Runtime Environment，Java运行环境），运行JAVA程序所必须的环境的集合，包含JVM标准实现及Java核心类库。是Sun的产品，包括两部分：JavaRuntimeEnvironment和JavaPlug-inJavaRuntimeEnvironment（JRE）是可以在其上运行、测试和传输应用程序的Java平台。它包括Java虚拟机、Java平台核心类和支持文件。它不包含开发工具——编译器、调试器和其它工具。JRE需要辅助软件 ——JavaPlug-in——以便在浏览器中运行applet.J2RE是Java2 Runtime Environment，即Java运行环境，有时简称JRE.如果你只需要运行Java程序或Applet，下载并安装它即可。如果你要自行开发 Java软件，请下载JDK.在JDK中附带有JRE.注意由于Microsoft对Java的支持不完全，请不要使用IE自带的虚拟机来运行 Applet，务必安装一个JRE或JDK.
+
 \section{JAX-WS(Java™ API for XML Web Services)}
 
 通过使用 Java™ API for XML Web Services (JAX-WS) 技术设计和开发 Web 服务，
@@ -14747,6 +14804,41 @@ of the build lifecycle and plugins.
 Maven是个独立的工具，安装之后可以在命令行界面使用。
 IDE 需要安装Maven插件，关联上已经安装的Maven之后，才能在IDE中调用Maven的功能。
 其中Eclipse的Maven插件为m2eclipse。Intellij则默认自带了Maven插件，直接做相应的关联配置即可。
+
+\subsection{content structure}
+
+Maven约定了一套规则来创建和构建我们的项目。得益于Maven的一些约定，我们只要学习相对很少的命令就可以创建和管理我们的项目。在项目的目录结构上，Maven有一套约定的通用的目录结构。
+
+使用一套通用的目录结构的好处是，可以减少开发人员熟悉不同Maven项目时的认知负担。在使用相同的目录结构的情况下，开发人员可以很快的熟悉一个项目。接下来，我们将开始介绍Maven的通用的目录结构。
+
+Maven默认约定了一套目录结构，在通过Maven创建了项目以后，项目的目录结构就是以这套目录结构作为模板创建的。
+
+${basedir}
+|-- pom.xml
+|-- src
+|   |-- main
+|   |   `-- java
+|   |   `-- resources
+|   |   `-- filters
+|   `-- test
+|   |   `-- java
+|   |   `-- resources
+|   |   `-- filters
+|   `-- it
+|   `-- assembly
+|   `-- site
+`-- LICENSE.txt
+`-- NOTICE.txt
+`-- README.txt
+
+    src/main/java 项目的源代码所在的目录
+    src/main/resources 项目的资源文件所在的目录
+    src/main/filters 项目的资源过滤文件所在的目录
+    src/main/webapp 如果是web项目，则该目录是web应用源代码所在的目录，比如html文件和web.xml等都在该目录下。
+    src/test/java 测试代码所在的目录
+    src/test/resources 测试相关的资源文件所在的目录
+    src/test/filters 测试相关的资源过滤文件所在的目录
+
 
 \subsection{Maven坐标}
 
