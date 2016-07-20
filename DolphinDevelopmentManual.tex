@@ -628,6 +628,12 @@ Nginx已经具备Squid所拥有的Web缓存加速功能。此外，Nginx对多�
 
 \subsection{变量（Variable）命名规范}
 
+
+\begin{itemize}
+	\item{使用可搜索的名字} 避免使用Magic Number，避免使用单字母,或出现频率极高的短字母组合。
+	\item{名字尽量来自解决方案领域或问题领域} 术语、算法名、模式名、数学术语尽管用。如AccountVisitor：Visitor模式实现的Account类。
+\end{itemize}
+
 1)  使用名词、名词性词组或者名词地缩写来命名。
 
 2)  使用Camel Case,与.NET的风格保持一致（consistent with the Microsoft's .NET Framework and easy to read）。
@@ -6487,7 +6493,7 @@ CSS)的缩写混淆，故将跨站脚本攻击缩写为XSS}脚本攻击即跨站
 
 \subsection{编辑Cookie}
 
-在Google Chrome中编辑Cookie需要安装Edit This Cookie插件，
+在Google Chrome中编辑Cookie需要安装Edit This Cookie插件(或者另一款Cookies插件由http://www.hotcleaner.com/提供)，
 在FireFox中可通过Firebug编辑Cookie，
 或者添加Cookie，如图\ref{fig:EditCookieUsingFireDebug}所示。
 
@@ -7324,10 +7330,15 @@ which is where emptying the cache helps because it makes sure that even these wo
 \paragraph{Snippets}
 Source下的Snippets，可以让你想保存小段的脚本、书签或是你在浏览器中调试时经常用到的代码，都可以使用Snippets，你可以在Source面板里创建、存储和运行这些Snippets。
 
+\paragraph{Google页面}
+
+打开App页面：chrome://apps/
+列出所有可用页面：chrome://chrome-urls/
 
 \section{页面适应多屏}
 
 \subsection{适应手机浏览}
+
 \paragraph{使用meta标签}这也是普遍使用的方法，理论上讲使用这个标签是可以适应所有尺寸的屏幕的，
 但是各设备对该标签的解释方式及支持程度不同造成了不能兼容所有浏览器或系统。
 
@@ -14637,6 +14648,13 @@ Dan North对此还补充说：“Those system then constrain the options for org
 对于一个final变量，如果是基本数据类型的变量，则其数值一旦在初始化之后便不能更改；
 如果是引用类型的变量，则在对其初始化之后便不能再让其指向另一个对象。
 
+\subsection{Java Beans}
+
+JavaBeans事实上有三层含义。首先，JavaBeans是一种规范，一种在Java（包括JSP）中使用可重复使用的Java组件的技术规范,
+也可以说成我们常说的接口。其次，JavaBeans是一个Java的类，一般来说，这样的Java类将对应于一个独立的 .java文件 ，
+在绝大多数情况下，这应该是一个public类型的类。最后，当JavaBeans这样的一个Java类在我们的具体的Java程序中被实例之后，
+这就是我们面向对象的对象，我们有时也会将这样的一个JavaBeans的实例称之为JavaBeans。总之，就是Java中的接口、类和对象。
+
 \section{JAX-WS(Java™ API for XML Web Services)}
 
 通过使用 Java™ API for XML Web Services (JAX-WS) 技术设计和开发 Web 服务，
@@ -14707,6 +14725,11 @@ Ctrl + E,在右边显示出当前打开的所有文件。
 	\label{code:LocateSourceCode}
 \end{figure}
 
+\paragraph{查找类}
+查找类的快捷键为Ctrl + Shift + R。
+格式化代码Ctrl + Shift + F。
+
+
 \section{MyEclipse}
 
 \subsection{常用操作}
@@ -14725,12 +14748,32 @@ Maven是个独立的工具，安装之后可以在命令行界面使用。
 IDE 需要安装Maven插件，关联上已经安装的Maven之后，才能在IDE中调用Maven的功能。
 其中Eclipse的Maven插件为m2eclipse。Intellij则默认自带了Maven插件，直接做相应的关联配置即可。
 
+\subsection{Maven坐标}
+
+Maven 坐标有groupId,artifactId,packaging,version,classifier。
+
+\paragraph{Artifact Id}
+artifactId,该元素定义实际项目中的一个maven项目(模块),推荐的做法是使用实际项目名称作为artifactId前缀，
+这样做的好处是方便寻找实际构件。在默认情况下，maven生成的构件，其文件名会以artifactId作为开头，
+如:helloworld-1-0.0.1-SNAPSHOT.jar，使用实际项目名称作为前缀之后，就能方便从一个lib文件夹中找到某个项目的一组构件。
+
+
 \subsection{POM}
 
 POM是项目对象模型(Project Object Model)的简称,它是Maven项目中的文件，使用XML表示，名称叫做pom.xml。
 在Maven中，当谈到Project的时候，不仅仅是一堆包含代码的文件。一个Project往往包含一个配置文件，
 包括了与开发者有关的，缺陷跟踪系统，组织与许可，项目的URL，项目依赖，以及其他。
 它包含了所有与这个项目相关的东西。事实上，在Maven世界中，project可以什么都没有，甚至没有代码，但是必须包含pom.xml文件。
+
+\section{Spring}
+
+\subsection{Spring安全配置}
+
+
+
+\subsection{Spring Web Service请求流程}
+
+客户端封装一个SOAP请求通过http发送给服务端, 服务器根据收到的SOAP信息来确定由哪一个处理器(端点, EndPoint)来处理, 处理完后再封装一个SOAP信息返回给客户端.
 
 \section{Apache MINA(Multipurpose Infrastructure for Network Applications)}
 
@@ -14845,6 +14888,54 @@ Apache Tomcat部署的项目存在于webapps目录下，
 \begin{lstlisting}[language=HTML]
 http://192.168.24.79:8081/DeviceGPS/index.jsp
 \end{lstlisting}
+
+\subsection{WEB-INF}
+
+WEB-INF是Java的WEB应用的安全目录。所谓安全就是客户端无法访问，只有服务端可以访问的目录。
+WEB-INF文件夹下除了web.xml外，还存一个classes文件夹，用以放置 *.class文件，
+这些 *.class文件是网站设计人员编写的类库，实现了jsp页面前台美工与后台服务的分离，
+使得网站的维护非常方便。web.xml文件为网站部署描述XML文件，对网站的部署非常重要。
+Web-Inf文件夹中除了有classes文件夹和一个web.xml文件外、还有lib文件夹（用于存放需要的jar包）（用于配置，比如说用来配置过滤器等。）
+A special directory exists within the application hierarchy named  WEB-INF. 
+This directory contains all things related to the application that aren’t 
+in the document root of the application. The  WEB-INF node is not part of 
+the public document tree of the application. 
+No file contained in the WEB-INF directory may be served directly to a client by the container. 
+However, the contents of the WEB-INF directory are visible to servlet code using the getResource 
+and getResourceAsStream method calls on the ServletContext, and may be exposed using 
+the RequestDispatcher calls.
+
+\subsection{Java Servlet}
+
+A Java servlet is a Java program that extends the capabilities of a server. 
+Although servlets can respond to any types of requests, 
+they most commonly implement applications hosted on Web servers. 
+Such Web servlets are the Java counterpart to other dynamic Web content technologies such as PHP and ASP.NET.
+
+\section{常见问题}
+
+\subsection{The import javax.servlet can't be resolved}
+
+You need to add the Servlet API to your classpath. 
+In Tomcat 6.0, this is in a JAR called servlet-api.jar in Tomcat's lib folder. 
+You can either add a reference to that JAR to the project's classpath, 
+or put a copy of the JAR in your Eclipse project and add it to the classpath from there.
+
+If you want to leave the JAR in Tomcat's lib folder:
+
+Right-click the project, click Properties.
+Choose Java Build Path.
+Click Add External JARs...
+Browse to find servlet-api.jar and select it.
+Click OK to update the build path.
+Or, if you copy the JAR into your project:
+
+Right-click the project, click Properties.
+Choose Java Build Path.
+Click Add JARs...
+Find servlet-api.jar in your project and select it.
+Click OK to update the build path.
+
 
 \chapter{Python}
 
@@ -19614,6 +19705,7 @@ quartz.jobStore.type = Quartz.Simpl.RAMJobStore,Quartz
 
 通过quartz.plugin.xml.fileNames属性指定quartz\_jobs.xml文件的保存位置。
 也可以将quartz.config的内容放到app.config配置文件中，注意如果在app.config中
+
 配置了quartz，那么就没有必要再在单独的文件中配置。在app.config配置如下代码片段所示：
 \begin{lstlisting}
 <quartz>
