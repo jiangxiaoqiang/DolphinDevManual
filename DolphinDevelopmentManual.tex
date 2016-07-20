@@ -14769,7 +14769,19 @@ POM是项目对象模型(Project Object Model)的简称,它是Maven项目中的�
 
 \subsection{Spring安全配置}
 
+\subsection{Spring Web Service开发流程}
 
+该框架是“文档优先”方式，即先制定出报文协议，然后再开发具体的服务应用。
+Idea自带该框架，在创建工程时选择（Spring->Spring Web Services）即可自动下载相关包。
+详细开发步骤如下：
+
+\begin{enumerate}
+	\item[在web.xml中添加servlet]
+	\item{在WEB-INF下建立配置文件spring-ws-servlet.xml}
+	\item{在resources目录下建立hello.wsdl}
+	\item[创建web service 类和终结点]
+	\item[在spring-ws-servlet.xml文件中配置终结点bean]
+\end{enumerate}
 
 \subsection{Spring Web Service请求流程}
 
