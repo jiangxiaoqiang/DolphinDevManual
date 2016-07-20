@@ -4,7 +4,7 @@
 
 from Tkinter import *
 import sys
-#sys.path.append("D:\\OneDrive\\Document\\doc\\DolphinDev\\DolphinDevManual\\Scripts\\Python\\Source\\Python\\UI\\Widgets")
+#sys.path.append("D:\\OneDrive\\Document\\doc\\DolphinDev\\DolphinDevManual\\scripts\\python\\source\\python\\UI\\Widgets")
 sys.path.append("./Widgets")
 import protocolParser
 
