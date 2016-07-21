@@ -11086,6 +11086,62 @@ sudo aircrack-ng wep*.cap
 （如果没算出来的话，继续等，aircrack-ng 会在DATA每增加多15000个之后就自动再运行，
 直到算出密码为至，注意此处文件的名字要与步骤3里面设置的名字一样，且*号是必需的）
 
+\section{Hacking}
+
+\subsection{Google Hacking}
+
+\paragraph{准确搜索(Exact phrase)}
+最简单、有效的准确搜索方式是在关键词上加上双引号，在这种情况下，搜索引擎只会反馈和关键词完全吻合的搜索结果。
+比方说在搜索「Joe Bloggs」的时候，在没有给关键词加上双引号的情况，
+搜索引擎会显示所有分别和「Joe」以及「Bloggs」相关的信息，但这些显然并不是我们想要的结果。
+但在加上双引号后，搜索引擎则仅会在页面上反馈和「Joe Bloggs」相吻合的信息。
+准确搜索在排除常见但相近度偏低的信息时非常有用，可以为用户省去再度对结果进行筛选的麻烦。
+使用引号来搜索一个完全匹配的字词或一组字词。在搜索歌词或文学作品中的一段文字时，此选项很实用。
+
+\paragraph{排除关键词(Exclude terms)}
+如果在进行准确搜索时没有找到自己想要的结果，用户可以对包含特定词汇的信息进行排除，仅需使用减号即可。
+例如在搜索「『Joe Bloggs』-jeans」时，你所得到的结果反馈是不包含「jeans」字眼的「Joe Bloggs」条目。
+在某个字词前添加短横 (-) 可排除所有包含该字词的搜索结果。在搜索像汽车品牌美洲虎和动物美洲虎这类同义词时，此功能特别实用。
+
+\paragraph{用「Either OR」（或）逻辑进行搜索}
+在默认搜索下，搜索引擎会反馈所有和查询词汇相关的结果，但通过使用「OR」逻辑，你可以得到和两个关键词分别相关的结果，而不仅仅是和两个关键词都同时相关的结果。巧妙使用「OR」搜索可以让你在未能确定哪个关键词对于搜索结果起决定作用时依然可以确保搜索结果的准确性。[OR]也可以替换成竖线(|)。
+
+\paragraph{@}关键字前加@符号，查找社交网站上相关结果。
+
+\paragraph{站内搜索}站内搜索语法如下：
+
+\begin{lstlisting}
+php site:http://stackoverflow.com/
+\end{lstlisting}
+
+site操作符非常有用，可以让google搜索来自指定的网站的网页。
+比如，想在sourceforge.net网站上搜索关于编辑器notepad++的网页，
+可以输入："notepad++"  site:sourceforge.net。
+这样google就能返回来自sourceforge.net的网页。
+又比如，想查找csdn网站上关于端口扫描器Nmap的网页，
+那么可以输入："nmap"  site:csdn.net。　　site操作符，可用于搜索指定网站的上特殊的信息，
+如包含的主要资源，是否暴露出敏感文件等。
+
+\paragraph{文件类型filetype}当用户单独搜索某一类文件时，
+可使用该关键字。比如想搜索关于黑客技巧Hacking的PPT，
+可以搜索：hacking filetype:ppt。如果想要搜索关于黑客大曝光系列图书的PDF，
+可以尝试输入："hacking exposed" filetype:pdf，
+这样就能直接搜索很多该系列图书的PDF文档。　　同理，也可以结合site操作符，搜索指定网站内的资源，
+如word文件、XML文件、excel文件、PPT文档、txt等等。
+
+\paragraph{..时间范围}
+两点操作符用于指定一个网页的时间范围，
+比如用户想搜索的是2011年到2012年内，出现的关于web hacking的PDF资料。
+
+可以输入：web hacking filetype:pdf 2011..2012
+
+\paragraph{intitle:index-of}
+搜索某类资源的索引目录，如想搜索网站的图像、父目录等信息。
+可以在google搜索：intitle:index-of image和intitle:index-of “parent directory”。
+也可以搜索与Admin密切相关的网页：intitle:index-of “admin”。 
+也可以尝试：intitle:index-of mp3/intitle:index-of password等查询，具体查询内容就需要靠自己想象力了。
+
+\subsection{Shodan Hacking}
 
 \chapter{Node.js}
 
@@ -14712,6 +14768,10 @@ JRE
 
 JRE（Java Runtime Environment，Java运行环境），运行JAVA程序所必须的环境的集合，包含JVM标准实现及Java核心类库。是Sun的产品，包括两部分：JavaRuntimeEnvironment和JavaPlug-inJavaRuntimeEnvironment（JRE）是可以在其上运行、测试和传输应用程序的Java平台。它包括Java虚拟机、Java平台核心类和支持文件。它不包含开发工具——编译器、调试器和其它工具。JRE需要辅助软件 ——JavaPlug-in——以便在浏览器中运行applet.J2RE是Java2 Runtime Environment，即Java运行环境，有时简称JRE.如果你只需要运行Java程序或Applet，下载并安装它即可。如果你要自行开发 Java软件，请下载JDK.在JDK中附带有JRE.注意由于Microsoft对Java的支持不完全，请不要使用IE自带的虚拟机来运行 Applet，务必安装一个JRE或JDK.
 
+\subsection{Java注释}
+
+
+
 \section{JAX-WS(Java™ API for XML Web Services)}
 
 通过使用 Java™ API for XML Web Services (JAX-WS) 技术设计和开发 Web 服务，
@@ -14784,8 +14844,34 @@ Ctrl + E,在右边显示出当前打开的所有文件。
 
 \paragraph{查找类}
 查找类的快捷键为Ctrl + Shift + R。
+这可能是所有快捷键组合中最省时间的了。这组快捷键可以让你打开你的工作区中任何一个文件，
+而你只需要按下文件名或mask名中的前几个字母，比如applic*.xml。美中不足的是这组快捷键并非在所有视图下都能用。
 格式化代码Ctrl + Shift + F。
 
+\paragraph{XML文件格式化}
+
+Window->Preferences, then XML->XML Files->Editor中可以配置XML文件格式化相关设置。
+
+\paragraph{重命名}
+重命名Alt + Shift + R。
+
+\paragraph{TODO List}
+tasks可以在代码里增加标识，通过tasks view可以快速的找到这些标识的地方，有助于提高开发效率和代码管理。
+通过Eclipse的 Window==》Show View==》Tasks可以打开任务管理视图。
+Eclipse可以对当前尚未完成的工作做个标记，常用的是// TODO <说明文字>，
+在Window > Preferences > Java > Compiler > Task tags里可以自己定义。
+添加TODO标记后的效果如图\ref{code:EclipseToDoList}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{EclipseToDoList.jpg}
+	\caption{Eclipse TODO List}
+	\label{code:EclipseToDoList}
+\end{figure}
+
+\paragraph{Eclipse生成Getter和Setter}
+
+快捷键：Shift + Alt + S。
 
 \section{MyEclipse}
 
@@ -14805,14 +14891,15 @@ Maven是个独立的工具，安装之后可以在命令行界面使用。
 IDE 需要安装Maven插件，关联上已经安装的Maven之后，才能在IDE中调用Maven的功能。
 其中Eclipse的Maven插件为m2eclipse。Intellij则默认自带了Maven插件，直接做相应的关联配置即可。
 
-\subsection{content structure}
+\subsection{Maven目录结构}
 
-Maven约定了一套规则来创建和构建我们的项目。得益于Maven的一些约定，我们只要学习相对很少的命令就可以创建和管理我们的项目。在项目的目录结构上，Maven有一套约定的通用的目录结构。
-
-使用一套通用的目录结构的好处是，可以减少开发人员熟悉不同Maven项目时的认知负担。在使用相同的目录结构的情况下，开发人员可以很快的熟悉一个项目。接下来，我们将开始介绍Maven的通用的目录结构。
-
+Maven约定了一套规则来创建和构建我们的项目。得益于Maven的一些约定，我们只要学习相对很少的命令就可以创建和管理我们的项目。
+在项目的目录结构上，Maven有一套约定的通用的目录结构。
+使用一套通用的目录结构的好处是，可以减少开发人员熟悉不同Maven项目时的认知负担。
+在使用相同的目录结构的情况下，开发人员可以很快的熟悉一个项目。接下来，我们将开始介绍Maven的通用的目录结构。
 Maven默认约定了一套目录结构，在通过Maven创建了项目以后，项目的目录结构就是以这套目录结构作为模板创建的。
 
+\begin{lstlisting}
 ${basedir}
 |-- pom.xml
 |-- src
@@ -14830,15 +14917,18 @@ ${basedir}
 `-- LICENSE.txt
 `-- NOTICE.txt
 `-- README.txt
+\end{lstlisting}
 
-    src/main/java 项目的源代码所在的目录
-    src/main/resources 项目的资源文件所在的目录
-    src/main/filters 项目的资源过滤文件所在的目录
-    src/main/webapp 如果是web项目，则该目录是web应用源代码所在的目录，比如html文件和web.xml等都在该目录下。
-    src/test/java 测试代码所在的目录
-    src/test/resources 测试相关的资源文件所在的目录
-    src/test/filters 测试相关的资源过滤文件所在的目录
 
+\begin{itemize}
+	\item{src/main/java 项目的源代码所在的目录}
+	\item{src/main/resources 项目的资源文件所在的目录}
+	\item{src/main/filters 项目的资源过滤文件所在的目录}
+	\item{src/main/webapp 如果是web项目，则该目录是web应用源代码所在的目录，比如html文件和web.xml等都在该目录下}
+	\item{src/test/java 测试代码所在的目录}
+	\item{src/test/resources 测试相关的资源文件所在的目录}
+	\item{src/test/filters 测试相关的资源过滤文件所在的目录}
+\end{itemize} 
 
 \subsection{Maven坐标}
 
@@ -14868,12 +14958,25 @@ Idea自带该框架，在创建工程时选择（Spring->Spring Web Services）�
 详细开发步骤如下：
 
 \begin{enumerate}
-	\item[在web.xml中添加servlet]
+	\setcounter{enumi}{0}
+	\item{在web.xml中添加servlet}
 	\item{在WEB-INF下建立配置文件spring-ws-servlet.xml}
 	\item{在resources目录下建立hello.wsdl}
-	\item[创建web service 类和终结点]
-	\item[在spring-ws-servlet.xml文件中配置终结点bean]
+	\item{创建web service 类和终结点}
+	\item{在spring-ws-servlet.xml文件中配置终结点bean}
 \end{enumerate}
+
+\subsection{Spring Web Service调试}
+
+调试使用SOAP UI，需要注意的是请求时要写全路径，如图\ref{fig:SoapUIRequest}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{SoapUIRequest.jpg}
+	\caption{SOAP UI调用Spring Web Service}
+	\label{fig:SoapUIRequest}
+\end{figure}
+
 
 \subsection{Spring Web Service请求流程}
 
@@ -21499,51 +21602,7 @@ de4dot.exe dllFullPath
 
 \section{开发技巧}
 
-\subsection{搜索技巧(Search Tricks)}
 
-\paragraph{准确搜索(Exact phrase)}
-最简单、有效的准确搜索方式是在关键词上加上双引号，在这种情况下，搜索引擎只会反馈和关键词完全吻合的搜索结果。比方说在搜索「Joe Bloggs」的时候，在没有给关键词加上双引号的情况，搜索引擎会显示所有分别和「Joe」以及「Bloggs」相关的信息，但这些显然并不是我们想要的结果。但在加上双引号后，搜索引擎则仅会在页面上反馈和「Joe Bloggs」相吻合的信息。准确搜索在排除常见但相近度偏低的信息时非常有用，可以为用户省去再度对结果进行筛选的麻烦。
-
-\paragraph{排除关键词(Exclude terms)}
-如果在进行准确搜索时没有找到自己想要的结果，用户可以对包含特定词汇的信息进行排除，仅需使用减号即可。例如在搜索「『Joe Bloggs』-jeans」时，你所得到的结果反馈是不包含「jeans」字眼的「Joe Bloggs」条目。
-
-\paragraph{用「Either OR」（或）逻辑进行搜索}
-在默认搜索下，搜索引擎会反馈所有和查询词汇相关的结果，但通过使用「OR」逻辑，你可以得到和两个关键词分别相关的结果，而不仅仅是和两个关键词都同时相关的结果。巧妙使用「OR」搜索可以让你在未能确定哪个关键词对于搜索结果起决定作用时依然可以确保搜索结果的准确性。[OR]也可以替换成竖线(|)。
-
-\paragraph{@}关键字前加@符号，查找社交网站上相关结果。
-
-\paragraph{站内搜索}站内搜索语法如下：
-
-\begin{lstlisting}
-php site:http://stackoverflow.com/
-\end{lstlisting}
-
-site操作符非常有用，可以让google搜索来自指定的网站的网页。
-比如，想在sourceforge.net网站上搜索关于编辑器notepad++的网页，
-可以输入："notepad++"  site:sourceforge.net。
-这样google就能返回来自sourceforge.net的网页。
-又比如，想查找csdn网站上关于端口扫描器Nmap的网页，
-那么可以输入："nmap"  site:csdn.net。　　site操作符，可用于搜索指定网站的上特殊的信息，
-如包含的主要资源，是否暴露出敏感文件等。
-
-\paragraph{文件类型filetype}当用户单独搜索某一类文件时，
-可使用该关键字。比如想搜索关于黑客技巧Hacking的PPT，
-可以搜索：hacking filetype:ppt。如果想要搜索关于黑客大曝光系列图书的PDF，
-可以尝试输入："hacking exposed" filetype:pdf，
-这样就能直接搜索很多该系列图书的PDF文档。　　同理，也可以结合site操作符，搜索指定网站内的资源，
-如word文件、XML文件、excel文件、PPT文档、txt等等。
-
-\paragraph{..时间范围}
-两点操作符用于指定一个网页的时间范围，
-比如用户想搜索的是2011年到2012年内，出现的关于web hacking的PDF资料。
-
-可以输入：web hacking filetype:pdf 2011..2012
-
-\paragraph{intitle:index-of}
-搜索某类资源的索引目录，如想搜索网站的图像、父目录等信息。
-可以在google搜索：intitle:index-of image和intitle:index-of “parent directory”。
-也可以搜索与Admin密切相关的网页：intitle:index-of “admin”。 
-也可以尝试：intitle:index-of mp3/intitle:index-of password等查询，具体查询内容就需要靠自己想象力了。
 
 \subsection{合理使用Using子句}
 
