@@ -14770,6 +14770,17 @@ JRE（Java Runtime Environment，Java运行环境），运行JAVA程序所必须
 
 \subsection{Java注释}
 
+The Eclipse Process Framework (EPF) aims at producing a customizable software process enginering framework, 
+with exemplary process content and tools, supporting a broad variety of project types and development styles.
+可导入自定义的epf文件，在新建文件、类、方法等时会自动生成注释，
+导入后的设置界面如图\ref{code:JavaCodeTemplate}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{JavaCodeTemplate.jpg}
+	\caption{Java Code注释自定义}
+	\label{code:JavaCodeTemplate}
+\end{figure}
 
 
 \section{JAX-WS(Java™ API for XML Web Services)}
@@ -14872,6 +14883,20 @@ Eclipse可以对当前尚未完成的工作做个标记，常用的是// TODO <�
 \paragraph{Eclipse生成Getter和Setter}
 
 快捷键：Shift + Alt + S。
+
+\subsection{The import cannot be resolved}
+
+运行如下命令可解决：
+
+\begin{lstlisting}
+Project > Clean
+\end{lstlisting}
+
+eclipse -->project -->clean... 选项， 将工程中的.class文件删除，
+同时重新编译工程(Java文件)，
+类似于jbuild中的rebuild。It removes whatever already-compiled files 
+are in your project so that you can do a complete fresh rebuild.
+
 
 \section{MyEclipse}
 
@@ -14977,10 +15002,22 @@ Idea自带该框架，在创建工程时选择（Spring->Spring Web Services）�
 	\label{fig:SoapUIRequest}
 \end{figure}
 
-
 \subsection{Spring Web Service请求流程}
 
 客户端封装一个SOAP请求通过http发送给服务端, 服务器根据收到的SOAP信息来确定由哪一个处理器(端点, EndPoint)来处理, 处理完后再封装一个SOAP信息返回给客户端.
+
+\subsection{Spring @Autowired}
+
+\subsection{Spring @component,@service,@controller,@repository}
+
+其中base-package为需要扫描的包（含所有子包），
+@Service用于标注业务层组件，
+@Controller用于标注控制层组件（如struts中的action）,
+@Repository用于标注数据访问组件，即DAO组件，
+@Component泛指组件，当组件不好归类的时候，我们可以使用这个注解进行标注。
+
+在接口前面标上@Autowired和@Qualifier注释使得接口可以被容器注入，
+当接口存在两个实现类的时候必须指定其中一个来注入，使用实现类首字母小写的字符串来注入。
 
 \section{Apache MINA(Multipurpose Infrastructure for Network Applications)}
 
