@@ -1,4 +1,4 @@
-\documentclass{book}
+﻿\documentclass{book}
 
 %%%%%% Import Package %%%%%%
 \usepackage{graphicx}
@@ -15822,6 +15822,10 @@ The units of file\_size are millions of bytes (1,000,000 bytes, not 1,048,576 by
 \begin{lstlisting}[language=Bash]
 tcpdump -i eth1 tcp and host 10.27.13.14 and port 6973 -vv -X -c 1000
 \end{lstlisting}
+
+It’s also important to note that tcpdump only takes the first 68 96 bytes of data from a packet by default. 
+If you would like to look at more, add the -s number option to the mix, where number is the number of bytes you want to capture. I recommend using 0 (zero) for a snaplength, which gets everything. 
+
 
 \subsection{vi}
 
