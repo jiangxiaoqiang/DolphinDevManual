@@ -14804,6 +14804,13 @@ Usage: java javassist.tools.web.Webserver <port number>
 
 \section{Eclipse}
 
+\subsection{Eclipse调试技巧}
+
+\paragraph{Drop to Frame}
+调试期间，可以重新跳到调用堆栈框架的开始处执行，并且变量值也会回到最初。
+根据回档调整堆栈的深度，这个功能的主要用途是所有变量状态可以快速回到方法开始执行时候的样子，
+然后你可以重新进行一遍一遍执行，这样就可以在你关注的地方进行多次调试，但是在执行过程中也会产生一些副作用，比如插入到数据库里面的数据是无法删除的！
+
 \subsection{使用技巧}
 
 \paragraph{包显示方式}
@@ -15018,6 +15025,16 @@ Idea自带该框架，在创建工程时选择（Spring->Spring Web Services）�
 
 在接口前面标上@Autowired和@Qualifier注释使得接口可以被容器注入，
 当接口存在两个实现类的时候必须指定其中一个来注入，使用实现类首字母小写的字符串来注入。
+
+
+
+\subsection{Spring的生命周期}
+
+\begin{itemize}
+	\item{容器寻找Bean的定义信息并且将其实例化}
+	\item{Bean容器利用Java Reflection API创建一个Bean的实例}
+	\item{如果实现了其他*Aware接口，就调用相应的方法}
+\end{itemize}
 
 \section{Apache MINA(Multipurpose Infrastructure for Network Applications)}
 
@@ -15824,7 +15841,8 @@ tcpdump -i eth1 tcp and host 10.27.13.14 and port 6973 -vv -X -c 1000
 \end{lstlisting}
 
 It’s also important to note that tcpdump only takes the first 68 96 bytes of data from a packet by default. 
-If you would like to look at more, add the -s number option to the mix, where number is the number of bytes you want to capture. I recommend using 0 (zero) for a snaplength, which gets everything. 
+If you would like to look at more, add the -s number option to the mix, where number is the number of bytes you want to capture. 
+I recommend using 0 (zero) for a snaplength, which gets everything. 
 
 
 \subsection{vi}
