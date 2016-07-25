@@ -9,3 +9,10 @@ messageTypeDic={
 def getMessageType(messageTypeKey):
     return messageTypeDic[messageTypeKey]
 
+def getMessageLength(contentType):
+    messageLengthType[contentType]()
+
+messageLengthType = {
+    "DWORD":4,
+    "WORD":2    
+}

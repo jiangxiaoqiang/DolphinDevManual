@@ -1,4 +1,4 @@
-﻿\documentclass{book}
+\documentclass{book}
 
 %%%%%% Import Package %%%%%%
 \usepackage{graphicx}
@@ -14981,6 +14981,19 @@ POM是项目对象模型(Project Object Model)的简称,它是Maven项目中的�
 
 \section{Spring}
 
+Spring框架是由于软件开发的复杂性而创建的。Spring使用的是基本的JavaBean来完成以前只可能由EJB完成的事情。
+然而，Spring的用途不仅仅限于服务器端的开发。从简单性、可测试性和松耦合性的角度而言，
+绝大部分Java应用都可以从Spring中受益。
+减少了不必要的异常捕捉，
+为JavaBean提供了一个更好的应用配置框架。
+
+\subsection{Spring优缺点}
+
+生成一个对象的步骤变复杂了（其实上操作上还是挺简单的），对于不习惯这种方式的人，会觉得有些别扭和不直观。
+对象生成因为是使用反射编程，在效率上有些损耗。但相对于IoC提高的维护性和灵活性来说，
+这点损耗是微不足道的，除非某对象的生成对效率要求特别高。
+缺少IDE重构操作的支持，如果在Eclipse要对类改名，那么你还需要去XML文件里手工去改了，这似乎是所有XML方式的缺憾所在。
+
 \subsection{Spring安全配置}
 
 \subsection{Spring Web Service开发流程}
@@ -15098,7 +15111,7 @@ MessagePrinter printer = context.getBean(MessagePrinter.class);
 
 
 
-\subsection{Spring的生命周期}
+\subsection{Spring Bean的生命周期}
 
 \begin{itemize}
 	\item{容器寻找Bean的定义信息并且将其实例化}
@@ -15496,6 +15509,39 @@ commonlogger.loginfo()
 你可以从字典中加载logging配置。这也就意味着你可以从JSON或者YAML文件中加载日志的配置。
 尽管你还能用原来.ini文件来配置，但是它既很难读也很难写。
 设置日志记录的话，在程序启动的时候调用log模块的setup\_logging方法就行了。它默认读取logging.json或是 logging.yaml。你可以设置LOG\_CFG环境变量来指定从某个路径中加载日志配置。
+
+\subsection{Python列表}
+
+Python定义列表如下：
+
+\begin{lstlisting}[language=Python]
+locationReport = [
+	[0,"报警标志","DWORD"],
+	[4,"状态","DWORD"]
+]
+\end{lstlisting}
+
+Python遍历列表如下：
+
+\begin{lstlisting}[language=Python]
+for singleDefinition in protocolDefinition.locationReport:
+	startPosition = protocolDefinition.messagehead_length + singleDefinition[0]
+\end{lstlisting}
+
+\subsection{Python switch case}
+
+Python没有switch...case语句，
+实现switch...case如下语句所示：
+
+\begin{lstlisting}[language=Python]
+def getMessageLength(contentType):
+	messageLengthType[contentType]()
+
+messageLengthType = {
+	"DWORD":4,
+	"WORD":2    
+}
+\end{lstlisting}
 
 \section{发布}
 
@@ -18820,6 +18866,10 @@ tcp port http
 	\caption{Wireshark抓取SOAP报文}
 	\label{fig:WiresharkCaptureSoap}
 \end{figure}
+
+本地回路用wireshark抓包，才知道，原来是WindowsTCP/IP下没有本地回路的接口，
+所以不能用常用的windows抓包驱动获取到，比如winpcap,而俺的wireshark是基于winpcap的，
+所以肯定抓不到数据包了。linux下wireshark能看到一个名为“loopback interface”的接口。
 
 \subsection{各层报文理解}
 
