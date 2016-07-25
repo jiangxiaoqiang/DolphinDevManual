@@ -1,4 +1,4 @@
-\documentclass{book}
+﻿\documentclass{book}
 
 %%%%%% Import Package %%%%%%
 \usepackage{graphicx}
@@ -14804,6 +14804,13 @@ Usage: java javassist.tools.web.Webserver <port number>
 
 \section{Eclipse}
 
+\subsection{Eclipse调试技巧}
+
+\paragraph{Drop to Frame}
+调试期间，可以重新跳到调用堆栈框架的开始处执行，并且变量值也会回到最初。
+根据回档调整堆栈的深度，这个功能的主要用途是所有变量状态可以快速回到方法开始执行时候的样子，
+然后你可以重新进行一遍一遍执行，这样就可以在你关注的地方进行多次调试，但是在执行过程中也会产生一些副作用，比如插入到数据库里面的数据是无法删除的！
+
 \subsection{使用技巧}
 
 \paragraph{包显示方式}
@@ -15088,6 +15095,16 @@ MessagePrinter printer = context.getBean(MessagePrinter.class);
 \end{lstlisting}
 
 或者上层的调用也采用注入的方式。
+
+
+
+\subsection{Spring的生命周期}
+
+\begin{itemize}
+	\item{容器寻找Bean的定义信息并且将其实例化}
+	\item{Bean容器利用Java Reflection API创建一个Bean的实例}
+	\item{如果实现了其他*Aware接口，就调用相应的方法}
+\end{itemize}
 
 \section{Apache MINA(Multipurpose Infrastructure for Network Applications)}
 
@@ -15892,6 +15909,11 @@ The units of file\_size are millions of bytes (1,000,000 bytes, not 1,048,576 by
 \begin{lstlisting}[language=Bash]
 tcpdump -i eth1 tcp and host 10.27.13.14 and port 6973 -vv -X -c 1000
 \end{lstlisting}
+
+It’s also important to note that tcpdump only takes the first 68 96 bytes of data from a packet by default. 
+If you would like to look at more, add the -s number option to the mix, where number is the number of bytes you want to capture. 
+I recommend using 0 (zero) for a snaplength, which gets everything. 
+
 
 \subsection{vi}
 
