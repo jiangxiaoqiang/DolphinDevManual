@@ -19,6 +19,7 @@ def handleDifferentMessage(messagestr):
 def parseLocationUpload(messagestr):
     print("地理位置上报信息")    
     protocolParseHandler.parseMessageHead(messagestr)
+    protocolParseHandler.parseMessageBody(messagestr)
 
 def parseAuthoration(messagestr):
     print("授权信息")

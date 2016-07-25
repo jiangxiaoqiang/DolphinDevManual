@@ -6,7 +6,12 @@ from Tkinter import *
 import sys
 #sys.path.append("D:\\OneDrive\\Document\\doc\\DolphinDev\\DolphinDevManual\\scripts\\python\\source\\python\\UI\\Widgets")
 sys.path.append("./Widgets")
+sys.path.append("./Widgets/Location")
 import protocolParser
+default_encoding = 'utf-8'
+if sys.getdefaultencoding()!=default_encoding:
+    reload(sys)
+    sys.setdefaultencoding(default_encoding)
 
 def donothing():
     filewin = Toplevel(root)

@@ -15006,18 +15006,88 @@ Idea自带该框架，在创建工程时选择（Spring->Spring Web Services）�
 
 客户端封装一个SOAP请求通过http发送给服务端, 服务器根据收到的SOAP信息来确定由哪一个处理器(端点, EndPoint)来处理, 处理完后再封装一个SOAP信息返回给客户端.
 
-\subsection{Spring @Autowired}
+\subsection{Spring常用注解}
 
-\subsection{Spring @component,@service,@controller,@repository}
+其中base-package为需要扫描的包（含所有子包）。
 
-其中base-package为需要扫描的包（含所有子包），
-@Service用于标注业务层组件，
-@Controller用于标注控制层组件（如struts中的action）,
-@Repository用于标注数据访问组件，即DAO组件，
-@Component泛指组件，当组件不好归类的时候，我们可以使用这个注解进行标注。
 
-在接口前面标上@Autowired和@Qualifier注释使得接口可以被容器注入，
+\paragraph{@Service}用于标注业务层组件。
+
+\paragraph{@Controller}用于标注控制层组件（如struts中的action）,
+@Controller对应表现层的Bean，也就是Action。
+如果@Controller不指定其value[@Controller]，则默认的bean名字为这个类的类名首字母小写，
+如果指定value[@Controller(value="UserAction")]或者[@Controller("UserAction")]，则使用value作为bean的名字。
+
+\paragraph{@Repository}用于标注数据访问组件，即DAO组件。
+@Repository(value="userDao")注解是告诉Spring，让Spring创建一个名字叫“userDao”的UserDaoImpl实例。
+当Service需要使用Spring创建的名字叫“userDao”的UserDaoImpl实例时，
+就可以使用@Resource(name = "userDao")注解告诉Spring，Spring把创建好的userDao注入给Service即可。
+
+\paragraph{@Component}泛指组件，当组件不好归类的时候，我们可以使用这个注解进行标注。
+@Component注解，意思大致就是告诉Spring，要把类的对象放到容器里，
+以后可以方便的使用@Autowired进行注入。
+
+\paragraph{@Autowired}在接口前面标上@Autowired和@Qualifier注释使得接口可以被容器注入，
 当接口存在两个实现类的时候必须指定其中一个来注入，使用实现类首字母小写的字符串来注入。
+@Autowired注解，有以下两个重要特点：
+特点一是可以对成员变量、方法和构造函数进行标注，来完成自动注入。
+特点二是根据类型进行自动注入的，如果spring配置文件中存在多个相同类型的bean时，或者不存在指定类型的bean，都会抛出异常。
+
+\paragraph{@Resource}@Resource和@Autowired两者都是做bean的注入使用。@Autowired只按照byType注入，
+@Resource默认按byName自动注入,由J2EE提供。
+
+\subsection{Spring底层的实例化方式}
+
+有两种实现方式：JDK动态代理和Cglib动态代理。
+CGLib (Code Generation Library) 是一个强大的,高性能,高质量的Code生成类库。
+它可以在运行期扩展Java类与实现Java接口。Hibernate用它来实现PO字节码的动态生成。
+CGLib 比 Java 的 java.lang.reflect.Proxy 类更强的在于它不仅可以接管接口类的方法，还可以接管普通类的方法。
+CGLib，全称是Code Generation Library，它可以用来动态继承Java类或者实现接口，
+很多知名的开源项目中用到了它，譬如Hibernate，Spring之类用它来实现动态代理。
+JDK动态代理，需要实现InvocationHandler 接口，也就是说如果想使用这种代理方式创建对象，
+需要让类先实现InvocationHandler 接口才行，最终创建的对象是一个新类的对象。
+Cglib动态代理，采用的是继承方式，它会在底层创建一个类，来继承原有的类，
+但是这个子类所有的方法都是直接调用父类去实现，相当于父类的一个代理、封装(封装的目的是支持事务处理)，
+实际上我们在程序中使用的是这个子类的对象，并不是ApplyStatusHandler的对象。
+通过这两种代理方式，才让Spring可以支持事务、管理对象。
+
+\subsection{BeanFactory和ApplicationContext的区别}
+
+在spring中，两个最基本最重要的包是org.springframework.beans和
+org.springframework.context这两个包中的代码为Spring的反向控制特性（也叫作依赖注射）提供了基础。
+BeanFactory实际上是实例化，配置和管理众多bean的容器。 
+这些bean通常会彼此合作，因而它们之间会产生依赖。
+BeanFactory使用的配置数据可以反映这些依赖关系中（一些依赖可能不像配置数据一样可见，而是在运行期作为bean之间程序交互的函数）。
+一个BeanFactory可以用接口org.springframework.beans.factory.BeanFactory表示， 这个接口有多个实现。 最常使用的的简单的eanFactory实现是org.springframework.beans.factory.xml.XmlBeanFactory。
+ApplicationContext，beans包提供了以编程的方式管理和操控bean的基本功能，
+而context包增加了ApplicationContext，它以一种更加面向框架的方式增强了BeanFactory的功能。
+多数用户可以以一种完全的声明式方式来使用ApplicationContext，甚至不用去手工创建它，
+但是却去依赖像ContextLoader的支持类，在J2EE的Web应用的启动进程中用它启动ApplicationContext。
+当然，这种情况下还可以以编程的方式创建一个ApplicationContext。
+Context包的基础是位于org.springframework.context包中的ApplicationContext接口。
+它是由BeanFactory接口集成而来，提供BeanFactory所有的功能。为了以一种更像面向框架的方式工作，
+context包使用分层和有继承关系的上下文类
+
+\subsection{常见问题}
+
+\paragraph{Spring @Autowired return null}
+
+在使用@Autowired注解时，返回的接口对象始终是null，
+最终发现是因为调用类时使用了new的方式导致的问题。
+在使用Spring进行自动注入的过程中，只会对通过读取Spring的配置文件或者配置类后产生的实例进行自动注入。
+手动new出来的实例是无法获得在Spring中注册过得实例，这是因为手动new的实例并不是Spring在初始化过程中注册的实例。
+Spring默认都是单例的，new出来的对象，Spring依然不会对它进行装配，只有通过Spring创建的对象才会获得自动装配的功能。
+把new的printer改为从ApplicationContext对象中创建对实例可以解决此问题，
+也就是手动获取bean(manual bean lookup)。
+如下代码片段所示:
+
+\begin{lstlisting}[language=Java]
+ApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
+System.out.println(context.containsBean("messageService"));
+MessagePrinter printer = context.getBean(MessagePrinter.class);
+\end{lstlisting}
+
+或者上层的调用也采用注入的方式。
 
 \section{Apache MINA(Multipurpose Infrastructure for Network Applications)}
 
