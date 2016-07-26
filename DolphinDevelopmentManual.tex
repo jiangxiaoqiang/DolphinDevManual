@@ -15011,6 +15011,8 @@ Idea自带该框架，在创建工程时选择（Spring->Spring Web Services）�
 	\item{在spring-ws-servlet.xml文件中配置终结点bean}
 \end{enumerate}
 
+Spring Web Service返回的参数类名称需要以Response结尾。
+
 \subsection{Spring Web Service调试}
 
 调试使用SOAP UI，需要注意的是请求时要写全路径，如图\ref{fig:SoapUIRequest}所示。
@@ -15109,7 +15111,63 @@ MessagePrinter printer = context.getBean(MessagePrinter.class);
 
 或者上层的调用也采用注入的方式。
 
+\paragraph{无效的URI，未能确定URI的格式}
 
+在使用Visual Studio引用wsdl链接时，提示如图\ref{fig:WebRefrenceInvalidURI}所示的错误。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{WebRefrenceInvalidURI.png}
+	\caption{无效的URI}
+	\label{fig:WebRefrenceInvalidURI}
+\end{figure}
+
+
+将配置文件改为全路径即可解决问题。
+英文的报错内容如下，可以通过英文关键字搜索：
+
+\begin{lstlisting}
+Warning: The optional WSDL extension element 'binding'
+from namespace
+'http://www.tibco.com/namespaces/ws/2004/soap/binding/JMS'
+was not handled.
+XPath:
+//wsdl:definitions[@targetNamespace='com.tibco.sample.
+namespace/ServiceMethodImpl']/wsdl:binding[@name=
+'SOAPEventSourceBinding']
+Error: Cannot import wsdl:port
+Detail: An exception was thrown while running a WSDL
+import extension:
+System.ServiceModel.Channels.TransportBindingElementImporter
+Error: Invalid URI: The URI is empty.
+XPath to Error Source:
+//wsdl:definitions[@targetNamespace='com.tibco.sample.namespace
+/ServiceMethodImpl']/wsdl:service[@name='Service']/wsdl:
+port[@name='SOAPEventSource']
+\end{lstlisting}
+
+Note that the warning is generated because svcutil does not recognize the
+jms:binding extension element.
+The error is generated due to the location URI being empty in <soap:address
+location=""/>.
+或者将spring-ws-servlet.xml中locationUri路径改为绝对路径，如下代码片段所示：
+
+\begin{lstlisting}[language=XML]
+<!-- 客户端Web Service的get配置-->
+<sws:dynamic-wsdl id="get" portTypeName="MessageOperation" locationUri="http://192.168.24.79:9090/clbs/webservice/get.wsdl"
+targetNamespace="http://www.zwlbs.com/ws/demo">
+	<sws:xsd location="classpath:client.xsd"/>
+</sws:dynamic-wsdl>
+\end{lstlisting}
+
+
+\paragraph{Unable to create envelope from given source}
+
+We have a web service application based on spring-ws. 
+We have tested the application using soapUI and there is no problem. 
+When we have tried to invoke a secured ws using a spring-ws client, the message seems to be correctly build.
+
+解决：try using Xerces 2.8.1 and Xalan 2.7.0 on the server-side。
 
 \subsection{Spring Bean的生命周期}
 
