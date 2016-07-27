@@ -3168,9 +3168,36 @@ WCF无法访问路由页面
 
 \section{Web Service}
 
-\subsection{SOAP}
+\subsection{SOAP调试}
 
+SOAP的报文可以通过Fiddler抓取，
+如果是采用SOAP UI做客户端，则可以先设置客户端的代理为Fiddler的代理，
+然后可在请求时通过Fiddler抓取到请求的报文。
+在Visual Studio中调用接口如果想看到SOAP请求，
+可以设置Visual Studio的代理为Fiddler的代理地址即可。
+设置Visual Studio的代理修改devenv.exe.config配置文件，
+配置文件在：
 
+\begin{lstlisting}
+$VisualStudioInstallPath$\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE
+\end{lstlisting}
+
+在System.Net配置节下(与settings配置节平级)添加如下内容即可：
+
+\begin{lstlisting}[language=XML]
+<defaultProxy useDefaultCredentials="true" enabled="true">
+	<proxy bypassonlocal="true" proxyaddress="http://127.0.0.1:8888/" />
+</defaultProxy>
+\end{lstlisting}
+
+配置完毕后即可在Fiddler中看到SOAP请求，如图\ref{fig:FiddlerSOAPDebug}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{FiddlerSOAPDebug.jpg}
+	\caption{Fiddler调试Web Service}
+	\label{fig:FiddlerSOAPDebug}
+\end{figure}
 
 \chapter{ASP.NET Web API(Apache License 2.0)}
 
@@ -18236,6 +18263,7 @@ symstore.exe在Windows SDK调试文件夹下。
 
 \section{Fiddler(Free,Not Open Source)}
 
+Fiddler支持Linux(基于Mono)和Mac OS。
 Fiddler（中文名称：小提琴）是一个HTTP的调试代理，以代理服务器的方式，
 监听系统的Http网络数据流动，Fiddler可以也可以让你检查所有的HTTP通讯，
 设置断点。Fiddler默认监听端口为8888，有时8888端口会被其他程序占用，
