@@ -14809,7 +14809,25 @@ Usage: java javassist.tools.web.Webserver <port number>
 \paragraph{Drop to Frame}
 调试期间，可以重新跳到调用堆栈框架的开始处执行，并且变量值也会回到最初。
 根据回档调整堆栈的深度，这个功能的主要用途是所有变量状态可以快速回到方法开始执行时候的样子，
-然后你可以重新进行一遍一遍执行，这样就可以在你关注的地方进行多次调试，但是在执行过程中也会产生一些副作用，比如插入到数据库里面的数据是无法删除的！
+然后你可以重新进行一遍一遍执行，这样就可以在你关注的地方进行多次调试，但是在执行过程中也会产生一些副作用，
+比如插入到数据库里面的数据是无法删除的！功能如图\ref{code:EclipseDropToFrame}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{EclipseDropToFrame.png}
+	\caption{Eclipse Drop to Frame功能}
+	\label{code:EclipseDropToFrame}
+\end{figure}
+
+
+
+\paragraph{Debug视图}
+
+Debug视图下的3个小窗口视图：变量视图、断点视图和表达式视图。
+变量视图显示debug过程中程序中出现的所有的变量以及其值。我们也可以通过该视图手动设置变量的value。
+手动设置变量值的作用在于，当debug到该变量处时，没有得到我们预期的值，
+为了能让我们的debug按照预期的方式继续走下去（如变量满足一定条件才能走到某一个特定的分支中去），
+我们可以设置变量值为预期的值，达到测试目的。
 
 \subsection{使用技巧}
 
@@ -15176,6 +15194,19 @@ When we have tried to invoke a secured ws using a spring-ws client, the message 
 	\item{Bean容器利用Java Reflection API创建一个Bean的实例}
 	\item{如果实现了其他*Aware接口，就调用相应的方法}
 \end{itemize}
+
+\section{MyBatis}
+
+\subsection{简介}
+
+MyBatis 的前身就是 iBatis 。是一个数据持久层(ORM)框架。
+iBATIS一词来源于“internet”和“abatis”的组合，是一个基于Java的持久层框架。
+iBATIS提供的持久层框架包括SQL Maps和Data Access Objects（DAO），
+同时还提供一个利用这个框架开发的 JPetStore实例。
+MyBatis 是支持定制化 SQL、存储过程以及高级映射的优秀的持久层框架。
+MyBatis 避免了几乎所有的 JDBC 代码和手动设置参数以及获取结果集。
+MyBatis 可以对配置和原生Map使用简单的 XML 或注解，
+将接口和 Java 的 POJOs(Plain Old Java Objects,普通的 Java对象)映射成数据库中的记录。
 
 \section{Apache MINA(Multipurpose Infrastructure for Network Applications)}
 
