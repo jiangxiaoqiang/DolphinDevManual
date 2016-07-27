@@ -11831,7 +11831,27 @@ request.AddHeader("auth", "value");
 IRestResponse response = client.Execute(request);
 \end{lstlisting}
 
-\section{TCP}
+\section{通信协议}
+
+\subsection{TCP协议概览}
+
+TCP/IP是个协议组，可分为三个层次：网络层、传输层和应用层：
+
+网络层：IP协议、ICMP协议、ARP协议、RARP协议和BOOTP协议；
+传输层：TCP协议与UDP协议；
+应用层：FTP、HTTP、TELNET、SMTP、DNS等协议；
+
+各层之间的关系如图\ref{fig:TCPCommunicationBundle}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{TCPCommunicationBundle.jpg}
+	\caption{TCP协议家族}
+	\label{fig:TCPCommunicationBundle}
+\end{figure}
+
+
+
 
 \subsection{Ethernet v2}
 
@@ -11990,6 +12010,23 @@ X11本身并不复杂，Server和Client交互的请求一共四种：Requests, R
 4. Error: 当Request请求无效时，Server发送错误信息给Cilent。
 
 \section{即时通信}
+
+\subsection{BIO,NIO,AIO}
+
+同步阻塞IO（JAVA BIO）： 
+同步并阻塞，服务器实现模式为一个连接一个线程，
+即客户端有连接请求时服务器端就需要启动一个线程进行处理，
+如果这个连接不做任何事情会造成不必要的线程开销，当然可以通过线程池机制改善。 
+
+同步非阻塞IO(Java NIO) ： 同步非阻塞，服务器实现模式为一个请求一个线程，
+即客户端发送的连接请求都会注册到多路复用器上，多路复用器轮询到连接有I/O请求时才启动一个线程进行处理。
+用户进程也需要时不时的询问IO操作是否就绪，这就要求用户进程不停的去询问。
+
+（Java AIO(NIO.2)）异步非阻塞IO:  
+在此种模式下，用户进程只需要发起一个IO操作然后立即返回，
+等IO操作真正的完成以后，应用程序会得到IO操作完成的通知，
+此时用户进程只需要对数据进行处理就好了，不需要进行实际的IO读写操作，
+因为真正的IO读取或者写入操作已经由内核完成了。 
 
 \subsection{title}
 
@@ -15159,6 +15196,10 @@ ApplicationContext，beans包提供了以编程的方式管理和操控bean的�
 Context包的基础是位于org.springframework.context包中的ApplicationContext接口。
 它是由BeanFactory接口集成而来，提供BeanFactory所有的功能。为了以一种更像面向框架的方式工作，
 context包使用分层和有继承关系的上下文类
+
+\subsection{Spring Web Socket}
+
+
 
 \subsection{常见问题}
 
