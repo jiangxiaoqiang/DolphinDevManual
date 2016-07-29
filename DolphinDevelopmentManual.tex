@@ -15982,6 +15982,14 @@ Zypper的语法与rug的相似。与rug相反，Zypper不需要在场景后运�
 zypper install yum
 \end{lstlisting}
 
+\paragraph{du}
+
+查看文件夹大小可用如下命令：
+
+\begin{lstlisting}[language=Bash]
+du -h --max-depth=1 /DolphinDevManual
+\end{lstlisting}
+
 \subsection{网络}
 
 \paragraph{自动获取IP}
@@ -16379,6 +16387,14 @@ source /etc/profile
 \end{lstlisting}
 
 完成後可以用php -v檢查是否升級到 PHP 5.4.
+
+\subsection{Mono}
+
+安装Mono如下语句：
+
+\begin{lstlisting}[language=Bash]
+apt-get install  mono-complete
+\end{lstlisting}
 
 \section{Angile}
 
@@ -18653,6 +18669,199 @@ Cookies标签可以看到请求的cookie和响应的set-cookie头信息。
 
 在启用了Fiddler断点调试的功能后，通过Fiddler代理请求的所有网站不是立即响应，
 在请求之前可以对请求的数据包进行编辑。
+
+\subsection{Debug/Inspect WebSocket traffic with Fiddler}
+
+Open Fiddler -> Rules -> Customize Rules... ->This will open the FiddlerScript，Add following codes FiddlerScript。
+
+\begin{lstlisting}[language={[Sharp]C}]
+import System.Threading;
+
+// ...
+
+class Handlers
+{
+    // ...
+    static function Main() 
+    {
+        // ...
+     
+        //
+        // Print Web Socket frame every 2 seconds
+        //
+        printSocketTimer =
+            new System.Threading.Timer(PrintSocketMessage, null, 0, 2000);
+    }
+     
+    // Create a first-in, first-out queue
+    static var socketMessages = new System.Collections.Queue();
+    static var printSocketTimer = null;
+    static var requestBodyBuilder = new System.Text.StringBuilder();
+    static var requestUrlBuilder = new System.Text.StringBuilder();
+    static var requestPayloadIsJson = false;
+    static var requestPartCount = 0;
+       
+    //
+    // Listen to WebSocketMessage event, and add the socket messages
+    // to the static queue.
+    //
+    static function OnWebSocketMessage(oMsg: WebSocketMessage)
+    {       
+        Monitor.Enter(socketMessages);      
+        socketMessages.Enqueue(oMsg);
+        Monitor.Exit(socketMessages);          
+    }
+       
+    //
+    // Take socket messages from the static queue, and generate fake
+    // HTTP requests that will be caught by Fiddler. 
+    //
+    static function PrintSocketMessage(stateInfo: Object)
+    {
+        Monitor.Enter(socketMessages);        
+       
+        while (socketMessages.Count > 0)
+        {
+            var oMsg = socketMessages.Dequeue();
+
+            ExtractSocketMessage(oMsg);          
+        }
+       
+        Monitor.Exit(socketMessages);       
+    }
+       
+    //
+    // Build web socket message information in JSON format, and send this JSON
+    // information in a fake HTTP request that will be caught by Fiddler
+    //
+    // If a frame is split in multiple messages, following function will combine
+    // them into one 
+    //
+    static function ExtractSocketMessage(oMsg: WebSocketMessage)
+    {      
+        if (oMsg.FrameType != WebSocketFrameTypes.Continuation)
+        {               
+            var messageID = String.Format(
+                "{0}.{1}", oMsg.IsOutbound ? "Client" : "Server", oMsg.ID);
+           
+            var wsSession = GetWsSession(oMsg);
+            requestUrlBuilder.AppendFormat("{0}.{1}", wsSession, messageID);
+               
+            requestBodyBuilder.Append("{");
+            requestBodyBuilder.AppendFormat("\"doneTime\": \"{0}\",", 
+                oMsg.Timers.dtDoneRead.ToString("hh:mm:ss.fff"));
+            requestBodyBuilder.AppendFormat("\"messageType\": \"{0}\",", 
+                oMsg.FrameType);
+            requestBodyBuilder.AppendFormat("\"messageID\": \"{0}\",", messageID);
+            requestBodyBuilder.AppendFormat("\"wsSession\": \"{0}\",", wsSession);
+            requestBodyBuilder.Append("\"payload\": ");
+               
+                
+            var payloadString = oMsg.PayloadAsString();
+
+            
+          if (oMsg.FrameType == WebSocketFrameTypes.Binary)
+            {
+                payloadString = HexToString(payloadString); 
+            }
+
+            if (payloadString.StartsWith("{"))
+            {
+                requestPayloadIsJson = true;                   
+            }
+            else
+            {
+                requestBodyBuilder.Append("\"");
+            }
+               
+            requestBodyBuilder.AppendFormat("{0}", payloadString);
+                          
+        }
+        else
+        {
+            var payloadString = HexToString(oMsg.PayloadAsString());
+            requestBodyBuilder.AppendFormat("{0}", payloadString);
+        }
+           
+        requestPartCount++;
+           
+        if (oMsg.IsFinalFrame)
+        {
+            if (!requestPayloadIsJson)
+            {
+                requestBodyBuilder.Append("\"");
+            }
+           
+            requestBodyBuilder.AppendFormat(", \"requestPartCount\": \"{0}\"", 
+                requestPartCount);
+               
+            requestBodyBuilder.Append("}");      
+            
+                                
+            
+            SendRequest(requestUrlBuilder.ToString(), requestBodyBuilder.ToString()); 
+                        
+            requestBodyBuilder.Clear();
+            requestUrlBuilder.Clear();
+            requestPayloadIsJson = false;
+            requestPartCount = 0;
+        }       
+    }
+       
+    //
+    // Generate fake HTTP request with JSON data that will be caught by Fiddler
+    // We can inspect this request in "Inspectors" tab -> "JSON" sub-tab
+    //
+    static function SendRequest(urlPath: String, message: String)
+    {       
+        var request = String.Format(
+            "POST http://fakewebsocket/{0} HTTP/1.1\n" +
+            "User-Agent: Fiddler\n" +
+            "Content-Type: application/json; charset=utf-8\n" +
+            "Host: fakewebsocket\n" +
+            "Content-Length: {1}\n\n{2}",
+            urlPath, message.Length, message);
+           
+            FiddlerApplication.oProxy.SendRequest(request, null);
+    }
+
+    //
+    // Unfortunately, WebSocketMessage class does not have a member for 
+    // Web Socket session number. Therefore, we are extracting session number
+    // from its string output.
+    //
+    static function GetWsSession(oMsg: WebSocketMessage)
+    {
+        var message = oMsg.ToString();
+        var index = message.IndexOf(".");
+        var wsSession = message.Substring(0, index);
+       
+        return wsSession;
+    }
+       
+    //
+    // Extract Hex to String.
+    // E.g., 7B-22-48-22-3A-22-54-72-61-6E to {"H":"TransportHub","M":"
+    //
+    static function HexToString(sourceHex: String)
+    {
+        sourceHex = sourceHex.Replace("-", "");
+       
+        var sb = new System.Text.StringBuilder();
+       
+        for (var i = 0; i < sourceHex.Length; i += 2)
+        {
+            var hs = sourceHex.Substring(i, 2);
+            sb.Append(Convert.ToChar(Convert.ToUInt32(hs, 16)));
+        }
+       
+        var ascii = sb.ToString();
+        return ascii;
+
+    }
+}
+\end{lstlisting}
+
 
 
 \section{NUnit（MIT License）}
