@@ -14992,6 +14992,13 @@ Eclipse可以对当前尚未完成的工作做个标记，常用的是// TODO <�
 
 配置里增加缓存。
 
+
+\subsection{Plugin}
+
+\paragraph{Buildship}Buildship 是 Eclipse 插件的集合，它可以对 Gradle 项目提供支持。
+Buildship 旨在为 Gradle 项目在 Eclipse 内部提供深度的整合，它同时也使 Eclipse IDE 更加强大。
+Buildship 1.0 版专注于 Gradle 用户，之后的版本会扩大至 Gradle 的开发者。
+
 \subsection{The import cannot be resolved}
 
 运行如下命令可解决：
@@ -15018,6 +15025,20 @@ Java世界中主要有三大构建工具：Ant、Maven和Gradle。
 经过几年的发展，Ant几乎销声匿迹、Maven也日薄西山，而Gradle的发展则如日中天。
 笔者有幸见证了Maven的没落和Gradle的兴起。Maven的主要功能主要分为5点，
 分别是依赖管理系统、多模块构建、一致的项目结构、一致的构建模型和插件机制。
+
+\subsection{Eclipse下使用Gradle构建}
+
+需要右键项目 "Configure->Convert to Gradle Project.."，
+如图\ref{code:ConvertToGradleProject}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{ConvertToGradleProject.png}
+	\caption{转换为Gradle项目}
+	\label{code:ConvertToGradleProject}
+\end{figure}
+
+设置下jar下载保存的地址,不然默认保存在C盘。
 
 \section{Maven}
 
@@ -15221,8 +15242,31 @@ WebSocket的访问路径为：
 http://host:port/myApp/myEndpoint/{server-id}/{session-id}/{transport}
 \end{lstlisting}
 
-\subsection{Error during WebSocket handshake: Unexpected response code: 302}
-原因是我添加了拦截器，但是拦截器里面没有代码，但是返回的false，被拦截了。
+\subsection{WebSocket连接过程}
+
+首先客户端会发送一个握手包。这里就体现出了WebSocket与Http协议的联系，
+握手包的报文格式必须符合HTTP报文格式的规范。其中：
+
+方法必须位GET方法
+HTTP版本不能低于1.1
+必须包含Upgrade头部，值必须为websocket
+必须包含Sec-WebSocket-Key头部，值是一个Base64编码的16字节随机字符串。
+必须包含Sec-WebSocket-Version头部，值必须为13
+
+
+服务端验证客户端的握手包符合规范之后也会发送一个握手包给客户端。格式如下：
+
+必须包含Connection头部，值必须为Upgrade
+必须包含一个Upgrade头部，值必须为websocket
+必须包含一个Sec-Websocket-Accept头部，值是根据如下规则计算的：
+
+首先将一个固定的字符串258EAFA5-E914-47DA-95CA-C5AB0DC85B11拼接到Sec-WebSocket-Key对应值的后面。
+对拼接后的字符串进行一次SHA-1计算
+将计算结果进行Base-64编码
+3）客户端收到服务端的握手包之后，验证报文格式时候符合规范，
+以2）中同样的方式计算Sec-WebSocket-Accept并与服务端握手包里的值进行比对。
+
+其中任何一步不通过则不能建立WebSocket连接。
 
 \subsection{Spring Web Socket调试}
 
@@ -15324,6 +15368,17 @@ We have tested the application using soapUI and there is no problem.
 When we have tried to invoke a secured ws using a spring-ws client, the message seems to be correctly build.
 
 解决：try using Xerces 2.8.1 and Xalan 2.7.0 on the server-side。
+
+\paragraph{Error during WebSocket handshake: Unexpected response code: 404}
+
+If a request to a WebSocket endpoint is correct, 
+the endpoint returns "101 Switching Protocols". 
+Otherwise, the endpoint will return a normal HTTP response.
+
+You should interpret the 404 error you got as is. That is, the path part of the URL is wrong and it is not found (404 Not Found).
+
+\paragraph{Error during WebSocket handshake: Unexpected response code: 302}
+原因是我添加了拦截器，但是拦截器里面没有代码，但是返回的false，被拦截了。
 
 \subsection{Spring Bean的生命周期}
 
@@ -15475,6 +15530,55 @@ No file contained in the WEB-INF directory may be served directly to a client by
 However, the contents of the WEB-INF directory are visible to servlet code using the getResource 
 and getResourceAsStream method calls on the ServletContext, and may be exposed using 
 the RequestDispatcher calls.
+
+\subsection{Apache Tomcat生命周期}
+
+1、Post-Read-Request阶段
+
+在正常请求处理流程中，这是模块可以插入钩子的第一个阶段。对于那些想很早进入处理请求的模块来说，
+这个阶段可以被利用。
+
+2、URI Translation阶段 
+
+Apache在本阶段的主要工作：将请求的URL映射到本地文件系统。模块可以在这阶段插入钩子，
+执行自己的映射逻辑。mod\_alias就是利用这个阶段工作的。
+
+3、Header Parsing阶段
+Apache在本阶段的主要工作：检查请求的头部。由于模块可以在请求处理流程的任何一个点上执行检查请求头部的任务，
+因此这个钩子很少被使用。mod\_setenvif就是利用这个阶段工作的。
+
+4、Access Control阶段 
+Apache在本阶段的主要工作：根据配置文件检查是否允许访问请求的资源。Apache的标准逻辑实现了允许和拒绝指令。
+mod\_authz\_host就是利用这个阶段工作的。
+
+5、Authentication阶段
+Apache在本阶段的主要工作：按照配置文件设定的策略对用户进行认证，并设定用户名区域。
+模块可以在这阶段插入钩子，实现一个认证方法。
+
+6、Authorization阶段 
+
+Apache在本阶段的主要工作：根据配置文件检查是否允许认证过的用户执行请求的操作。
+模块可以在这阶段插入钩子，实现一个用户权限管理的方法。
+
+7、MIME Type Checking阶段
+Apache在本阶段的主要工作：根据请求资源的MIME类型的相关规则，判定将要使用的内容处理函数。
+标准模块mod\_negotiation和mod\_mime实现了这个钩子。
+
+8、FixUp阶段 
+这是一个通用的阶段，允许模块在内容生成器之前，运行任何必要的处理流程。
+和Post\_Read\_Request类似，这是一个能够捕获任何信息的钩子，也是最常使用的钩子。
+
+9、Response阶段 
+Apache在本阶段的主要工作：生成返回客户端的内容，负责给客户端发送一个恰当的回复。
+这个阶段是整个处理流程的核心部分。
+
+10、Logging阶段 
+Apache在本阶段的主要工作：在回复已经发送给客户端之后记录事务。
+模块可能修改或者替换Apache的标准日志记录。
+
+11、CleanUp阶段 
+Apache在本阶段的主要工作：清理本次请求事务处理完成之后遗留的环境，
+比如文件、目录的处理或者Socket的关闭等等，这是Apache一次请求处理的最后一个阶段。
 
 \subsection{Java Servlet}
 
