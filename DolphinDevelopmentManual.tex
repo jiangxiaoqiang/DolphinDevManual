@@ -291,9 +291,8 @@ they strive to achieve a balance between quality and speed of execution.}
 
 即使一切进展顺利，我们也很难对功能所需的时间做出正确的预算。并且，开发软件时碰到各种意想不到的问题是非常常见的。
 一个简单的合并操作会导致一系列小bug，一次框架升级意味着一些函数必须改变或者一些API不按照你想象的那样工作。
-
 Hofstadter Law（ 霍夫施塔特定律）其实道出了真谛：做事所花费的时间总是比你预期的要长，
-即使你在预期中已经考虑了 Hofstadter Law（ 霍夫施塔特定律）。
+即使你在预期中已经考虑了 Hofstadter Law(夫施塔特定律)。
 
 \paragraph{从小事做起，然后再扩展}
 
@@ -314,12 +313,10 @@ Hofstadter Law（ 霍夫施塔特定律）其实道出了真谛：做事所花�
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.8]{YourFavoriteDislikeProgramLanguage.png}
+	\includegraphics[scale=1]{YourFavoriteDislikeProgramLanguage.png}
 	\caption{对编程语言的喜好}
 	\label{fig:YourFavoriteDislikeProgramLanguage}
 \end{figure}
-
-
 
 \subsection{Architectural Requirements}
 
@@ -14991,6 +14988,10 @@ Eclipse可以对当前尚未完成的工作做个标记，常用的是// TODO <�
 
 快捷键：Shift + Alt + S。
 
+\subsection{提高启动速度}
+
+配置里增加缓存。
+
 \subsection{The import cannot be resolved}
 
 运行如下命令可解决：
@@ -15199,7 +15200,51 @@ context包使用分层和有继承关系的上下文类
 
 \subsection{Spring Web Socket}
 
+Web Socket它是 HTML5 一种新的协议，实现了浏览器与服务器全双工通信，
+只需要一个握手动作，浏览器和服务器之间就形成了一个快速通道，然后进行数据互传。
 
+优点：
+
+1、交互时的 header 只有约 2Bytes
+2、服务端可以主动推送数据给客户端
+
+\paragraph{配置自动扫描}
+不要忘记在Spring MVC的配置文件中配置对此类的自动扫描：
+
+\begin{lstlisting}[language=XML]
+<context:component-scan base-package="com.zw.socket.service.**" />
+\end{lstlisting}
+
+WebSocket的访问路径为：
+
+\begin{lstlisting}[language=HTML]
+http://host:port/myApp/myEndpoint/{server-id}/{session-id}/{transport}
+\end{lstlisting}
+
+\subsection{Error during WebSocket handshake: Unexpected response code: 302}
+原因是我添加了拦截器，但是拦截器里面没有代码，但是返回的false，被拦截了。
+
+\subsection{Spring Web Socket调试}
+
+使用Chrome DevTools可以查看Web Socket连接，
+在Network面板中，如图\ref{fig:ChromeWebsocketDebugger}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{ChromeWebsocketDebugger.jpg}
+	\caption{Chrome DevTools调试Websocket}
+	\label{fig:ChromeWebsocketDebugger}
+\end{figure}
+
+Fiddler:打开Fiddler，点开菜单栏的Rules，选择Customize Rules...
+这时会打开CustomRules.js文件，在class Handlers中加入以下代码:
+
+\begin{lstlisting}[language={[Sharp]C}]
+static function OnWebSocketMessage(oMsg: WebSocketMessage) {
+	// Log Message to the LOG tab
+	FiddlerApplication.Log.LogString(oMsg.ToString());
+}
+\end{lstlisting}
 
 \subsection{常见问题}
 
