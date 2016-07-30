@@ -10595,7 +10595,22 @@ SQL Injection为网络安全中漏洞中，发生次数最多的漏洞。
 
 \subsection{Sqlmap}
 
+sqlmap is an open source penetration testing tool that automates 
+the process of detecting and exploiting SQL injection flaws and 
+taking over of database servers. It comes with a powerful detection engine, 
+many niche features for the ultimate penetration tester and 
+a broad range of switches lasting from database fingerprinting, 
+over data fetching from the database, to accessing the 
+underlying file system and executing commands on the 
+operating system via out-of-band connections.
 
+\paragraph{基础使用}
+
+
+
+\begin{lstlisting}[language=Bash]
+./sqlmap.py -u "http://www.target.com/vuln.php?id=1" -v 1 –dbs
+\end{lstlisting}
 
 \section{Nmap(GNU General Public License)}
 
@@ -11797,6 +11812,10 @@ version numbers, machine type, debug information, and more.Website:http://depend
 	\item{共享内存（匿名的和具名的）}
 	\item{远程过程调用（Solaris门和Sun RPC）}
 \end{itemize}
+
+Java领域中有很多可实现远程通讯的技术，
+例如：RMI、MINA、ESB、Burlap、Hessian、SOAP、EJB和JMS等。
+
 
 \subsection{RAML}
 
@@ -14861,6 +14880,35 @@ with exemplary process content and tools, supporting a broad variety of project 
 	\label{code:JavaCodeTemplate}
 \end{figure}
 
+\subsection{web.xml配置文件}
+
+\paragraph{Servlet}
+A Java servlet is a Java program that extends the capabilities of a server. 
+Although servlets can respond to any types of requests, 
+they most commonly implement applications hosted on Web servers.
+Such Web servlets are the Java counterpart to other dynamic 
+Web content technologies such as PHP and ASP.NET.
+Java Servlet 是运行在 Web 服务器或应用服务器上的程序，
+它是作为来自 Web 浏览器或其他HTTP客户端的请求和HTTP服务器上的数据库或应用程序之间的中间层。
+
+\paragraph{Java web listener监听器}
+监听器：
+    正对WEB环境的监听
+    主要有三类：
+        1.ServletContext:对servlet上下文(application对象)进行监听
+        2.Session:对session监听
+        3.Request:对request的监听
+主要是：ServeltContext.Session的监听
+在WEB端实现监听实质：
+实现一系列的监听接口(实现相应的接口，覆写各接口中相应的方法，
+在相应的事件触发的时候会执行自己的监听器中的覆写的方法，
+在各个方法中完成自己想要的操作，从而实现了监听)
+
+监听--就是在进行某种各个范围(application,session,request)中有相关值的设置、修改、替换的时候，
+这些操作都会触发事件，而java中事件的代理机制，事件处理是利用listener机制，
+所以为了在事件触发的时候能够使自己能够采取相应的措施，
+就需要---->继承这样的listener，在listener中覆写相应的方法，
+覆写相应的事件处理方法，在对应的方法中处理对应的事件，也就是进行了监听。
 
 \section{JAX-WS(Java™ API for XML Web Services)}
 
