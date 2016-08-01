@@ -15151,6 +15151,10 @@ eclipse -->project -->clean... 选项， 将工程中的.class文件删除，
 类似于jbuild中的rebuild。It removes whatever already-compiled files 
 are in your project so that you can do a complete fresh rebuild.
 
+\subsection{配置项目}
+
+
+
 
 \section{MyEclipse}
 
@@ -15269,6 +15273,34 @@ Spring框架是由于软件开发的复杂性而创建的。Spring使用的是�
 缺少IDE重构操作的支持，如果在Eclipse要对类改名，那么你还需要去XML文件里手工去改了，这似乎是所有XML方式的缺憾所在。
 
 \subsection{Spring安全配置}
+
+\subsection{Spring获取Session}
+
+单独使用spring时如何在普通类中获取session,reuqest。
+首先要在web.xml增加如下代码:
+
+\begin{lstlisting}[language=XML]
+<listener>
+	<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+</listener>
+\end{lstlisting}
+
+接着在普通bean类中:
+
+\begin{lstlisting}[language=Java]
+@Autowired  
+private HttpSession session;  
+
+@Autowired  
+private HttpServletRequest request;  
+\end{lstlisting}
+
+当前加了上面的listener后也可以使用代码的方式获取reuqest对象：
+
+\begin{lstlisting}[language=Java]
+HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest(); 
+\end{lstlisting}
+
 
 
 \subsection{Spring Bean配置}
@@ -15410,6 +15442,7 @@ Web Socket它是 HTML5 一种新的协议，实现了浏览器与服务器全双
 2、服务端可以主动推送数据给客户端
 
 \paragraph{配置自动扫描}
+
 不要忘记在Spring MVC的配置文件中配置对此类的自动扫描：
 
 \begin{lstlisting}[language=XML]
@@ -15427,12 +15460,13 @@ http://host:port/myApp/myEndpoint/{server-id}/{session-id}/{transport}
 首先客户端会发送一个握手包。这里就体现出了WebSocket与Http协议的联系，
 握手包的报文格式必须符合HTTP报文格式的规范。其中：
 
-方法必须位GET方法
-HTTP版本不能低于1.1
-必须包含Upgrade头部，值必须为websocket
-必须包含Sec-WebSocket-Key头部，值是一个Base64编码的16字节随机字符串。
-必须包含Sec-WebSocket-Version头部，值必须为13
-
+\begin{itemize}
+	\item{方法必须为GET方法}
+	\item{HTTP版本不能低于1.1}
+	\item{必须包含Upgrade头部，值必须为websocket}
+	\item{必须包含Sec-WebSocket-Key头部，值是一个Base64编码的16字节随机字符串}
+	\item{必须包含Sec-WebSocket-Version头部，值必须为13}
+\end{itemize}
 
 服务端验证客户端的握手包符合规范之后也会发送一个握手包给客户端。格式如下：
 
@@ -15450,7 +15484,7 @@ HTTP版本不能低于1.1
 
 \subsection{Spring Web Socket调试}
 
-使用Chrome DevTools可以查看Web Socket连接，
+\paragraph{使用Chrome DevTools调试}使用Chrome DevTools可以查看Web Socket连接，
 在Network面板中，如图\ref{fig:ChromeWebsocketDebugger}所示：
 
 \begin{figure}[htbp]
@@ -15460,7 +15494,9 @@ HTTP版本不能低于1.1
 	\label{fig:ChromeWebsocketDebugger}
 \end{figure}
 
-Fiddler:打开Fiddler，点开菜单栏的Rules，选择Customize Rules...
+在Network->WS选项卡中，可以查看Websocket发送的数据Frames、Cookie等。
+
+\paragraph{使用Fiddler调试}Fiddler:打开Fiddler，点开菜单栏的Rules，选择Customize Rules...
 这时会打开CustomRules.js文件，在class Handlers中加入以下代码:
 
 \begin{lstlisting}[language={[Sharp]C}]
@@ -15559,6 +15595,10 @@ You should interpret the 404 error you got as is. That is, the path part of the 
 
 \paragraph{Error during WebSocket handshake: Unexpected response code: 302}
 原因是我添加了拦截器，但是拦截器里面没有代码，但是返回的false，被拦截了。
+
+\subsection{Kafka消费客户端}
+
+
 
 \subsection{Spring Bean的生命周期}
 
