@@ -14926,13 +14926,22 @@ components that linked to the Java class library would be subject
 to the terms of the GPL license. 
 OpenJDK is the official reference implementation of Java SE since version 7.
 
-\subsection{JDK and JRE}
+\subsection{JDK、JRE、JVM}
 
-JDK
+\paragraph{JDK}
+JDK 是整个Java的核心，包括了Java运行环境（Java Runtime Envirnment），
+一堆Java工具和Java基础的类库（rt.jar）。不论什么Java应用服务器实质都是内置了某个版本的JDK.最主流的JDK是Sun公司发布的JDK，
+除了Sun之外，还有很多公司和组织都开发了自己的JDK，例如IBM公司开发的JDK，BEA公司的Jrocket，还有GNU组织开发的JDK等等。
+其中IBM的JDK包含的JVM（Java Virtual Machine）运行效率要比Sun JDK包含的JVM高出许多。
+而专门运行在x86平台的Jrocket在服务端运行效率也要比Sun JDK好很多。但不管怎么说，我们还是需要先把Sun JDK掌握好。
 
-JDK 是整个Java的核心，包括了Java运行环境（Java Runtime Envirnment），一堆Java工具和Java基础的类库（rt.jar）。不论什么Java应用服务器实质都是内置了某个版本的JDK.最主流的JDK是Sun公司发布的JDK，除了Sun之外，还有很多公司和组织都开发了自己的JDK，例如IBM公司开发的JDK，BEA公司的Jrocket，还有GNU组织开发的JDK等等。其中IBM的JDK包含的JVM（Java Virtual Machine）运行效率要比Sun JDK包含的JVM高出许多。而专门运行在x86平台的Jrocket在服务端运行效率也要比Sun JDK好很多。但不管怎么说，我们还是需要先把Sun JDK掌握好。
-
-JDK一般有三种版本：SE（J2SE），standard edition，标准版，是我们通常用的一个版本EE（J2EE），enterpsise edtion，企业版，使用这种JDK开发J2EE应用程序，ME（J2ME），micro edtion，主要用于移动设备、嵌入式设备上的java应用程序Java开发工具（JDK）是许多Java专家最初使用的开发环境。尽管许多编程人员已经使用第三方的开发工具，但JDK仍被当作Java开发的重要工具。JDK由一个标准类库和一组建立，测试及建立文档的Java实用程序组成。其核心Java API是一些预定义的类库，开发人员需要用这些类来访问Java语言的功能。Java API包括一些重要的语言结构以及基本图形，网络和文件I/O.一般来说，Java API的非I/O部分对于运行Java的所有平台是相同的，而I/O部分则仅在通用Java环境中实现。
+JDK一般有三种版本：SE（J2SE），standard edition，标准版，是我们通常用的一个版本EE（J2EE），
+enterpsise edtion，企业版，使用这种JDK开发J2EE应用程序，ME（J2ME），
+micro edtion，主要用于移动设备、嵌入式设备上的java应用程序Java开发工具（JDK）是许多Java专家最初使用的开发环境。
+尽管许多编程人员已经使用第三方的开发工具，但JDK仍被当作Java开发的重要工具。JDK由一个标准类库和一组建立，
+测试及建立文档的Java实用程序组成。其核心Java API是一些预定义的类库，开发人员需要用这些类来访问Java语言的功能。
+Java API包括一些重要的语言结构以及基本图形，网络和文件I/O.一般来说，Java API的非I/O部分对于运行Java的所有平台是相同的，
+而I/O部分则仅在通用Java环境中实现。
 
 作为JDK实用程序，工具库中有七种主要程序。
 
@@ -14950,9 +14959,56 @@ JDK一般有三种版本：SE（J2SE），standard edition，标准版，是我�
 
 ◆Javap：Java反汇编器，显示编译类文件中的可访问功能和数据，同时显示字节代码含义。
 
-JRE
+\paragraph{JRE}
+JRE（Java Runtime Environment，Java运行环境），运行JAVA程序所必须的环境的集合，包含JVM标准实现及Java核心类库。
+是Sun的产品，包括两部分：JavaRuntimeEnvironment和JavaPlug-inJavaRuntimeEnvironment（JRE）是可以在其上运行、
+测试和传输应用程序的Java平台。它包括Java虚拟机、Java平台核心类和支持文件。它不包含开发工具——编译器、调试器和其它工具。
+JRE需要辅助软件 ——JavaPlug-in——以便在浏览器中运行applet.J2RE是Java2 Runtime Environment，
+即Java运行环境，有时简称JRE.如果你只需要运行Java程序或Applet，下载并安装它即可。如果你要自行开发 Java软件，
+请下载JDK.在JDK中附带有JRE.注意由于Microsoft对Java的支持不完全，请不要使用IE自带的虚拟机来运行 Applet，务必安装一个JRE或JDK.
 
-JRE（Java Runtime Environment，Java运行环境），运行JAVA程序所必须的环境的集合，包含JVM标准实现及Java核心类库。是Sun的产品，包括两部分：JavaRuntimeEnvironment和JavaPlug-inJavaRuntimeEnvironment（JRE）是可以在其上运行、测试和传输应用程序的Java平台。它包括Java虚拟机、Java平台核心类和支持文件。它不包含开发工具——编译器、调试器和其它工具。JRE需要辅助软件 ——JavaPlug-in——以便在浏览器中运行applet.J2RE是Java2 Runtime Environment，即Java运行环境，有时简称JRE.如果你只需要运行Java程序或Applet，下载并安装它即可。如果你要自行开发 Java软件，请下载JDK.在JDK中附带有JRE.注意由于Microsoft对Java的支持不完全，请不要使用IE自带的虚拟机来运行 Applet，务必安装一个JRE或JDK.
+\paragraph{JVM}
+首先通过IDE编写完java程序之后，就要javac来编译成class文件，分为：词法分析，语法分析，语义分析，代码生成是个阶段，
+在语义分析阶段又可以分为：填充符号表、标注检查、数据流分析和控制流分析。标注检查比如定义int a=1+2，
+在这个阶段就会被解析成int a=3; 又比如在控制流分析阶段又去除语法糖的动作，类似foreach的解语法糖等。
+
+其次，编译生成class文件之后，就需要JVM加载。加载涉及到一个双亲委派模型，需要对双亲委派模型进行一下论述，
+以及为什么需要双亲委派模型（为了安全加载）。
+
+类在加载之后就需要涉及验证-准备-解析-初始化的操作。
+验证：目的是为了确保Class文件的字节流中包含的信息符合当前虚拟机的要求，并且不会危害虚拟机自身的安全。
+比如是否以魔数0xCAFEBABE开头。
+准备：正式为类变量分配内存并设置类变量初始值的阶段。譬如public static int value=123;这时候赋值value为0.
+解析：虚拟机将常量池内的符号引用转换为直接引用的过程。
+
+初始化：这个阶段在上一篇讲过了，一定要突出这个知识点：虚拟机规范严格规定了有且只有5种情况（JDK7）必须对类进行初始化(执行类构造器()方法):
+
+遇到new,getstatic,putstatic,invokestatic这失调字节码指令时，如果类没有进行过初始化，
+则需要先触发其初始化。生成这4条指令的最常见的Java代码场景是：
+使用new关键字实例化对象的时候、读取或设置一个类的静态字段（被final修饰、已在编译器把结果放入常量池的静态字段除外）的时候，
+以及调用一个类的静态方法的时候。
+
+使用java.lang.reflect包的方法对类进行反射调用的时候，如果类没有进行过初始化，则需要先触发其初始化。
+当初始化一个类的时候，如果发现其父类还没有进行过初始化，则需要先触发其父类的初始化。
+
+当虚拟机启动时，用户需要指定一个要执行的主类（包含main()方法的那个类），虚拟机会先初始化这个主类。
+
+当使用jdk1.7动态语言支持时，如果一个java.lang.invoke.MethodHandle实例最后的解析结果REF\_getstatic,REF\_putstatic,REF\_invokeStatic的方法句柄，
+并且这个方法句柄所对应的类没有进行初始化，则需要先出触发其初始化。
+初始化之后就可以使用了，加载的类信息存入了运行时数据区的方法区，也就是俗称的永久代。运行时数据区分为：java堆，java栈，
+本地方法栈，方法区，pc寄存器。然后简单叙述下这些概念。
+
+new一个对象需要在java堆中开辟内存，使用完之后就需要垃圾回收操作了，接下去要将GC了。
+
+以Hot spot为例，java堆分为年轻代和老年代。通过GC Roots标记不可达内存对象进行回收处理。
+GC算法有：Mark-Sweep, Copying, Mark-Compact, 分代。接下去就论述垃圾收集器了。
+年轻代有Serial, ParNew, Parallel Scavenge等都是采用复制算法。
+
+老年代有Serial-Old, Parallel-Old, CMS。还有一个G1收集器。一般互联网公司喜欢采用CMS，
+然后就论述了一下CMS，CMS分为5个部分：初始标记，并发标记，重新标记，并发清除和并发重置，
+其中初始标记和重新标记是需要Stop the World的。CMS还有一个概念就是Concurrent Mode Failure，
+发生之后需要来一记Serial-Old的干活。
+
 
 \subsection{Java注释}
 
@@ -15013,6 +15069,28 @@ Java Servlet 是运行在 Web 服务器或应用服务器上的程序，
 	\item{rt.jar是关于运行(runtime)环境的类库}
 	\item{tools.jar是关于一些工具的类库}
 \end{itemize}
+
+\section{线程}
+
+\subsection{Java多线程}
+
+继承Thread类的方式：
+
+\begin{lstlisting}[language=Java]
+public class KafkaComsumerImpl extends Thread {
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub		
+	}
+}
+\end{lstlisting}
+
+启动线程：
+
+\begin{lstlisting}[language=Java]
+new KafkaComsumerImpl(consumer).start();
+\end{lstlisting}
+
 
 \section{JAX-WS(Java™ API for XML Web Services)}
 
@@ -15111,7 +15189,7 @@ Ctrl + E,在右边显示出当前打开的所有文件。
 	\label{code:LocateSourceCode}
 \end{figure}
 
-\paragraph{查找类}
+\paragraph{打开资源}
 查找类的快捷键为Ctrl + Shift + R。
 这可能是所有快捷键组合中最省时间的了。这组快捷键可以让你打开你的工作区中任何一个文件，
 而你只需要按下文件名或mask名中的前几个字母，比如applic*.xml。美中不足的是这组快捷键并非在所有视图下都能用。
@@ -15147,6 +15225,17 @@ Eclipse可以对当前尚未完成的工作做个标记，常用的是// TODO <�
 窗口总是在按住截屏键后消失，
 此时可以将鼠标点住变量查看窗口(按住左键不放)，
 使用截屏快捷键(Ctrl+Alt+A)截取即可。
+
+\paragraph{关闭编辑器中不用的tab}
+编辑中太多的tab会导致eclipse性能下降，可以这样控制下tab的个数：
+Window -> Preferences -> General -> Editors
+勾选 Close editors automatically 并设置 Number of opened tabs 为5。
+
+\paragraph{Eclipse智能提示}
+定位到：Windows→Preferences→Java→Editor→Content Assist。
+然后修改：Auto Activation triggers for java的默认值“.”为".abc"。
+接着File→Export→Preferences→导出到某一文件（假设为test.epf),
+然后用记事本打开test.epf,搜索".abc"然后将其改为".abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVW"，保存即可。
 
 \subsection{提高启动速度}
 
@@ -15189,10 +15278,6 @@ are in your project so that you can do a complete fresh rebuild.
 \subsection{从SVN检出项目}
 
 Import->SVN。
-
-\section{MyEclipse}
-
-\subsection{常用操作}
 
 \section{Gradle}
 
@@ -15335,7 +15420,12 @@ private HttpServletRequest request;
 HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest(); 
 \end{lstlisting}
 
+\subsection{<context:component-scan>}
 
+在xml配置了这个标签后，spring可以自动去扫描base-pack下面或者子包下面的java文件，
+如果扫描到有@Component，@Controller，@Service等这些注解的类，则把这些类注册为bean。
+注意：如果配置了<context:component-scan>那么<context:annotation-config/>标签就可以不用再xml中配置了，
+因为前者包含了后者。另外<context:annotation-config/>还提供了两个子标签。
 
 \subsection{Spring Bean配置}
 
@@ -15471,6 +15561,12 @@ Web Socket它是 HTML5 一种新的协议，实现了浏览器与服务器全双
 只需要一个握手动作，浏览器和服务器之间就形成了一个快速通道，然后进行数据互传。
 优点：交互时的 header 只有约 2Bytes,服务端可以主动推送数据给客户端。
 在建立连接之后，真正的数据传输阶段是不需要http协议参与的。
+在开发过程中找不到匹配的方法时(No matching method)，
+需要将相应的请求的Controller进行注册。
+
+\begin{lstlisting}[language=XML]
+<bean class="com.zw.socket.service.controller.IndexController"></bean>
+\end{lstlisting}
 
 \paragraph{STOMP}
 
@@ -15494,6 +15590,68 @@ WebSocket的访问路径为：
 \begin{lstlisting}[language=HTML]
 http://host:port/myApp/myEndpoint/{server-id}/{session-id}/{transport}
 \end{lstlisting}
+
+\paragraph{Spring Websocket Handshake Interceptor}
+
+Handshake Interceptor顾名思义是在WebSocket握手时做相应的操作，
+其中包含2个重要的方法是握手前(beforeHandshake)和握手后(afterHandshake)。
+
+\paragraph{WebSocketHandler}
+A handler for WebSocket messages and lifecycle events.
+Implementations of this interface are encouraged to handle 
+exceptions locally where it makes sense or alternatively let 
+the exception bubble up in which case by default the exception 
+is logged and the session closed with SERVER\_ERROR(1011). 
+The exception handling strategy is provided by ExceptionWebSocketHandlerDecorator 
+and it can be customized or replaced by decorating the WebSocketHandler with a different decorator.
+注册Spring WebSocketHandler代码如下：
+
+\begin{lstlisting}[language=Java]
+@Configuration
+@EnableWebMvc
+@EnableWebSocket
+@Component
+public class WebSocketConfig1 extends WebMvcConfigurerAdapter implements WebSocketConfigurer {	
+	@Autowired
+	private SystemWebSocketHandler systemWebSocketHandler;
+	
+	@Override
+	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+		registry.addHandler(systemWebSocketHandler, "/hello").addInterceptors(new WebSocketHandshakeInterceptor());
+		//注册SockJS的处理拦截器,拦截url为/app/hello的请求
+		registry.addHandler(systemWebSocketHandler, "/hello").addInterceptors(new WebSocketHandshakeInterceptor()).withSockJS();
+	}	
+}
+\end{lstlisting}
+
+\subsection{C\#客户端连接Spring Websocket}
+
+使用C\#连接WebSocket的代码如下：
+
+\begin{lstlisting}[language={[Sharp]C}]
+using (var ws = new WebSocket("ws://localhost:9090/clbs/hello/websocket"))
+{
+	ws.OnMessage += (sender, e) =>
+	Console.WriteLine("Laputa says: " + e.Data);
+	ws.Connect();
+	ws.Send("BALUS");
+	Console.ReadKey(true);
+}
+\end{lstlisting}
+
+其中clbs为项目的名称(appName)，
+hello为Spring WebSocket的终结点，
+在连接的过程中注意需要在最后添加websocket，
+而且需要配置WebSocket的Url不经过安全认证，否则会报如下错误：
+
+\begin{lstlisting}[language={[Sharp]C}]
+2016/8/4 17:50:38|Fatal|WebSocket.doHandshake|Indicates the redirection.
+2016/8/4 17:50:38|Error|WebSocket.Send|This operation isn't available in: closed
+\end{lstlisting}
+
+如果配置需要安全认证时，由于WebSocket没有提交认证数据，
+所以会直接重定向到登录页面，所以错误中会有Indicates the redirection提示。
+在测试阶段直接指定WebSocket不需要进行安全认证。
 
 \subsection{WebSocket连接过程}
 
@@ -15630,8 +15788,8 @@ When we have tried to invoke a secured ws using a spring-ws client, the message 
 If a request to a WebSocket endpoint is correct, 
 the endpoint returns "101 Switching Protocols". 
 Otherwise, the endpoint will return a normal HTTP response.
-
-You should interpret the 404 error you got as is. That is, the path part of the URL is wrong and it is not found (404 Not Found).
+You should interpret the 404 error you got as is. That is, 
+the path part of the URL is wrong and it is not found (404 Not Found).
 
 \paragraph{Error during WebSocket handshake: Unexpected response code: 302}
 原因是我添加了拦截器，但是拦截器里面没有代码，但是返回的false，被拦截了。
@@ -15759,6 +15917,11 @@ find . -name 'my'
 #从根目录开始查找名为lan.conf的文件
 find / -name "lam.conf"
 \end{lstlisting}
+
+\subsection{设计一个高级消费者（Designing a High Level Consumer）}
+
+
+
 
 
 \section{Apache Tomcat}
@@ -24658,6 +24821,29 @@ LINQ 是 .NET 3.5 導入的一種新的資料存取技術，這個技術可以�
 枚举（用enum关键字声明的类型）；而引用类型包括类（用class关键字声明的类型）和委托（用delegate关键字声明的特殊类）。
 C\#中的每一种类型要么是值类型，要么是引用类型。所以每个对象要么是值类型的实例，要么是引用类型的实例。
 值类型的实例通常是在线程栈上分配的（静态分配），但是在某些情形下可以存储在堆中。引用类型的对象总是在进程堆中分配（动态分配）。
+
+\subsection{Linux怎么查看文件内容}
+
+cat、tac、more、less、head、tail、nl、vi、vim、gvim。
+
+\subsection{消息队列有什么作用}
+
+解耦、容易、扩展性、灵活性、峰值处理能力、排序、缓冲、送达保证、异步通讯。
+
+\subsection{Spring MVC的分发过程}
+
+具体指DispatcherServlet如何运作。
+
+\subsection{Spring AOP和IoC的实现原理}
+
+分别是动态代理和反射。
+
+\subsection{for(;;)和while(true)的区别}
+
+大多数时候开启优化两者之间性能没有什么区别。
+while(true)比for(;;)编译后的指令多。
+while(true)每次编译器都要判断一下true
+for(;;)比while(true)敲的字符数更少。
 
 \section{非技术类}
 
