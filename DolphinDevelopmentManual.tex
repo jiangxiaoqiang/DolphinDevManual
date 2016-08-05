@@ -11138,6 +11138,15 @@ sudo aircrack-ng wep*.cap
 （如果没算出来的话，继续等，aircrack-ng 会在DATA每增加多15000个之后就自动再运行，
 直到算出密码为至，注意此处文件的名字要与步骤3里面设置的名字一样，且*号是必需的）
 
+\section{ZAP}
+
+The OWASP Zed Attack Proxy (ZAP) is one of the world’s most popular free security tools 
+and is actively maintained by hundreds of international volunteers*. 
+It can help you automatically find security vulnerabilities in your web 
+applications while you are developing and testing your applications. 
+Its also a great tool for experienced pentesters to use for manual security testing.
+使用Java语言开发。
+
 \section{Hacking}
 
 \subsection{Google Hacking}
@@ -14873,8 +14882,6 @@ Dan North对此还补充说：“Those system then constrain the options for org
 互联网应用已经从单一Web浏览器时代演进到以API驱动的无线优先(Mobile First)和
 面向全渠道体验(omni-channel experience oriented)的时代。
 
-
-
 \chapter{Java}
 
 \section{基础}
@@ -15237,6 +15244,13 @@ Window -> Preferences -> General -> Editors
 接着File→Export→Preferences→导出到某一文件（假设为test.epf),
 然后用记事本打开test.epf,搜索".abc"然后将其改为".abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVW"，保存即可。
 
+\paragraph{Ctrl+E：快速转换编辑器}
+这组快捷键将帮助你在打开的编辑器之间浏览。使用ctrl+page down或ctrl+page up可以浏览前后的选项卡，
+但是在很多文件打开的状态下，Ctrl+E会更加有效率。
+
+\paragraph{编辑器窗口最大化}
+大显示屏幕能够提高工作效率是大家都知道的。Ctrl+M是编辑器窗口最大化的快捷键。
+
 \subsection{提高启动速度}
 
 配置里增加缓存。
@@ -15393,6 +15407,105 @@ Spring框架是由于软件开发的复杂性而创建的。Spring使用的是�
 
 \subsection{Spring安全配置}
 
+\subsection{Spring IoC启动过程}
+
+\paragraph{ServletContext}
+Web容器在启动的过程中，会为每个Web应用程序创建一个对应的ServletContext对象，
+它代表了当前的Web应用，为Spring IoC容器提供宿主环境。
+在部署Web工程的时候，Web容器会读取web.xml，创建ServletContext，
+当前Web工程所有部分都共享这个Context。context-param为ServletContext提供键值对，
+即Servlet上下文的信息，这些信息Listener、Filter和Servlet都有可能使用到，
+因此先加载context-param，创建ServletContext，然后加载Listener，再加载Filter，最后加载Servlet。
+
+\paragraph{ContextLoaderListener}
+
+web.xml中配置有ContextLoaderListener，也可以自定义一个实现了ServletContextListener接口的Listener类，
+web.xml中的配置实例如下。
+
+\begin{lstlisting}[language=XML]
+<listener>
+	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+</listener>
+\end{lstlisting}
+
+Web容器在启动的过程中会触发ServletContextEvent事件，
+会被ContextLoaderListener监听到，并调用ContextLoaderListener中的contextInitialized方法，
+contextInitialized方法如下所示。
+
+\begin{lstlisting}[language=XML]
+public void contextInitialized(ServletContextEvent event) {
+	this.initWebApplicationContext(event.getServletContext());
+}
+\end{lstlisting}
+
+ContextLoaderListener类继承了ContextLoader，在初始化Context的过程中，
+调用ContextLoader的initWebApplicationContext方法初始化WebApplicationContext。WebApplicationContext是一个接口，
+Spring默认的实现类为XmlWebApplicationContext，XmlWebApplicationContext就是Spring的IoC容器。
+在初始化XmlWebApplicationContext之前，Web容器已经加载了context-param，web.xml中的context-param实例如下所示。
+作为Spring的IoC容器，其对应的Bean定义的配置正是context-param指定的。
+
+\begin{lstlisting}[language=XML]
+<context-param>
+	<param-name>contextConfigLocation</param-name>
+	<param-value>classpath:applicationContext.xml</param-value>
+</context-param>
+\end{lstlisting}
+
+接着进入到initWebApplicationContext方法内，initWebApplicationContext方法定义如下（已省略部分代码）。
+
+\begin{lstlisting}[language=XML]
+public WebApplicationContext initWebApplicationContext(ServletContext servletContext) {      
+if(servletContext.getAttribute(
+	WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE) != null) {
+		throw new IllegalStateException("...");
+	}else{
+		if(this.context == null) {
+			this.context = this.createWebApplicationContext(servletContext);
+		}
+	}
+	servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, this.context);
+}
+\end{lstlisting}
+
+在Spring IoC容器初始化前，
+initWebApplicationContext先检测以ROOT\_WEB\_APPLICATION\_CONTEXT\_ATTRIBUTE为key的值是否为空，
+若不为空，则初始化IoC Context，并在初始化完毕后，
+以ROOT\_WEB\_APPLICATION\_CONTEXT\_ATTRIBUTE为key将IoC Context存储到ServletContext中。
+
+\url{http://tinylcy.me/2016/06/21/Spring-IoC-Context启动过程解析}
+
+
+\paragraph{初始化Servlet}
+
+Servlet可以在web.xml中配置多个，在Spring中，最基本的Servlet为DispatcherServlet，对应的配置实例如下所示。
+
+\begin{lstlisting}[language=XML]
+<servlet>
+	<servlet-name>appServlet</servlet-name>
+	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+	<init-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/spring/appServlet/appServlet-context.xml</param-value>
+	</init-param>
+	<load-on-startup>1</load-on-startup>
+</servlet>
+\end{lstlisting}
+
+DispatcherServlet会建立自己的IoC Context，用以持有相关的Bean，
+在初始化自己的IoC Context的过程中，
+先通过WebApplicationContext.ROOT\_WEB\_APPLICATION\_CONTEXT\_ATTRIBUTE，
+从ServletContext中获取WebApplicationContext，
+将WebApplicationContext作为DispatcherServlet的IoC Context的 parent Context。
+DispatcherServlet自己的IoC Context的初始化工作在DispatcherServlet的initStrategies方法中完成，
+包括控制器映射，视图解析等。
+DispatcherServlet自己的IoC Context的类型也是XmlWebApplicationContext，
+初始化完毕后，Spring将以与DispatcherServlet的servlet-name属性相关的符号作为key，
+将IoC Context保存到 ServletContext中。这样每个Servlet就都可以持有自己的Context，
+也就是都拥有自己的Bean空间，同时，
+各个Servlet之间还共享着key为
+WebApplicationContext.ROOT\_WEB\_APPLICATION\_CONTEXT\_ATTRIBUTE的WebApplicationContext，
+其中定义的Bean为各个Servlet共享的Bean。
+
 \subsection{Spring获取Session}
 
 单独使用spring时如何在普通类中获取session,reuqest。
@@ -15513,6 +15626,7 @@ Spring Web Service返回的参数类名称需要以Response结尾。
 \paragraph{@Component}泛指组件，当组件不好归类的时候，我们可以使用这个注解进行标注。
 @Component注解，意思大致就是告诉Spring，要把类的对象放到容器里，
 以后可以方便的使用@Autowired进行注入。
+是所有受Spring 管理组件的通用形式，@Component注解可以放在类的头上，@Component不推荐使用。
 
 \paragraph{@Autowired}在接口前面标上@Autowired和@Qualifier注释使得接口可以被容器注入，
 当接口存在两个实现类的时候必须指定其中一个来注入，使用实现类首字母小写的字符串来注入。
@@ -15652,6 +15766,14 @@ hello为Spring WebSocket的终结点，
 如果配置需要安全认证时，由于WebSocket没有提交认证数据，
 所以会直接重定向到登录页面，所以错误中会有Indicates the redirection提示。
 在测试阶段直接指定WebSocket不需要进行安全认证。
+在使用websocket-sharp连接时，
+服务端默认没有Session，所以需要服务端手动创建Session。
+
+\begin{lstlisting}[language={[Sharp]C}]
+HttpSession session = servletRequest.getServletRequest().getSession(true);
+\end{lstlisting}
+
+getSession参数为true表示在Session为空时创建一个新的Session。
 
 \subsection{WebSocket连接过程}
 
@@ -15893,7 +16015,6 @@ kafka运行需要JDK支持
 #启动MySQL守护进程
 service start mysqld
 
-
 #卸载MySQL
 
 \end{lstlisting}
@@ -15918,11 +16039,42 @@ find . -name 'my'
 find / -name "lam.conf"
 \end{lstlisting}
 
-\subsection{设计一个高级消费者（Designing a High Level Consumer）}
+\subsection{消费者(Consumer)}
 
+新建立一个线程去单独拖Kafka数据，
+没有新线程会Block住Tomcat的启动。
 
+\subsection{Kafka常用操作}
 
+查看所有Topics：
 
+\begin{lstlisting}[language=Bash]
+./kafka-topics.sh --list --zookeeper 192.168.24.238:2181
+\end{lstlisting}
+
+查看所有Topics和分区：
+
+\begin{lstlisting}[language=Bash]
+./kafka-topics.sh --describe --zookeeper 192.168.24.238:2181
+\end{lstlisting}
+
+删除topic:
+
+\begin{lstlisting}[language=Bash]
+./kafka-topics.sh --zookeeper 192.168.24.238:2181 --delete --topic 13714988574
+\end{lstlisting}
+
+\subsection{Apache Group ID}
+
+\section{Apache ZooKeeper}
+
+Apache ZooKeeper是Apache软件基金会的一个软件项目，
+他为大型分布式计算提供开源的分布式配置服务、同步服务和命名注册。
+ZooKeeper曾经是Hadoop的一个子项目，但现在是一个独立的顶级项目。
+ZooKeeper的架构通过冗余服务实现高可用性。因此，如果第一次无应答，
+客户端就可以询问另一台ZooKeeper主机。ZooKeeper节点将它们的数据存储于一个分层的命名空间，
+非常类似于一个文件系统或一个前缀树结构。客户端可以在节点读写，从而以这种方式拥有一个共享的配置服务。更新是全序的。
+使用ZooKeeper的公司包括Rackspace、雅虎和eBay，以及类似于象Solr这样的开源企业级搜索系统。
 
 \section{Apache Tomcat}
 
@@ -19411,6 +19563,7 @@ attributes and other reflection related capabilities. NUnit brings xUnit to all 
 
 \paragraph{添加NUnit引用}~~在项目的引用上添加NUnit的引用，
 示例的NUnit版本号为2.6.4.14350，Visual Studio 2013，
+
 如图\ref{AddNUnitReference}所示。
 
 \begin{figure}[htbp]
