@@ -16162,6 +16162,21 @@ Although servlets can respond to any types of requests,
 they most commonly implement applications hosted on Web servers. 
 Such Web servlets are the Java counterpart to other dynamic Web content technologies such as PHP and ASP.NET.
 
+\paragraph{Servlet生命周期、工作原理}
+
+init（）：在Servlet的生命周期中，仅执行一次init()方法。
+它是在服务器装入Servlet时执行的，负责初始化Servlet对象。
+可以配置服务器，以在启动服务器或客户机首次访问Servlet时装入Servlet。
+无论有多少客户机访问Servlet，都不会重复执行init（）。
+service（）：它是Servlet的核心，负责响应客户的请求。
+每当一个客户请求一个HttpServlet对象，该对象的Service()方法就要调用，
+而且传递给这个方法一个“请求”（ServletRequest）对象和一个“响应”（ServletResponse）对象作为参数。
+在HttpServlet中已存在Service()方法。默认的服务功能是调用与HTTP请求的方法相应的do功能。
+destroy（）： 仅执行一次，在服务器端停止且卸载Servlet时执行该方法。
+当Servlet对象退出生命周期时，负责释放占用的资源。
+一个Servlet在运行service()方法时可能会产生其他的线程，
+因此需要确认在调用destroy()方法时，这些线程已经终止或完成。
+
 \section{常见问题}
 
 \subsection{The import javax.servlet can't be resolved}
@@ -20738,7 +20753,8 @@ NodeJS的配置在Run->Edit Configurations->
 curl是利用URL语法在命令行方式下工作的开源文件传输工具。
 它被广泛应用在Unix、多种Linux发行版中，
 并且有DOS和Win32、Win64下的移植版本。
-curl is an open source command line tool and library for transferring data with URL syntax, supporting DICT, FILE, FTP, FTPS, Gopher, HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, POP3, 
+curl is an open source command line tool and library for transferring data with URL syntax, 
+supporting DICT, FILE, FTP, FTPS, Gopher, HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, POP3, 
 POP3S, RTMP, RTSP, SCP, SFTP, SMB, SMTP, SMTPS, Telnet and TFTP. curl supports SSL certificates, 
 HTTP POST, HTTP PUT, FTP uploading, HTTP form based upload, proxies, HTTP/2, cookies, 
 user+password authentication (Basic, Plain, Digest, CRAM-MD5, NTLM, Negotiate and Kerberos), 
