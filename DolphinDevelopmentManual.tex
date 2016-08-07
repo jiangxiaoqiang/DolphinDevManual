@@ -15407,6 +15407,12 @@ Spring框架是由于软件开发的复杂性而创建的。Spring使用的是�
 
 \subsection{Spring安全配置}
 
+\subsection{Spring MVC启动过程}
+
+a. 当servlet实例被创建以后，servlet容器会首先调用其init方法；
+b. Spring MVC中servlet的继承体系：DispatcherServlet extends FramworkServlet 
+extends HttpServletBean extends HttpServlet extends GenericServlet implements Servlet；
+
 \subsection{Spring IoC启动过程}
 
 \paragraph{ServletContext}
@@ -16090,6 +16096,16 @@ Apache Tomcat部署的项目存在于webapps目录下，
 http://192.168.24.79:8081/DeviceGPS/index.jsp
 \end{lstlisting}
 
+\subsection{调试Tomcat源代码}
+
+\paragraph{获取源代码}
+
+从github上下载(https://github.com/apache/tomcat)
+从Tomcat的SVN服务器下载(http://svn.apache.org/repos/asf/tomcat/)
+从Tomcat官网下载(http://tomcat.apache.org/download-80.cgi)
+
+
+
 \subsection{WEB-INF}
 
 WEB-INF是Java的WEB应用的安全目录。所谓安全就是客户端无法访问，只有服务端可以访问的目录。
@@ -16164,15 +16180,15 @@ Such Web servlets are the Java counterpart to other dynamic Web content technolo
 
 \paragraph{Servlet生命周期、工作原理}
 
-init（）：在Servlet的生命周期中，仅执行一次init()方法。
+init()：在Servlet的生命周期中，仅执行一次init()方法。
 它是在服务器装入Servlet时执行的，负责初始化Servlet对象。
 可以配置服务器，以在启动服务器或客户机首次访问Servlet时装入Servlet。
-无论有多少客户机访问Servlet，都不会重复执行init（）。
-service（）：它是Servlet的核心，负责响应客户的请求。
+无论有多少客户机访问Servlet，都不会重复执行init()。
+service()：它是Servlet的核心，负责响应客户的请求。
 每当一个客户请求一个HttpServlet对象，该对象的Service()方法就要调用，
 而且传递给这个方法一个“请求”（ServletRequest）对象和一个“响应”（ServletResponse）对象作为参数。
 在HttpServlet中已存在Service()方法。默认的服务功能是调用与HTTP请求的方法相应的do功能。
-destroy（）： 仅执行一次，在服务器端停止且卸载Servlet时执行该方法。
+destroy()： 仅执行一次，在服务器端停止且卸载Servlet时执行该方法。
 当Servlet对象退出生命周期时，负责释放占用的资源。
 一个Servlet在运行service()方法时可能会产生其他的线程，
 因此需要确认在调用destroy()方法时，这些线程已经终止或完成。
