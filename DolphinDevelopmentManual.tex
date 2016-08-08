@@ -15306,6 +15306,9 @@ endorsed：可以的简单理解为-Djava.endorsed.dirs指定的目录面放置�
 
 \paragraph{svn}
 
+Help--Install New Software--Add,
+输入name：subclipse 1.6.x，链接：\url{http://subclipse.tigris.org/update_1.6.x}即可安装SVN插件。
+
 \paragraph{m2e}
 Maven to Eclipse
 http://m2eclipse.sonatype.org/sites/m2e
@@ -16158,7 +16161,25 @@ http://192.168.24.79:8081/DeviceGPS/index.jsp
 
 \paragraph{错误:找不到或无法加载主类org.apache.catalina.startup.Bootstrap}
 
-Run Configurations-Tomcat v7.0-Classpath-Add External JARS-bootstrap.jar添加。
+Run Configurations-Tomcat v7.0-Classpath-Add External JARS,
+添加tomcat-juli.jar和bootstrap.jar的文件，
+在Tomcat安装目录的bin文件夹下。
+Tomcat 的内部日志使用 JULI 组件，这是一个 Apache Commons 日志的重命名的打包分支，
+默认被硬编码，使用 java.util.logging 架构。这能保证 Tomcat 内部日志与 Web 应用的日志保持独立，
+即使 Web 应用使用的是 Apache Commons Logging。
+Apache Tomcat has its own implementation of several key elements of java.util.logging API. 
+This implementation is called "JULI". The key component there is a custom LogManager implementation, 
+that is aware of different web applications running on Tomcat (and their different class loaders). 
+It supports private per-application logging configurations. 
+It is also notified by Tomcat when a web application is unloaded from memory, 
+so that the references to its classes can be cleared, preventing memory leaks.
+Bootstrap第一个功能是引导Catalina,
+Bootstrap构造一个class loader来加载Catalina的内部类(所有在catalina.home中的jar文件)，
+第二个功能是启动container。实现catalina的内部类和系统的class path以及应用程序中的class要区分开不能相互访问的目的。　
+
+\paragraph{java.lang.ClassNotFoundException: org.apache.catalina.startup.Catalina}
+
+
 
 \subsection{WEB-INF}
 
