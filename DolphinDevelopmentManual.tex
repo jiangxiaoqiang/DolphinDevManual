@@ -15261,6 +15261,43 @@ eclipse->window->preferences->General->workspaceTypes->Other->UTF-8->OK，
 项目范围的设置编码格式，
 Project->Properties->General->Resource->Other->UTF-8->OK。
 
+\paragraph{Eclipse控制台自动换行}
+
+console换行设置如下：在控制台右键--preference--勾选Fixed with concol 数字写合适的数字。
+
+\paragraph{配置Tomcat}
+
+在Eclipse项目上右键--Debug As--Debug Configuration--Apache Tomcat--Apache Tomcat 8.0--Arguments，
+如图\ref{code:ApacheTomcatDebugConfiguration}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{ApacheTomcatDebugConfiguration.jpg}
+	\caption{Apache Tomcat调试配置}
+	\label{code:ApacheTomcatDebugConfiguration}
+\end{figure}
+
+Dcatalina.home是Tomcat的安装目录，
+Djava.endorsed.dirs目录为安装目录下的endorse文件夹，
+Dcatalina.base为Eclipse的工作目录，
+Dwtp.deploy目录也是Eclipse的工作目录。
+WTP(Web Tools Platform )项目在eclipse平台上进行扩展，是一个开发J2EE Web应用程序的工具集。
+一个源码编辑器可以用来编辑HTML, Javascript, CSS, JSP, SQL, XML, DTD, XSD, 和WSDL。
+一个图形编辑器用来编辑XSD与WSDL。
+J2EE项目构建器和一个J2EE向导工具。
+一个Web服务创建向导和管理器，和WS-I 测试工具。
+一个数据库访问，查询工具等。
+WTP由两个子项目构成:WST(Web标准工具集) 与JST(J2EE标准工具集)。
+endorsed：可以的简单理解为-Djava.endorsed.dirs指定的目录面放置的jar文件，
+将有覆盖系统API的功能。可以牵强的理解为，将自己修改后的API打入到虚拟机指定的启动API中，
+取而代之。但是能够覆盖的类是有限制的，其中不包括java.lang包中的类。
+
+\paragraph{取消验证}
+
+打开Eclipse 菜单栏里的window，
+右键选择Preferences，
+选择Validation你不需要验证的去掉勾即可。
+
 \subsection{提高启动速度}
 
 配置里增加缓存。
@@ -16114,7 +16151,14 @@ http://192.168.24.79:8081/DeviceGPS/index.jsp
 从Tomcat的SVN服务器下载(http://svn.apache.org/repos/asf/tomcat/)
 从Tomcat官网下载(http://tomcat.apache.org/download-80.cgi)
 
+\paragraph{启动调试}
 
+有一个Eclipse的launch脚本(/res/ide-support/eclipse/start-tomcat.launch)，
+可启动Tomcat调试。
+
+\paragraph{错误:找不到或无法加载主类org.apache.catalina.startup.Bootstrap}
+
+Run Configurations-Tomcat v7.0-Classpath-Add External JARS-bootstrap.jar添加。
 
 \subsection{WEB-INF}
 
@@ -19286,7 +19330,7 @@ Fiddler的接口测试页默认是未显示的(V4.6.2.3)，
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=1]{MeaningOfFiddlerIcon.jpg}
+	\includegraphics[scale=0.6]{MeaningOfFiddlerIcon.jpg}
 	\caption{Fiddler图标含义}
 	\label{fig:MeaningOfFiddlerIcon}
 \end{figure}
