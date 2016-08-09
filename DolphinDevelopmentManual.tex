@@ -15298,6 +15298,27 @@ endorsed：可以的简单理解为-Djava.endorsed.dirs指定的目录面放置�
 右键选择Preferences，
 选择Validation你不需要验证的去掉勾即可。
 
+\paragraph{设置jar的源码关联}
+
+有时在调试时无法看到源码，找到相应的jar包关联源码即可，
+例如系统的jar包在Eclipse的树的jar包上右键，
+选择Properties，填写Java Source Attachment的对应路径即可。
+
+\paragraph{Eclipse查看Java源代码}
+
+安装JDK(Java Development Kit)后，
+在Eclipse右键单击系统jar包，
+选择属性后自动填写了源码路径，
+如图\ref{code:JavaJarSourceCodeConfiguration}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{JavaJarSourceCodeConfiguration.jpg}
+	\caption{系统Jar包源码路径配置}
+	\label{code:JavaJarSourceCodeConfiguration}
+\end{figure}
+
+
 \subsection{提高启动速度}
 
 配置里增加缓存。
@@ -15454,6 +15475,13 @@ Spring框架是由于软件开发的复杂性而创建的。Spring使用的是�
 对象生成因为是使用反射编程，在效率上有些损耗。但相对于IoC提高的维护性和灵活性来说，
 这点损耗是微不足道的，除非某对象的生成对效率要求特别高。
 缺少IDE重构操作的支持，如果在Eclipse要对类改名，那么你还需要去XML文件里手工去改了，这似乎是所有XML方式的缺憾所在。
+
+\subsection{Spring国际化配置}
+
+i18n（其来源是英文单词 internationalization的首末字符i和n，18为中间的字符数）是“国际化”的简称。
+在资讯领域，国际化(i18n)指让产品（出版物，软件，硬件等）无需做大的改变就能够适应不同的语言和地区的需要。
+对程序来说，在不修改内部代码的情况下，能根据不同语言及地区显示相应的界面。 在全球化的时代，国际化尤为重要，因为产品的潜在用户可能来自世界的各个角落。
+通常与i18n相关的还有L10n（“本地化”的简称）。
 
 \subsection{Spring安全配置}
 
@@ -16141,7 +16169,6 @@ Apache Tomcat部署的项目存在于webapps目录下，
 例如部署了一个新的项目名字叫DeviceGPS，下有一个文件Index.jsp，
 那么相应的访问URL路径为：
 
-
 \begin{lstlisting}[language=HTML]
 http://192.168.24.79:8081/DeviceGPS/index.jsp
 \end{lstlisting}
@@ -16158,12 +16185,56 @@ http://192.168.24.79:8081/DeviceGPS/index.jsp
 
 有一个Eclipse的launch脚本(/res/ide-support/eclipse/start-tomcat.launch)，
 可启动Tomcat调试。
+启动调试的VM Arguments为：
+
+\begin{lstlisting}[language=Bash]
+-Dcatalina.home="D:\opensourceproject\Apache\Tomcat\tomcat\apache-tomcat-8.0.36-src\"
+\end{lstlisting}
+
+设置Catalina的home路径为源码的路径。
+Apache Tomcat is a widely used implementation of the Java Servlet Specification, 
+which has been developed as an open-source project by the Apache Software Foundation since 1999, 
+when the project source was donated to the ASF by Sun Microsystems.
+
+Tomcat is actually composed of a number of components, 
+including a Tomcat JSP engine and a variety of different connectors, but its core component is called Catalina. 
+Catalina provides Tomcat's actual implementation of the servlet specification; 
+when you start up your Tomcat server, you're actually starting Catalina.
+
+Catalina is the name of the servlet container of Apache
+Tomcat since version 4.x. Tomcat implements Sun
+Microsystems' specifications for servlet and JavaServer
+Pages (JSP), which are important Java-based Web technologies.
+Tomcat's servlet container was redesigned as Catalina in
+Tomcat version 4.x. 
+other components of the Tomcat engine are:
+* Tomcat Jasper which converts the code portions within
+JavaServer Pages into servlets and pass them to Catalina to
+process.
+* Tomcat Coyote which is an HTTP connector based on
+HTTP/1.1 specifications that receives and transmits web
+requests to the Tomcat engine by listening to a TCP/IP port
+and returns requests back to the requesting client.
+启动调试的Main Class填写如下参数：
+
+\begin{lstlisting}[language=Bash]
+org.apache.catalina.startup.Bootstrap
+\end{lstlisting}
 
 \paragraph{错误:找不到或无法加载主类org.apache.catalina.startup.Bootstrap}
 
 Run Configurations-Tomcat v7.0-Classpath-Add External JARS,
 添加tomcat-juli.jar和bootstrap.jar的文件，
-在Tomcat安装目录的bin文件夹下。
+如图所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{DebugTomcatAddMissingJar.jpg}
+	\caption{添加外部jar包}
+	\label{code:DebugTomcatAddMissingJar}
+\end{figure}
+
+jar包文件在Tomcat安装目录的bin文件夹下。
 Tomcat 的内部日志使用 JULI 组件，这是一个 Apache Commons 日志的重命名的打包分支，
 默认被硬编码，使用 java.util.logging 架构。这能保证 Tomcat 内部日志与 Web 应用的日志保持独立，
 即使 Web 应用使用的是 Apache Commons Logging。
@@ -16798,9 +16869,17 @@ vi /etc/sysconfig/network-scripts/ifcfg-eth0
 \end{lstlisting}
 
 输入上述命令后回车，打开配置文件，使用方向键移动光标到最后一行，按字母键“O”，进入编辑模式，输入以下内容：
-IPADDR=192.168.4.10
+
+\begin{lstlisting}[language=Bash]
+DEVICE=eth0
+BOOTPROTO=none          //指定是静态分配IP还是动态分配。取值有：static dhcp
+ONBOOT=yes
+HWADDR=00:0c:29:84:d1:b1
 NETMASK=255.255.255.0
-GATEWAY=192.168.4.1
+IPADDR=192.168.2.2
+TYPE=Ethernet
+\end{lstlisting}
+
 另外光标移动到”ONBOOT=no”这一行，更改为ONBOOT=yes
 “BOOTPROTO=dhcp”，更改为BOOTPROTO=none，
 配置完毕之后如下代码片段所示。
@@ -16980,6 +17059,18 @@ It’s also important to note that tcpdump only takes the first 68 96 bytes of d
 If you would like to look at more, add the -s number option to the mix, where number is the number of bytes you want to capture. 
 I recommend using 0 (zero) for a snaplength, which gets everything. 
 
+\paragraph{tcpdump常用命令}
+
+查看点名下发数据：
+
+\begin{lstlisting}[language=Bash]
+tcpdump -i em1 tcp and host 60.19.20.10 and port 6973 and 'ip[2:2]>0 and ip[41:2]=0x8201' -vv -X -c 100
+\end{lstlisting}
+
+X参数表示：When parsing and printing, 
+in addition to printing the headers of each packet, 
+print the data of each packet (minus its link level header) in hex and ASCII.  
+This is very handy for analysing new pro-tocols.
 
 \subsection{vi}
 
@@ -22330,6 +22421,8 @@ more concisely, or in an alternative style that some may prefer.}
 	TAP & 在网络分析监测领域，TAP是Test Access Point的首字母缩写，也叫分光器/分路器。
 	分光是数据通过光纤传输；分路是数据通过网线传输。粗浅的说，Tap的概念类似于“三通”的意思，
 	即原来的流量正常通行，同时分一股出来供监测设备分析使用。\\
+	JAR & Java Archive\\
+	WAR & Web Application Archive\\
 \end{longtable}
 
 \section{常用术语}
