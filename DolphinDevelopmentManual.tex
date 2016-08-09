@@ -16177,21 +16177,30 @@ http://192.168.24.79:8081/DeviceGPS/index.jsp
 
 \paragraph{获取源代码}
 
-从github上下载(https://github.com/apache/tomcat)
-从Tomcat的SVN服务器下载(http://svn.apache.org/repos/asf/tomcat/)
-从Tomcat官网下载(http://tomcat.apache.org/download-80.cgi)
+从GitHub上下载:\url{https://github.com/apache/tomcat},
+从Tomcat的SVN服务器下载:\url{http://svn.apache.org/repos/asf/tomcat/},
+从Tomcat官网下载:\url{http://tomcat.apache.org/download-80.cgi}。
 
 \paragraph{启动调试}
 
 有一个Eclipse的launch脚本(/res/ide-support/eclipse/start-tomcat.launch)，
-可启动Tomcat调试。
-启动调试的VM Arguments为：
+可启动Tomcat调试，不过没有尝试成功。
+在启动调试前需要对项目做一些设置，
+设置Main Class为：
+
+\begin{lstlisting}[language=Java]
+org.apache.catalina.startup.Bootstrap
+\end{lstlisting}
+
+设置启动调试的虚拟机参数(VM Arguments)为：
 
 \begin{lstlisting}[language=Bash]
 -Dcatalina.home="D:\opensourceproject\Apache\Tomcat\tomcat\apache-tomcat-8.0.36-src\"
 \end{lstlisting}
 
 设置Catalina的home路径为源码的路径。
+将Tomcat安装路径下的jar包添加到Class Path中,
+如果不添加会提示找不到类错误。
 Apache Tomcat is a widely used implementation of the Java Servlet Specification, 
 which has been developed as an open-source project by the Apache Software Foundation since 1999, 
 when the project source was donated to the ASF by Sun Microsystems.
@@ -16250,7 +16259,17 @@ Bootstrap构造一个class loader来加载Catalina的内部类(所有在catalina
 
 \paragraph{java.lang.ClassNotFoundException: org.apache.catalina.startup.Catalina}
 
-
+在Class Path的User Entries中添加相应的jar包即可，
+此处添加catalina.jar包，在Tomcat的安装目录的lib文件夹下。
+User Entries：用户环境变量，一般是用户自定义JAR包；
+Bootstrap Entries：系统环境变量，如JDK核心JAR包；
+The bootstrap classpath is managed by the top-level 
+classloader when starting the VM that will execute the app. 
+(From a commandline this is speicfied using -Xbootclasspath)
+The user classpath are entries that are managed by the application classloader.
+Any entries in the bootstrap classpath take precedence over the user classpath.
+These are initialized based on the project containing the application to launch, 
+but you can modify them in the launcher configuration for the application you wnat to launch in eclipse.
 
 \subsection{WEB-INF}
 
@@ -16326,15 +16345,20 @@ Such Web servlets are the Java counterpart to other dynamic Web content technolo
 
 \paragraph{Servlet生命周期、工作原理}
 
-init()：在Servlet的生命周期中，仅执行一次init()方法。
+\subparagraph{init()}Servlet的生命周期中，仅执行一次init()方法。
 它是在服务器装入Servlet时执行的，负责初始化Servlet对象。
 可以配置服务器，以在启动服务器或客户机首次访问Servlet时装入Servlet。
 无论有多少客户机访问Servlet，都不会重复执行init()。
-service()：它是Servlet的核心，负责响应客户的请求。
+
+\subparagraph{service()}它是Servlet的核心，负责响应客户的请求。
 每当一个客户请求一个HttpServlet对象，该对象的Service()方法就要调用，
 而且传递给这个方法一个“请求”（ServletRequest）对象和一个“响应”（ServletResponse）对象作为参数。
 在HttpServlet中已存在Service()方法。默认的服务功能是调用与HTTP请求的方法相应的do功能。
-destroy()： 仅执行一次，在服务器端停止且卸载Servlet时执行该方法。
+每次服务器接收到一个 Servlet 请求时，服务器会产生一个新的线程并调用服务。
+service() 方法检查 HTTP 请求类型（GET、POST、PUT、DELETE 等），
+并在适当的时候调用 doGet、doPost、doPut，doDelete 等方法。
+
+\subparagraph{destroy()}仅执行一次，在服务器端停止且卸载Servlet时执行该方法。
 当Servlet对象退出生命周期时，负责释放占用的资源。
 一个Servlet在运行service()方法时可能会产生其他的线程，
 因此需要确认在调用destroy()方法时，这些线程已经终止或完成。
