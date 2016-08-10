@@ -15481,15 +15481,27 @@ Spring框架是由于软件开发的复杂性而创建的。Spring使用的是�
 i18n（其来源是英文单词 internationalization的首末字符i和n，18为中间的字符数）是“国际化”的简称。
 在资讯领域，国际化(i18n)指让产品（出版物，软件，硬件等）无需做大的改变就能够适应不同的语言和地区的需要。
 对程序来说，在不修改内部代码的情况下，能根据不同语言及地区显示相应的界面。 在全球化的时代，国际化尤为重要，因为产品的潜在用户可能来自世界的各个角落。
-通常与i18n相关的还有L10n（“本地化”的简称）。
+通常与i18n相关的还有L10n(“本地化”的简称)。
 
 \subsection{Spring安全配置}
 
 \subsection{Spring MVC启动过程}
 
+\paragraph{ContextLoadListener}一个是ContextLoadListener，一个是DispatcherServlet。
+web容器正是通过这两个配置才和Spring关联起来。这两个配置与web容器的ServletContext关联，
+为Spring的Ioc容器提供了一个宿主，在建立起Ioc容器体系之后，
+把DispatcherServlet作为Spring MVC处理web请求的转发器建立起来，从而完成响应Http请求的准备。
+ContextLoaderListener初始化，实例化IoC容器，并将此容器实例注册到ServletContext中。
+ContextLoaderListener监听器的作用就是启动Web容器时，自动装配ApplicationContext的配置信息。
+因为它实现了ServletContextListener这个接口，在web.xml配置这个监听器，启动容器时，
+就会默认执行它实现的方法(还是有点不理解，按理说实现ServletContextListener接口的类有很多，
+为什么执行ContextLoaderListener呢？)。
 a. 当servlet实例被创建以后，servlet容器会首先调用其init方法；
 b. Spring MVC中servlet的继承体系：DispatcherServlet extends FramworkServlet 
 extends HttpServletBean extends HttpServlet extends GenericServlet implements Servlet；
+
+\paragraph{ServletDispatcher}
+
 
 \subsection{Spring IoC启动过程}
 
