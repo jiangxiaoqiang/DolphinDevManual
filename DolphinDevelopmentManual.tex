@@ -13966,37 +13966,6 @@ XML-Document-Transform命名空间定义两个特性：
 Locator 和 Transform。Locator特性指定要以某种方式更改的Web.config元素或一组元素。
 Transform特性指定要对Locator特性所查找的元素执行哪些操作。
 
-\section{Inversion of Control}
-
-IoC意味着将你设计好的类交给系统去控制，
-而不是在你的类内部控制，这称为控制反转，
-就是被调用类的实例由原先的调用类控制创建、销毁现在转变成由容器管理。
-在项目中以数据表生成的类名都需要一一修改，
-有没有一种方式可以做到非常大胆的修改类而不影响原有代码？
-或者原有的代码只需要稍加调整即可。
-在使用对象时使用反射可以做到，
-可以根据类名生成类的实例，
-而类名是可以定义在配置文件中的，
-当类名修改之后，只需要更改配置文件的类名即可。
-但反射会造成编译时无法保证类型安全性以及性能问题。
-控制反转(Inversion of Control,IoC),简单地说就是应用本身并不负责依赖对象的创建和维护,
-而将此任务交给一个外部容器,
-这样控制权就由应用转移到了这个外部IoC容器,
-控制权就实现了所谓的反转.
-比如在A类型中需要使用B类型的实例,
-而B实例的创建并不由A来负责,
-而是通过外部容器来创建。
-使用依赖注入有以下好处：
-
-\begin{itemize}
-\item{将被依赖类的创建代码从依赖类中移出，不用显式的写new}
-\item{可以单独维护被依赖类的创建过程}
-\item{方便该类的被共享}
-\item{如果该类初始化时，所需属性很多，使用配置，远比硬代码编写简单}
-\item{有多层依赖时，依赖关系的移出，事实上简化了依赖关系的查看和维护}
-\end{itemize}
-
-
 \subsection{Spring.NET}
 
 Spring.NET is an open source application framework 
@@ -15493,6 +15462,52 @@ Spring框架是由于软件开发的复杂性而创建的。Spring使用的是�
  Spring MVC框架围绕DispatcherServlet这个核心展开，
  DispatcherServlet的作用是截获请求并组织一系列组件共同完成请求的处理工作。
 
+\subsection{Spring思想}
+
+\paragraph{控制反转（(Inversion of Control)}
+
+控制反转（Inversion of Control）是一种是面向对象编程中的一种设计原则，
+用来减低计算机代码之间的耦合度。其基本思想是：借助于“第三方”实现具有依赖关系的对象之间的解耦。
+IoC意味着将你设计好的类交给系统去控制，
+而不是在你的类内部控制，这称为控制反转，
+就是被调用类的实例由原先的调用类控制创建、销毁现在转变成由容器管理。
+在项目中以数据表生成的类名都需要一一修改，
+有没有一种方式可以做到非常大胆的修改类而不影响原有代码？
+或者原有的代码只需要稍加调整即可。
+在使用对象时使用反射可以做到，
+可以根据类名生成类的实例，
+而类名是可以定义在配置文件中的，
+当类名修改之后，只需要更改配置文件的类名即可。
+但反射会造成编译时无法保证类型安全性以及性能问题。
+控制反转(Inversion of Control,IoC),简单地说就是应用本身并不负责依赖对象的创建和维护,
+而将此任务交给一个外部容器,
+这样控制权就由应用转移到了这个外部IoC容器,
+控制权就实现了所谓的反转.
+比如在A类型中需要使用B类型的实例,
+而B实例的创建并不由A来负责,
+而是通过外部容器来创建。
+使用依赖注入有以下好处：
+
+\begin{itemize}
+	\item{将被依赖类的创建代码从依赖类中移出，不用显式的写new}
+	\item{可以单独维护被依赖类的创建过程}
+	\item{方便该类的被共享}
+	\item{如果该类初始化时，所需属性很多，使用配置，远比硬代码编写简单}
+	\item{有多层依赖时，依赖关系的移出，事实上简化了依赖关系的查看和维护}
+\end{itemize}
+
+第一，资源集中管理，实现资源的可配置和易管理。
+第二，降低了使用资源双方的依赖程度，也就是我们说的耦合度。
+1.不用自己组装，拿来就用。
+2.享受单例的好处，效率高，不浪费空间。
+3.便于单元测试，方便切换mock组件。
+4.便于进行AOP操作，对于使用者是透明的。
+5.统一配置，便于修改。
+
+\paragraph{依赖注入}
+
+依赖注入就是将实例变量传入到一个对象中去(Dependency injection means giving an object its instance variables)。
+
 \subsection{Spring优缺点}
 
 生成一个对象的步骤变复杂了（其实上操作上还是挺简单的），对于不习惯这种方式的人，会觉得有些别扭和不直观。
@@ -16201,12 +16216,12 @@ Committed offset 113 for partition 14914186882-0
 public void ConsumerConnect(@Value("${websocket.serverurl}") String serverUrl) throws Exception {
 	Properties props = new Properties();
 	props.put("bootstrap.servers", serverUrl);
-	props.put("group.id", "test789");
+	props.put("group.id`\makeremark{group id is a string that uniquely identifies a set of consumers within the same consumer group.}`", "test789");
 	props.put("enable.auto.commit", "true");
 	props.put("auto.commit.interval.ms", "1000");
 	props.put("session.timeout.ms", "30000");
 	props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-	props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+	props.put("value.deserializer`\makeremark{The deserializer settings specify how to turn bytes into objects. For example, by specifying string deserializers, we are saying that our record's key and value will just be simple strings.}`", "org.apache.kafka.common.serialization.StringDeserializer");
 	try {
 		KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
 		consumer.subscribe(Arrays.asList("14914186882", "14914186881"));
@@ -16218,6 +16233,8 @@ public void ConsumerConnect(@Value("${websocket.serverurl}") String serverUrl) t
 	}
 }
 \end{lstlisting}
+
+\showremarks
 
 采用此种写法为Automatic Offset Committing，
 消费者会自动从相应的偏移处开始获取消息。
@@ -16232,6 +16249,24 @@ with a frequency controlled by the config auto.commit.interval.ms.
 当标志位被其他线程设置为false,事件循环会在poll返回时立即退出,不管返回什么记录,应用程序都会结束处理.
 当应用程序结束的时候,你应该总是要关闭消费者(译注:类似资源在使用后最终要释放,比如连接对象和文件句柄).
 这部分工作不仅仅是清理已经使用的socket连接,也确保了消费者及时通知协调者它已经从消费组中退出(要rebalance).
+
+\begin{lstlisting}[language=Java]
+public void run() {
+	try {
+		consumer.subscribe(Arrays.asList("topic"));
+		while (!closed.get()) {
+			ConsumerRecords records = consumer.poll(10000);
+			// Handle new records
+		}
+	} catch (WakeupException e) {
+		// Ignore exception if closing
+		if (!closed.get()) throw e;
+	} finally {
+		consumer.close();
+	}
+}
+\end{lstlisting}
+
 
 \subsection{Kafka常用操作}
 
