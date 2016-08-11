@@ -318,6 +318,8 @@ Hofstadter Law（ 霍夫施塔特定律）其实道出了真谛：做事所花�
 	\label{fig:YourFavoriteDislikeProgramLanguage}
 \end{figure}
 
+从应用领域来说，C++适用于高性能计算、嵌入式系统、开发服务器软件、游戏、实时系统等。
+
 \subsection{Architectural Requirements}
 
 \begin{itemize}
@@ -15077,6 +15079,22 @@ Java Servlet 是运行在 Web 服务器或应用服务器上的程序，
 	\item{tools.jar是关于一些工具的类库}
 \end{itemize}
 
+\subsection{Java动态代理}
+
+Java 动态代理机制的出现，使得 Java 开发人员不用手工编写代理类，
+只要简单地指定一组接口及委托类对象，便能动态地获得代理类。
+代理类会负责将所有的方法调用分派到委托对象上反射执行，
+在分派执行的过程中，开发人员还可以按需调整委托类对象及其功能，
+这是一套非常灵活有弹性的代理框架。
+为了保持行为的一致性，代理类和委托类通常会实现相同的接口，
+所以在访问者看来两者没有丝毫的区别。通过代理类这中间一层，
+能有效控制对委托类对象的直接访问，也可以很好地隐藏和保护委托类对象，
+同时也为实施不同控制策略预留了空间，从而在设计上获得了更大的灵活性。
+java.lang.reflect.Proxy：这是 Java 动态代理机制的主类，
+它提供了一组静态方法来为一组接口动态地生成代理类及其对象。
+Proxy类在rt.jar包文件中。
+
+
 \section{线程}
 
 \subsection{Java多线程}
@@ -15656,6 +15674,8 @@ ContextLoaderListener的作用是在启动Web容器时，自动装配Spring appl
 <bean class="com.zw.socket.service.WebSocketConfig"></bean>
 \end{lstlisting}
 
+\subsection{Spring多线程注入}
+
 
 
 \subsection{Spring Web Service开发流程}
@@ -16130,22 +16150,37 @@ find / -name "lam.conf"
 
 \subsection{Kafka常用操作}
 
+Kafka日志查看：/tmp/kafka-logs。
+切换到Kafka的bin目录，启动Kafka：
+
+\begin{lstlisting}[language=Bash]
+./kafka-server-start.sh ../config/server.properties &
+\end{lstlisting}
+
 查看所有Topics：
 
 \begin{lstlisting}[language=Bash]
 ./kafka-topics.sh --list --zookeeper 192.168.24.238:2181
 \end{lstlisting}
 
+以上命令会列出所有Topics的名字。
 查看所有Topics和分区：
 
 \begin{lstlisting}[language=Bash]
 ./kafka-topics.sh --describe --zookeeper 192.168.24.238:2181
 \end{lstlisting}
 
+以上命令会列出所有Topics的名字和分区。
 删除topic:
 
 \begin{lstlisting}[language=Bash]
 ./kafka-topics.sh --zookeeper 192.168.24.238:2181 --delete --topic 13714988574
+\end{lstlisting}
+
+查看Kafka队列的消息：
+
+\begin{lstlisting}[language=Bash]
+./bin/kafka-console-consumer.sh --zookeeper 192.168.24.222:2181 --topic 14914186882 --from-beginning
 \end{lstlisting}
 
 \subsection{Apache Group ID}
@@ -16173,7 +16208,7 @@ Apache Tomcat部署的项目存在于webapps目录下，
 http://192.168.24.79:8081/DeviceGPS/index.jsp
 \end{lstlisting}
 
-\subsection{调试Tomcat源代码}
+\subsection{调试Apache Tomcat源代码}
 
 \paragraph{获取源代码}
 
@@ -17153,6 +17188,8 @@ This is very handy for analysing new pro-tocols.
 	[n]gg & 光标跳到指定行\\
 	\hline
 	Ctrl+G/:file/:ls & 查看当前打开的文件名称\\
+	\hline
+	/pattern & 搜索特定模式的字符串\\
 	\hline
 \end{tabular}
 
