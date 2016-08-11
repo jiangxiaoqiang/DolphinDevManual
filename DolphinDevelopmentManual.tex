@@ -3692,6 +3692,7 @@ SelectSingleNode方法总是返回为null，
 
 \subsection{XML删除内容}
 
+\subsection{序列化时添加字段}
 
 \section{数据转换}
 
@@ -6583,6 +6584,8 @@ Tomcat中Session的默认失效时间为20分钟。
 这是因为Session需要使用Cookie作为识别标志。HTTP协议是无状态的，Session不能依据HTTP连接来判断是否为同一客户，
 因此服务器向客户端浏览器发送一个名为JSESSIONID的Cookie，
 它的值为该Session的id（也就是HttpSession.getId()的返回值）。Session依据该Cookie来识别是否为同一用户。
+
+
 Session机制是一种服务器端的机制，服务器使用一种类似于散列表的结构（也可能就是使用散列表）来保存信息。
 当程序需要为某个客户端的请求创建一个Session的时候，
 服务器首先检查这个客户端的请求里是否已包含了一个session标识 - 称为session id，
@@ -15094,6 +15097,9 @@ java.lang.reflect.Proxy：这是 Java 动态代理机制的主类，
 它提供了一组静态方法来为一组接口动态地生成代理类及其对象。
 Proxy类在rt.jar包文件中。
 
+\subsection{HashMap}
+
+
 
 \section{线程}
 
@@ -15854,6 +15860,19 @@ public class WebSocketConfig1 extends WebMvcConfigurerAdapter implements WebSock
 }
 \end{lstlisting}
 
+\paragraph{Spring Web Socket管理Session}
+
+Websocket的连接分为两个阶段，第一阶段使用http协议进行握手，
+此时，可以通过httprequest获取当前用户的session，
+在第二阶段建立socket连接的时候创建websocket的session ，
+可以通过介入握手过程，保存两个session之间的关联。
+使用如下语句获取Session ID：
+
+\begin{lstlisting}[language={[Sharp]C}]
+HttpSession session = servletRequest.getServletRequest().getSession(true);
+String sessionId=session.getId();
+\end{lstlisting}
+
 \subsection{C\#客户端连接Spring Websocket}
 
 使用C\#连接WebSocket的代码如下：
@@ -16094,14 +16113,16 @@ Tomcat/Resin 做 App 容器，Memcached 做通用 Cache，MySQL 做数据库，
 
 \section{Apache Kafka}
 
+Kafka是最初由Linkedin公司开发，是一个分布式、分区的、多副本的、多订阅者，
+基于zookeeper协调的分布式日志系统(也可以当做MQ系统)，常见可以用于web/nginx日志、访问日志，消息服务等等。
 使用kafka的理由：
-1.分布式，高吞吐量，速度快（kafka是直接通过磁盘存储，线性读写，速度快：
-避免了数据在JVM内存和系统内存之间的复制，减少耗性能的对象创建和垃圾回收）
-2.同时支持实时和离线两种解决方案（相信很多项目都有类似的需求，
-这也是Linkedin的官方架构，我们是一部分数据通过storm做实时计算处理，一部分到hadoop做离线分析）。
-3.open source (open source 谁不喜欢呢)
-4.源码由scala编写，可以运行在JVM上（笔者对scala很有好感，
-函数式语言一直都挺帅的，spark也是由scala写的，看来以后有空得刷刷scala）
+
+\begin{itemize}
+	\item{分布式，高吞吐量，速度快（kafka是直接通过磁盘存储，线性读写，速度快：避免了数据在JVM内存和系统内存之间的复制，减少耗性能的对象创建和垃圾回收）}
+	\item{同时支持实时和离线两种解决方案（相信很多项目都有类似的需求，这也是Linkedin的官方架构，我们是一部分数据通过storm做实时计算处理，一部分到hadoop做离线分析）。}
+	\item{open source}
+	\item{源码由scala编写，可以运行在JVM上}
+\end{itemize}
 
 \subsection{Apache Kafka安装}
 
@@ -16155,10 +16176,51 @@ find . -name 'my'
 find / -name "lam.conf"
 \end{lstlisting}
 
+\subsection{名词解释}
+
+\paragraph{Offset}
+
+每个partition都由一系列有序的、不可变的消息组成，这些消息被连续的追加到partition中。
+partition中的每个消息都有一个连续的序列号叫做offset,用于partition唯一标识一条消息.
+
+Broker：消息中间件处理结点，一个Kafka节点就是一个broker，多个broker可以组成一个Kafka集群。
+Topic：一类消息，例如page view日志、click日志等都可以以topic的形式存在，Kafka集群能够同时负责多个topic的分发。
+Partition：topic物理上的分组，一个topic可以分为多个partition，每个partition是一个有序的队列。
+Segment：partition物理上由多个segment组成，下面2.2和2.3有详细说明。
+
+Committed offset 113 for partition 14914186882-0
+
+
 \subsection{消费者(Consumer)}
 
 新建立一个线程去单独拖Kafka数据，
 没有新线程会Block住Tomcat的启动。
+一个简单的Kafka消费者示例如下：
+
+\begin{lstlisting}[language=Java]
+public void ConsumerConnect(@Value("${websocket.serverurl}") String serverUrl) throws Exception {
+	Properties props = new Properties();
+	props.put("bootstrap.servers", serverUrl);
+	props.put("group.id", "test789");
+	props.put("enable.auto.commit", "true");
+	props.put("auto.commit.interval.ms", "1000");
+	props.put("session.timeout.ms", "30000");
+	props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+	props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+	try {
+		KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+		consumer.subscribe(Arrays.asList("14914186882", "14914186881"));
+		new KafkaComsumerImpl(consumer).start();
+	}catch(Exception e) {
+		// TODO: handle exception
+		logger.error(e);
+		System.out.println(e.getStackTrace());
+	}
+}
+\end{lstlisting}
+
+采用此种写法为Automatic Offset Committing，
+消费者会自动从相应的偏移处开始获取消息。
 
 \subsection{Kafka常用操作}
 
