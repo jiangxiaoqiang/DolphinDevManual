@@ -16221,6 +16221,17 @@ public void ConsumerConnect(@Value("${websocket.serverurl}") String serverUrl) t
 
 采用此种写法为Automatic Offset Committing，
 消费者会自动从相应的偏移处开始获取消息。
+Setting enable.auto.commit means that offsets are committed automatically 
+with a frequency controlled by the config auto.commit.interval.ms.
+当第一次创建消费组时,position的值会根据重置策略为每个partition设置为最早或最近的offset.
+当消费者开始提交offsets,在这之后的每次rebalance都会重置position为上一次提交的offset.
+传递给poll方法的参数控制了消费者在当前位置因为等待消息的到来而阻塞的最长时间.
+一旦有可用的记录(新的消息)消费者就会立即返回,如果没有可用的记录,则会一直等待直到超时才返回.
+消费者被设计为在自己的线程中运行,在没有外部同步的情况下,使用多线程是不安全的,不建议尝试使用.
+在本例中,我们使用了一个标志位,当应用程序关闭时,会从poll循环中跳出(译注:以类似钩子的方式).
+当标志位被其他线程设置为false,事件循环会在poll返回时立即退出,不管返回什么记录,应用程序都会结束处理.
+当应用程序结束的时候,你应该总是要关闭消费者(译注:类似资源在使用后最终要释放,比如连接对象和文件句柄).
+这部分工作不仅仅是清理已经使用的socket连接,也确保了消费者及时通知协调者它已经从消费组中退出(要rebalance).
 
 \subsection{Kafka常用操作}
 
@@ -16256,6 +16267,14 @@ Kafka日志查看：/tmp/kafka-logs。
 \begin{lstlisting}[language=Bash]
 ./bin/kafka-console-consumer.sh --zookeeper 192.168.24.222:2181 --topic 14914186882 --from-beginning
 \end{lstlisting}
+
+消费组检查，当一个消费组是活动的状态时,
+你可以通过命令行consumer-groups.sh检查partition的分配情况,以及消费进度.
+上面显示了分配给消费组的所有partitions,
+哪个consumer拥有了partition,partition最近提交的offset(current offset).
+partition的lag指的是log end offset和last committed offset的差距. 管理人员可以监视这些来确保消费组能赶上生产者.
+(译注:生产者写入消息,LEO会增加,消费者提交offset,会增加LCO,
+两者差距小说明消费者的消费速度能赶上生产者的生产速度)。
 
 \subsection{Apache Group ID}
 
