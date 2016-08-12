@@ -6586,6 +6586,8 @@ Tomcat中Session的默认失效时间为20分钟。
 它的值为该Session的id（也就是HttpSession.getId()的返回值）。Session依据该Cookie来识别是否为同一用户。
 
 
+
+
 Session机制是一种服务器端的机制，服务器使用一种类似于散列表的结构（也可能就是使用散列表）来保存信息。
 当程序需要为某个客户端的请求创建一个Session的时候，
 服务器首先检查这个客户端的请求里是否已包含了一个session标识 - 称为session id，
@@ -15828,6 +15830,24 @@ message broker to provide easy and widespread messaging
 interoperability among languages and platforms 
 (the STOMP web site has a list of STOMP client and server implementations.
 
+\paragraph{WebSocket心跳包机制}
+
+SocketJS每隔25秒发送一个心跳包，
+从Google Chrome的WebSocket窗口中时间列可以看出，
+如图\ref{fig:WebSocketHeartbeat}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{WebSocketHeartbeat.jpg}
+	\caption{Spring WebSocket心跳}
+	\label{fig:WebSocketHeartbeat}
+\end{figure}
+
+The SockJS protocol requires servers to send heartbeat messages 
+to preclude proxies from concluding a connection is hung. 
+The Spring SockJS configuration has a property called heartbeatTime that can be used to customize the frequency. 
+By default a heartbeat is sent after 25 seconds assuming no other messages were sent on that connection. 
+
 \paragraph{配置自动扫描}
 
 不要忘记在Spring MVC的配置文件中配置对此类的自动扫描：
@@ -15890,6 +15910,9 @@ String sessionId=session.getId();
 
 \subsection{C\#客户端连接Spring Websocket}
 
+在Winform中不能直接使用using的写法，
+因为using运行后已经释放WebSocket实例，
+导致无法接收到服务端的消息。
 使用C\#连接WebSocket的代码如下：
 
 \begin{lstlisting}[language={[Sharp]C}]
@@ -16065,6 +16088,18 @@ the path part of the URL is wrong and it is not found (404 Not Found).
 
 \paragraph{Error during WebSocket handshake: Unexpected response code: 302}
 原因是我添加了拦截器，但是拦截器里面没有代码，但是返回的false，被拦截了。
+
+
+\paragraph{java.nio.channels.ClosedChannelException}
+
+reason=您的主机中的软件中止了一个已建立的连接.
+
+java.lang.IllegalArgumentException: Async support must be enabled on a servlet 
+and for all filters involved in async request processing. 
+This is done in Java code using the Servlet API 
+or by adding "<async-supported>true</async-supported>" to 
+servlet and filter declarations in web.xml. Also you must use a Servlet 3.0+ container
+
 
 \subsection{Kafka消费客户端}
 
@@ -16267,6 +16302,18 @@ public void run() {
 }
 \end{lstlisting}
 
+旧的消费者依赖于zookeeper管理消费组(译注:ZookeeperConsumerConnector->ZKRebalancerListener),
+新的消费者使用了消费组协调协议. 对于每个消费组,会选择一个brokers作为消费组的协调者(group coordinator).
+协调者负责管理消费者组的状态. 它的主要工作是负责协调partition的分配(assignment): 当有新成员加入,旧成员退出,
+或者topic的metadata发生变化(topic的partitions改变).重新分配partition叫做消费组的平衡(group rebalance)
+当消费组第一次被初始化时,消费者通常会读取每个partition的最早或最近的offset.然后顺序地读取每个partition log的消息.
+在消费者读取过程中,它会提交已经成功处理的消息的offsets. 
+Kafka会为每一个consumer group保留一些metadata信息–当前消费的消息的position，也即offset。
+这个offset由consumer控制。正常情况下consumer会在消费完一条消息后线性增加这个offset。
+当然，consumer也可将offset设成一个较小的值，重新消费一些消息。因为offet由consumer控制，
+所以Kafka broker是无状态的，它不需要标记哪些消息被哪些consumer过，
+不需要通过broker去保证同一个consumer group只有一个consumer能消费某一条消息，
+因此也就不需要锁机制，这也为Kafka的高吞吐率提供了有力保障。 
 
 \subsection{Kafka常用操作}
 
@@ -16305,10 +16352,25 @@ Kafka日志查看：/tmp/kafka-logs。
 
 消费组检查，当一个消费组是活动的状态时,
 你可以通过命令行consumer-groups.sh检查partition的分配情况,以及消费进度.
+如下命令行所示：
+
+\begin{lstlisting}[language=Bash]
+./kafka-consumer-groups.sh --new-consumer --describe --group test789 --bootstrap-server 192.168.24.222:9092
+\end{lstlisting}
+
+结果如图\ref{code:CheckKafkaComsumerGroup}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{CheckKafkaComsumerGroup.jpg}
+	\caption{查看消费组信息}
+	\label{code:CheckKafkaComsumerGroup}
+\end{figure}
+
 上面显示了分配给消费组的所有partitions,
 哪个consumer拥有了partition,partition最近提交的offset(current offset).
 partition的lag指的是log end offset和last committed offset的差距. 管理人员可以监视这些来确保消费组能赶上生产者.
-(译注:生产者写入消息,LEO会增加,消费者提交offset,会增加LCO,
+(译注:生产者写入消息,LEO(Last End Offset)会增加,消费者提交offset,会增加LCO(Last Committed Offset),
 两者差距小说明消费者的消费速度能赶上生产者的生产速度)。
 
 \subsection{Apache Group ID}
