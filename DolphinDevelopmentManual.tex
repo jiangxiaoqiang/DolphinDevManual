@@ -15368,6 +15368,12 @@ Java世界中主要有三大构建工具：Ant、Maven和Gradle。
 笔者有幸见证了Maven的没落和Gradle的兴起。Maven的主要功能主要分为5点，
 分别是依赖管理系统、多模块构建、一致的项目结构、一致的构建模型和插件机制。
 
+\subsection{Gradle安装}
+
+下载Gradle在\url{https://gradle.org/gradle-download/}，
+在下载时选择版本号后直接右键复制超链接下载，
+直接点击链接无法弹出下载文件。
+
 \subsection{Eclipse下使用Gradle构建}
 
 需要右键项目 "Configure->Convert to Gradle Project.."，
@@ -15381,6 +15387,24 @@ Java世界中主要有三大构建工具：Ant、Maven和Gradle。
 \end{figure}
 
 设置下jar下载保存的地址,不然默认保存在C盘。
+切换到项目的目录下，构建项目：
+
+\begin{lstlisting}[language=Bash]
+gradle build
+\end{lstlisting}
+
+\subsection{Gradle和Gradle Wrapper}
+
+Gradle Wrapper是Gradle的一种封装，
+它可以自动下载对应版本并安装编译，
+省去了手动下载和版本(环境)不一致的问题。
+Most tools require installation on your computer before you can use them. 
+If the installation is easy, you may think that’s fine. 
+But it can be an unnecessary burden on the users of the build. 
+Equally importantly, will the user install the right version of the tool for the build? 
+What if they’re building an old version of the software?
+The Gradle Wrapper (henceforth referred to as the “Wrapper”) 
+solves both these problems and is the preferred way of starting a Gradle build.
 
 \section{Apache Maven}
 
@@ -15463,12 +15487,45 @@ Spring框架是由于软件开发的复杂性而创建的。Spring使用的是�
 绝大部分Java应用都可以从Spring中受益。
 减少了不必要的异常捕捉，
 为JavaBean提供了一个更好的应用配置框架。
- Spring MVC框架就是一种MVC框架。其前端控制器是DispatcherServlet主要用于控制流程；
- 应用控制器为Handler Mapping-处理器映射器进行处理器管理和View Resolver-视图解析器进行视图的解析；
- 页面控制器/动作跳转处理器为Controller接口；支持本地化解析、文件上传等；提供了十分灵活的数据校验、格式化和数据绑定机制；
- 采用约定优于配置的契约式编程方式。 
- Spring MVC框架围绕DispatcherServlet这个核心展开，
- DispatcherServlet的作用是截获请求并组织一系列组件共同完成请求的处理工作。
+Spring MVC框架就是一种MVC框架。其前端控制器是DispatcherServlet主要用于控制流程；
+应用控制器为Handler Mapping-处理器映射器进行处理器管理和View Resolver-视图解析器进行视图的解析；
+页面控制器/动作跳转处理器为Controller接口；支持本地化解析、文件上传等；提供了十分灵活的数据校验、格式化和数据绑定机制；
+采用约定优于配置的契约式编程方式。 
+Spring MVC框架围绕DispatcherServlet这个核心展开，
+DispatcherServlet的作用是截获请求并组织一系列组件共同完成请求的处理工作。
+传统J2EE应用的开发效率低，应用服务器厂商对各种技术的支持并没有真正统一，
+导致J2EE的应用没有真正实现Write Once及Run Anywhere的承诺。
+Spring作为开源的中间件，独立于各种应用服务器，甚至无须应用服务器的支持，
+也能提供应用服务器的功能，如声明式事务、事务处理等。
+Spring致力于J2EE应用的各层的解决方案，而不是仅仅专注于某一层的方案。
+可以说Spring是企业应用开发的“一站式”选择，并贯穿表现层、业务层及持久层。
+然而，Spring并不想取代那些已有的框架，而是与它们无缝地整合。
+Spring的模块如图\ref{code:spring-overview-current}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{spring-overview-current.png}
+	\caption{Spring Module Overview}
+	\label{code:spring-overview-current}
+\end{figure}
+
+JMS即Java消息服务（Java Message Service）应用程序接口，
+是一个Java平台中关于面向消息中间件（MOM）的API，用于在两个应用程序之间，
+或分布式系统中发送消息，进行异步通信。Java消息服务是一个与具体平台无关的API，
+绝大多数MOM提供商都对JMS提供支持。
+根据有效负载的类型来划分，可以将消息分为几种类型，
+它们分别携带：简单文本(TextMessage)、可序列化的对象 (ObjectMessage)、
+属性集合 (MapMessage)、字节流 (BytesMessage)、原始值流 (StreamMessage)，
+还有无有效负载的消息 (Message)。
+
+Spring 3.0 的一个新特性是 O/X Mapper(OXM)。O/X 映射器这个概念并不新鲜，
+O 代表 Object，X 代表 XML。
+它的目的是在 Java 对象(几乎总是一个 plain old Java object，
+或简写为 POJO)和 XML 文档之间来回转换。
+进行 O/X 映射时，您经常会看到编组(marshalling)和解组(unmarshalling)这两个术语。
+编组 指将 Java bean 转换成 XML 文档的过程，
+这意味着Java bean的所有字段和字段值都将作为 XML 元素或属性填充到 XML 文件中。
+有时，编组也称为序列化(serializing)。
 
 \subsection{Spring思想}
 
@@ -15530,11 +15587,19 @@ i18n（其来源是英文单词 internationalization的首末字符i和n，18为
 对程序来说，在不修改内部代码的情况下，能根据不同语言及地区显示相应的界面。 在全球化的时代，国际化尤为重要，因为产品的潜在用户可能来自世界的各个角落。
 通常与i18n相关的还有L10n(“本地化”的简称)。
 
+\subsection{Spring源码分析}
+
+\paragraph{构建}
+
+
+
 \subsection{Spring安全配置}
 
 \subsection{Spring MVC启动过程}
 
-\paragraph{ContextLoadListener}一个是ContextLoadListener，一个是DispatcherServlet。
+\paragraph{ContextLoadListener}
+
+一个是ContextLoadListener，一个是DispatcherServlet。
 web容器正是通过这两个配置才和Spring关联起来。这两个配置与web容器的ServletContext关联，
 为Spring的Ioc容器提供了一个宿主，在建立起Ioc容器体系之后，
 把DispatcherServlet作为Spring MVC处理web请求的转发器建立起来，从而完成响应Http请求的准备。
@@ -15543,12 +15608,24 @@ ContextLoaderListener监听器的作用就是启动Web容器时，自动装配Ap
 因为它实现了ServletContextListener这个接口，在web.xml配置这个监听器，启动容器时，
 就会默认执行它实现的方法(还是有点不理解，按理说实现ServletContextListener接口的类有很多，
 为什么执行ContextLoaderListener呢？)。
-a. 当servlet实例被创建以后，servlet容器会首先调用其init方法；
-b. Spring MVC中servlet的继承体系：DispatcherServlet extends FramworkServlet 
-extends HttpServletBean extends HttpServlet extends GenericServlet implements Servlet；
+是因为在项目的配置文件web.xml已经指定了Listener是Spring的ContextLoadListener，
+如下代码片段所示：
+
+\begin{lstlisting}[language=XML]
+<listener>
+	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+</listener>
+\end{lstlisting}
+
+所以ContextLoaderListener会在启动时执行并装配ApplicationContext的配置信息。
+ContextLoaderServlet和ContextLoaderListener都是先创建ContextLoader的一个对象，
+然后调用它的initWebApplicationContex方法初始化WebApplicationContext获得一个对象；
 
 \paragraph{ServletDispatcher}
 
+当servlet实例被创建以后，servlet容器会首先调用其init方法；
+Spring MVC中servlet的继承体系：DispatcherServlet extends FramworkServlet 
+extends HttpServletBean extends HttpServlet extends GenericServlet implements Servlet；
 
 \subsection{Spring IoC启动过程}
 
@@ -21237,6 +21314,14 @@ curl Get经过验证的Restful接口数据。
 curl --request GET "http://129.29.81.128:8001/active/Lottery/GetWinningList" -d "id=45&hour=24" --header "auth:appe10adc3949ba59abbe56e057f20f883e"
 \end{lstlisting}
 
+\subsection{curl下载文件}
+
+-o表示将文件保存为命令行中指定的文件名的文件中，
+-O使用URL中默认的文件名保存文件到本地。
+
+\begin{lstlisting}[language=Bash]
+curl -o 本地文件名 URL
+\end{lstlisting}
 
 \section{My Generation}
 
