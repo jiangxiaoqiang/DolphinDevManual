@@ -10779,7 +10779,7 @@ Only ethernet devices can be used for raw scans on Windows, and "ppp0" is not an
  -sV: Probe open ports to determine service/version info
 \end{lstlisting}
 
-\section{Metasploit}
+\section{Metasploit Framework}
 
 Metasploit是一款开源的安全漏洞检测工具，可以帮助安全和IT专业人士识别安全性问题，
 验证漏洞的缓解措施，并管理专家驱动的安全性进行评估。
@@ -15240,8 +15240,10 @@ Window -> Preferences -> General -> Editors
 然后用记事本打开test.epf,搜索".abc"然后将其改为".abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVW"，保存即可。
 
 \paragraph{Ctrl+E：快速转换编辑器}
-这组快捷键将帮助你在打开的编辑器之间浏览。使用ctrl+page down或ctrl+page up可以浏览前后的选项卡，
-但是在很多文件打开的状态下，Ctrl+E会更加有效率。
+
+这组快捷键将帮助你在打开的编辑器之间浏览。
+使用ctrl+page down或ctrl+page up可以浏览前后的选项卡，
+在很多文件打开的状态下，Ctrl+E会更加有效率。
 
 \paragraph{编辑器窗口最大化}
 大显示屏幕能够提高工作效率是大家都知道的。Ctrl+M是编辑器窗口最大化的快捷键。
@@ -15313,6 +15315,12 @@ endorsed：可以的简单理解为-Djava.endorsed.dirs指定的目录面放置�
 	\label{code:JavaJarSourceCodeConfiguration}
 \end{figure}
 
+\paragraph{下一个错误及快速修改}
+
+ctrl+.将光标移动至当前文件中的下一个报错处或警告处。
+这组快捷键我一般与ctrl+1一并使用，即修改建议的快捷键。
+新版Eclipse的修改建 议做的很不错，可以帮你解决很多问题，
+如方法中的缺失参数，throw/catch exception，未执行的方法等等。
 
 \subsection{提高启动速度}
 
@@ -15358,6 +15366,8 @@ are in your project so that you can do a complete fresh rebuild.
 \subsection{从SVN检出项目}
 
 Import->SVN。
+
+
 
 \section{Gradle}
 
@@ -15591,17 +15601,52 @@ i18n（其来源是英文单词 internationalization的首末字符i和n，18为
 
 \paragraph{构建}
 
-
-
 \subsection{Spring安全配置}
 
-\subsection{Spring MVC启动过程}
+\subsection{Spring启动过程}
 
-\paragraph{ContextLoadListener}
+Spring在Web环境中通过ContextLoaderListener监听器类启动，
+通过加载“/WEB-INF/”目录下的Spring配置文件，Web服务器启动Spring的初始化过程。
 
+\begin{lstlisting}[language=XML]
+<context-param>
+	<param-name>contextConfigLocation</param-name>
+	<param-value>
+		classpath:spring-config/spring-base.xml,classpath:spring-config/spring-ldap.xml
+	</param-value>
+</context-param>
+<listener>
+	<listener-class>
+		org.springframework.web.context.ContextLoaderListener
+	</listener-class>
+</listener>
+\end{lstlisting}
+
+ContextLoaderListener是一个监听器，和Web服务器的生命周期事件紧密关联，即当Web服务器启动时，
+Web服务器声明周期事件将会触发ContextLoaderListener监听器加载Spring配置文件，
+开始Spring在web服务器中的初始化工作。
+
+\paragraph{ContextLoaderListener}
+
+ContextLoaderListener继承Spring的ContextLoader上下文加载器类，
+同时实现ServletContextListener接口(Servlet上下文监听器)，
+监听Web服务器上下文的启动和停止事件，管理Web环境中Spring的启动和销毁过程。
+ContextLoaderListener实现了ServletContextListener接口，
+当Web应用在Web服务器中被被启动和停止时，
+Web服务器启动和停止事件会分别触发ContextLoaderListener的contextInitialized
+和contextDestroyed方法来初始化和销毁Spring上下文。
+我们通过上述对ContextLoaderListener的源码分析看到真正实现Spring
+上下文的初始化和销毁功能的是ContextLoader类。
+ContextLoader初始化Spring Web上下文的主要源码分析，
+看到当Web应用在Web服务器启动时，
+Servlet上下文通过web.xml文件获取所配置的contextConfigLocation、contextClass等参数，
+定位Spring配置文件资源，
+调用Spring Web容器的刷新的refresh()方法启动Web环境中Spring IoC容器的初始化过程。
+web.xml中配置有ContextLoaderListener，
+也可以自定义一个实现了ServletContextListener接口的Listener类。
 一个是ContextLoadListener，一个是DispatcherServlet。
 web容器正是通过这两个配置才和Spring关联起来。这两个配置与web容器的ServletContext关联，
-为Spring的Ioc容器提供了一个宿主，在建立起Ioc容器体系之后，
+为Spring的IoC容器提供了一个宿主，在建立起IoC容器体系之后，
 把DispatcherServlet作为Spring MVC处理web请求的转发器建立起来，从而完成响应Http请求的准备。
 ContextLoaderListener初始化，实例化IoC容器，并将此容器实例注册到ServletContext中。
 ContextLoaderListener监听器的作用就是启动Web容器时，自动装配ApplicationContext的配置信息。
@@ -15609,50 +15654,14 @@ ContextLoaderListener监听器的作用就是启动Web容器时，自动装配Ap
 就会默认执行它实现的方法(还是有点不理解，按理说实现ServletContextListener接口的类有很多，
 为什么执行ContextLoaderListener呢？)。
 是因为在项目的配置文件web.xml已经指定了Listener是Spring的ContextLoadListener，
-如下代码片段所示：
-
-\begin{lstlisting}[language=XML]
-<listener>
-	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-</listener>
-\end{lstlisting}
-
 所以ContextLoaderListener会在启动时执行并装配ApplicationContext的配置信息。
 ContextLoaderServlet和ContextLoaderListener都是先创建ContextLoader的一个对象，
 然后调用它的initWebApplicationContex方法初始化WebApplicationContext获得一个对象；
-
-\paragraph{ServletDispatcher}
-
-当servlet实例被创建以后，servlet容器会首先调用其init方法；
-Spring MVC中servlet的继承体系：DispatcherServlet extends FramworkServlet 
-extends HttpServletBean extends HttpServlet extends GenericServlet implements Servlet；
-
-\subsection{Spring IoC启动过程}
-
-\paragraph{ServletContext}
-Web容器在启动的过程中，会为每个Web应用程序创建一个对应的ServletContext对象，
-它代表了当前的Web应用，为Spring IoC容器提供宿主环境。
-在部署Web工程的时候，Web容器会读取web.xml，创建ServletContext，
-当前Web工程所有部分都共享这个Context。context-param为ServletContext提供键值对，
-即Servlet上下文的信息，这些信息Listener、Filter和Servlet都有可能使用到，
-因此先加载context-param，创建ServletContext，然后加载Listener，再加载Filter，最后加载Servlet。
-
-\paragraph{ContextLoaderListener}
-
-web.xml中配置有ContextLoaderListener，也可以自定义一个实现了ServletContextListener接口的Listener类，
-web.xml中的配置实例如下。
-
-\begin{lstlisting}[language=XML]
-<listener>
-	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-</listener>
-\end{lstlisting}
-
 Web容器在启动的过程中会触发ServletContextEvent事件，
 会被ContextLoaderListener监听到，并调用ContextLoaderListener中的contextInitialized方法，
 contextInitialized方法如下所示。
 
-\begin{lstlisting}[language=XML]
+\begin{lstlisting}[language=Java]
 public void contextInitialized(ServletContextEvent event) {
 	this.initWebApplicationContext(event.getServletContext());
 }
@@ -15673,7 +15682,7 @@ Spring默认的实现类为XmlWebApplicationContext，XmlWebApplicationContext�
 
 接着进入到initWebApplicationContext方法内，initWebApplicationContext方法定义如下（已省略部分代码）。
 
-\begin{lstlisting}[language=XML]
+\begin{lstlisting}[language=Java]
 public WebApplicationContext initWebApplicationContext(ServletContext servletContext) {      
 if(servletContext.getAttribute(
 	WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE) != null) {
@@ -15694,6 +15703,19 @@ initWebApplicationContext先检测以ROOT\_WEB\_APPLICATION\_CONTEXT\_ATTRIBUTE�
 
 \url{http://tinylcy.me/2016/06/21/Spring-IoC-Context启动过程解析}
 
+\paragraph{ServletDispatcher}
+
+当servlet实例被创建以后，servlet容器会首先调用其init方法；
+Spring MVC中servlet的继承体系：DispatcherServlet extends FramworkServlet 
+extends HttpServletBean extends HttpServlet extends GenericServlet implements Servlet；
+
+\paragraph{ServletContext}
+Web容器在启动的过程中，会为每个Web应用程序创建一个对应的ServletContext对象，
+它代表了当前的Web应用，为Spring IoC容器提供宿主环境。
+在部署Web工程的时候，Web容器会读取web.xml，创建ServletContext，
+当前Web工程所有部分都共享这个Context。context-param为ServletContext提供键值对，
+即Servlet上下文的信息，这些信息Listener、Filter和Servlet都有可能使用到，
+因此先加载context-param，创建ServletContext，然后加载Listener，再加载Filter，最后加载Servlet。
 
 \paragraph{初始化Servlet}
 
@@ -15725,6 +15747,18 @@ DispatcherServlet自己的IoC Context的类型也是XmlWebApplicationContext，
 各个Servlet之间还共享着key为
 WebApplicationContext.ROOT\_WEB\_APPLICATION\_CONTEXT\_ATTRIBUTE的WebApplicationContext，
 其中定义的Bean为各个Servlet共享的Bean。
+
+\subsection{Spring启动慢}
+
+\paragraph{default-lazy-init}
+
+还有就是如果你使用Spring MVC，lazy-init几乎没啥用，
+因为Spring MVC容器在启动时会通过DefaultAnnotationHandlerMapping
+查找相关的带有@RequestMapping的bean并注册请求映射；
+
+\begin{lstlisting}[language=XML]
+<beans default-lazy-init="true"></beans>
+\end{lstlisting}
 
 \subsection{Spring获取Session}
 
@@ -16194,6 +16228,10 @@ servlet and filter declarations in web.xml. Also you must use a Servlet 3.0+ con
 	\item{Bean容器利用Java Reflection API创建一个Bean的实例}
 	\item{如果实现了其他*Aware接口，就调用相应的方法}
 \end{itemize}
+
+\subsection{搭建SSM框架}
+
+
 
 \section{MyBatis}
 
@@ -16716,6 +16754,23 @@ Click Add JARs...
 Find servlet-api.jar in your project and select it.
 Click OK to update the build path.
 
+\paragraph{the resource is not on the build path of a java project}
+
+这种问题一般都是没找到对应的源码，在对应工程上，
+右键--->Properties--->Java Build Path 上找到Source选项卡，
+这个地方一般指的的是src目录。选择相应的目录即可。
+
+\paragraph{Failure to transfer org.apache.maven.shared}
+
+Remove all your failed downloads:
+
+\begin{lstlisting}[language=Bash]
+cd %userprofile%\.m2\repository
+for /r %i in (*.lastUpdated) do del %i
+\end{lstlisting}
+
+Then rightclick on your project in eclipse and choose Maven->"Update Project ...", 
+make sure "Update Dependencies" is checked in the resulting dialog and click OK.
 
 \chapter{Python}
 
@@ -16809,7 +16864,9 @@ pip install pyOpenSSL==0.13
 
 \subsection{编码风格}
 
-不要在行尾加分号, 也不要用分号将两条命令放在同一行.\subsection{Python Tools for Visual Studio}
+不要在行尾加分号, 也不要用分号将两条命令放在同一行.
+
+\subsection{Python Tools for Visual Studio}
 
 \subsection{PyCharm}
 
@@ -17112,6 +17169,14 @@ shell变量名字是大小写敏感的。给变量赋值时，等号周围不能
 \subsection{shell日志处理}
 
 \section{基础}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{LinuxDirectoryExplain.jpg}
+	\caption{Linux目录用途}
+	\label{code:LinuxDirectoryExplain}
+\end{figure}
+
 
 Linux下安装应用程序时它的默认安装路径。默认目录一般建议为/usr所有的软件都仍这里。
 
