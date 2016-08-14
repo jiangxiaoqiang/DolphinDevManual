@@ -15064,9 +15064,14 @@ Java 动态代理机制的出现，使得 Java 开发人员不用手工编写代
 所以在访问者看来两者没有丝毫的区别。通过代理类这中间一层，
 能有效控制对委托类对象的直接访问，也可以很好地隐藏和保护委托类对象，
 同时也为实施不同控制策略预留了空间，从而在设计上获得了更大的灵活性。
-java.lang.reflect.Proxy：这是 Java 动态代理机制的主类，
+
+\paragraph{java.lang.reflect.Proxy}
+
+这是 Java 动态代理机制的主类，
 它提供了一组静态方法来为一组接口动态地生成代理类及其对象。
-Proxy类在rt.jar包文件中。
+Proxy类在rt.jar包文件中。而AOP的原理就是Java的动态代理机制.
+
+\paragraph{java.lang.reflect.InvocationHandler}
 
 \subsection{HashMap}
 
@@ -15321,6 +15326,11 @@ ctrl+.将光标移动至当前文件中的下一个报错处或警告处。
 这组快捷键我一般与ctrl+1一并使用，即修改建议的快捷键。
 新版Eclipse的修改建 议做的很不错，可以帮你解决很多问题，
 如方法中的缺失参数，throw/catch exception，未执行的方法等等。
+
+\paragraph{Eclipse中使用Terminal}
+
+在Eclipse中使用终端使用快捷键Ctrl+Alt+Shift+T(Terminal)快捷键，
+有Git Bash、SSH Terminal等可供选择。
 
 \subsection{提高启动速度}
 
@@ -15695,13 +15705,6 @@ if(servletContext.getAttribute(
 	servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, this.context);
 }
 \end{lstlisting}
-
-在Spring IoC容器初始化前，
-initWebApplicationContext先检测以ROOT\_WEB\_APPLICATION\_CONTEXT\_ATTRIBUTE为key的值是否为空，
-若不为空，则初始化IoC Context，并在初始化完毕后，
-以ROOT\_WEB\_APPLICATION\_CONTEXT\_ATTRIBUTE为key将IoC Context存储到ServletContext中。
-
-\url{http://tinylcy.me/2016/06/21/Spring-IoC-Context启动过程解析}
 
 \paragraph{ServletDispatcher}
 
