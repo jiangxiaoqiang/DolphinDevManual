@@ -5471,7 +5471,9 @@ HTTP的头域包括通用头、请求头、响应头和实体头四个部分。
 实体头部指的是用于应对实体主体部分的头部，
 比如，可以用实体头部来说明实体主体部分的数据类型，如Content-Type头部。
 
-\subsubsection{HTTP通用头}
+\subsubsection{HTTP Header}
+
+\paragraph{通用头（General Header Fields）}
 
 通用头域包含请求和响应消息都支持的头域，
 通用头域包含缓存头部Cache-Control、Pragma及信息性头部Connection、Date、Transfer-Encoding、Update、Via。
@@ -5554,6 +5556,12 @@ WEB 服务器表明自己对本响应消息体（不是消息体里面的对象�
 列出从客户端到 OCS 或者相反方向的响应经过了哪些代理服务器，他们用什么协议（和版本）发送的请求。
 
 当客户端请求到达第一个代理服务器时，该服务器会在自己发出的请求里面添加 Via 头部，并填上自己的相关信息，当下一个代理服务器 收到第一个代理服务器的请求时，会在自己发出的请求里面复制前一个代理服务器的请求的Via头部，并把自己的相关信息加到后面，以此类推，当 OCS 收到最后一个代理服务器的请求时，检查 Via 头部，就知道该请求所经过的路由。例如：Via：1.0 236-81.D07071953.sina.com.cn:80 (squid/2.6.STABLE13)
+
+\paragraph{请求头(Request Header Fields)}
+
+\paragraph{响应头(Response Header Fields)}
+
+\paragraph{实体头(Entity Header Fields)}
 
 \subsection{HTTP协议-压缩(HTTP Protocol-Compress)}
 
