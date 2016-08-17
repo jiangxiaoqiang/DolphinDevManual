@@ -8484,6 +8484,7 @@ Text output will generally be HTML encoded.
 Using Html.Raw allows you to output text containing html elements to the client, 
 and have them still be rendered as such. 
 Should be used with caution, as it exposes you to cross site scripting vulnerabilities.
+
 \end{quotation}
 
 代码可以如下所示。
@@ -15088,7 +15089,11 @@ Proxy类在rt.jar包文件中。而AOP的原理就是Java的动态代理机制.
 
 \subsection{编写测试类}
 
+安装jar包
 
+\begin{lstlisting}[language=Bash]
+java -jar packagename.jar
+\end{lstlisting}
 
 \section{线程}
 
@@ -15348,6 +15353,31 @@ ctrl+.将光标移动至当前文件中的下一个报错处或警告处。
 \paragraph{配置黑色主题}
 
 Window—>Preferences—>General—>Apperance选择主题为Dark，确认。
+
+\paragraph{找出调用某个方法的所有类}
+
+想查看某个java方法被哪些类方法调用了，可以直接使用Ctrl + Shif + G。
+
+\paragraph{Console中过长的内容输出到文件中}
+
+通常，Eclipse中输出的Console如果太长，你是无法看到所有内容，
+也不方便进行内容搜索，这个时候你可以把内容输出到文件，进行查看。
+项目右键--Debug As--Debug Configuration--Common--Output File，
+填写路径和文件名即可。
+
+\paragraph{调试时修改变量}
+
+代码停在了断点处，但是传过来的值不正确，如何修改一下变量值保证代码继续走正确的流程，
+或是说有一个异常分支老是进不去，能不能调试时改一下条件，看一下异常分支代码是否正确？
+在Debug 视图的 Variables 小窗口中，我们可以看到变量的值，对此进行修改即可，
+如图\ref{code:ChangeVariableValueWhenDebug}所示。 
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{ChangeVariableValueWhenDebug.jpg}
+	\caption{调试时修改变量值}
+	\label{code:ChangeVariableValueWhenDebug}
+\end{figure}
 
 \subsection{提高启动速度}
 
@@ -16239,11 +16269,6 @@ This is done in Java code using the Servlet API
 or by adding "<async-supported>true</async-supported>" to 
 servlet and filter declarations in web.xml. Also you must use a Servlet 3.0+ container
 
-
-\subsection{Kafka消费客户端}
-
-
-
 \subsection{Spring Bean的生命周期}
 
 \begin{itemize}
@@ -16500,6 +16525,12 @@ Kafka会为每一个consumer group保留一些metadata信息–当前消费的�
 如果test的partitions数量为1 ，那么只会有一个consumer能消费。
 
 \subsection{Kafka常用操作}
+
+启动解析程序：
+
+\begin{lstlisting}[language=Bash]
+ java -jar mina_server.jar 192.168.24.244:9092 8089 &
+\end{lstlisting}
 
 启动Kafka之前先启动ZooKeeper：
 
@@ -17293,6 +17324,8 @@ scp -r -P 50000 root@servername:/root/package/scripts ./
 
 #将本地文件夹上传到服务器
 scp -r /tmp/local_dir username@servername:remote_dir
+
+scp -r kafka_2.10-0.9.0.1.tgz root@192.168.24.244:/opt/kafka
 \end{lstlisting}
 
 P参数指定端口为自定义端口，此处为50000，
@@ -19457,6 +19490,26 @@ VisualStudioVersion=11.0 表示VS2012。
 
 \subsection{自动打包}
 
+\subsection{Jenkins部署}
+
+Java下Jenkins部署到Tomcat配置如下：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{JenkinsTomcatDeployment.jpg}
+	\caption{Jenkins自动部署到Tomcat}
+	\label{fig:JenkinsTomcatDeployment}
+\end{figure}
+
+第一项(WAR/EAR files):是war包的相对路径(相对于工作区路径,即在工作区中war包的相对路径.)
+如我的maven执行完成之后会在工作区的target目录下生成项目.war,
+所以这里我的路径就写target\textbackslash 项目.war.
+
+第二项:(content path):tomcat的发布路径,即使用localhost/(content path设置的名字)来访问项目.
+
+最后一项是deploy on failure是发生错误的时候是否发布到tomcat.
+
+tomcat用户权限配置：
 
 \subsection{Jenkins执行批处理命令}
 
