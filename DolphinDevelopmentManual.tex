@@ -16422,6 +16422,7 @@ partition物理上由多个segment组成，下面2.2和2.3有详细说明。
 
 \subsection{消费者(Consumer)}
 
+对于kafka的consumer接口，提供两种版本.
 新建立一个线程去单独拖Kafka数据，
 没有新线程会Block住Tomcat的启动。
 一个简单的Kafka消费者示例如下：
@@ -16429,6 +16430,7 @@ partition物理上由多个segment组成，下面2.2和2.3有详细说明。
 \begin{lstlisting}[language=Java]
 public void ConsumerConnect(@Value("${websocket.serverurl}") String serverUrl) throws Exception {
 	Properties props = new Properties();
+	props.put("auto.offset.reset", "smallest"); //必须要加，如果要读旧数据
 	props.put("bootstrap.servers", serverUrl);
 	props.put("group.id`\makeremark{group id is a string that uniquely identifies a set of consumers within the same consumer group.}`", "test789");
 	props.put("enable.auto.commit", "true");
@@ -16485,7 +16487,8 @@ public void run() {
 新的消费者使用了消费组协调协议. 对于每个消费组,会选择一个brokers作为消费组的协调者(group coordinator).
 协调者负责管理消费者组的状态. 它的主要工作是负责协调partition的分配(assignment): 当有新成员加入,旧成员退出,
 或者topic的metadata发生变化(topic的partitions改变).重新分配partition叫做消费组的平衡(group rebalance)
-当消费组第一次被初始化时,消费者通常会读取每个partition的最早或最近的offset.然后顺序地读取每个partition log的消息.
+当消费组第一次被初始化时,消费者通常会读取每个partition的最早或最近的offset.
+然后顺序地读取每个partition log的消息.
 在消费者读取过程中,它会提交已经成功处理的消息的offsets. 
 Kafka会为每一个consumer group保留一些metadata信息–当前消费的消息的position，也即offset。
 这个offset由consumer控制。正常情况下consumer会在消费完一条消息后线性增加这个offset。
@@ -16559,7 +16562,8 @@ Kafka日志查看：/tmp/kafka-logs。
 
 上面显示了分配给消费组的所有partitions,
 哪个consumer拥有了partition,partition最近提交的offset(current offset).
-partition的lag指的是log end offset和last committed offset的差距. 管理人员可以监视这些来确保消费组能赶上生产者.
+partition的lag指的是log end offset和last committed offset的差距. 
+管理人员可以监视这些来确保消费组能赶上生产者.
 (译注:生产者写入消息,LEO(Last End Offset)会增加,消费者提交offset,会增加LCO(Last Committed Offset),
 两者差距小说明消费者的消费速度能赶上生产者的生产速度)。
 
