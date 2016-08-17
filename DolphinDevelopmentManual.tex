@@ -8485,6 +8485,7 @@ Using Html.Raw allows you to output text containing html elements to the client,
 and have them still be rendered as such. 
 Should be used with caution, as it exposes you to cross site scripting vulnerabilities.
 
+
 \end{quotation}
 
 代码可以如下所示。
@@ -14741,6 +14742,7 @@ cordova create hello com.example.hello Helloworld
 #为该项目添加Android平台支持
 cordova platform add android
 
+
 #运行Cordova
 cordova run android
 #运行，指定模拟器
@@ -16394,6 +16396,21 @@ find . -name 'my'
 find / -name "lam.conf"
 \end{lstlisting}
 
+\subsection{Kafka配置}
+
+Kafka配置：
+
+\begin{lstlisting}[language=Bash]
+#启用端口
+port=9092
+#启用主机
+host.name=localhost
+#本机IP
+advertised.host.name=192.168.24.222
+\end{lstlisting}
+
+
+
 \subsection{名词解释}
 
 \paragraph{Offset}
@@ -16455,6 +16472,7 @@ partition物理上由多个segment组成，下面2.2和2.3有详细说明。
 public void ConsumerConnect(@Value("${websocket.serverurl}") String serverUrl) throws Exception {
 	Properties props = new Properties();
 	props.put("bootstrap.servers", serverUrl);
+	props.put("auto.offset.reset", "smallest`\makeremark{0.9.0版本是earliest，之前的版本是smallest，是否消费旧数据}`");
 	props.put("group.id`\makeremark{group id is a string that uniquely identifies a set of consumers within the same consumer group.}`", "test789");
 	props.put("enable.auto.commit", "true");
 	props.put("auto.commit.interval.ms", "1000");
@@ -16545,30 +16563,36 @@ Kafka日志查看：/tmp/kafka-logs。
 ./kafka-server-start.sh ../config/server.properties &
 \end{lstlisting}
 
+创建topic：
+
+\begin{lstlisting}[language=Bash]
+./kafka-topics.sh --zookeeper localhost:2181 --create --topic my-topic --partitions 1 --replication-factor 2 --config max.message.bytes=64000 --config flush.messages=1
+\end{lstlisting}
+
 查看所有Topics：
 
 \begin{lstlisting}[language=Bash]
-./kafka-topics.sh --list --zookeeper 192.168.24.238:2181
+./kafka-topics.sh --list --zookeeper 192.168.24.244:2181
 \end{lstlisting}
 
 以上命令会列出所有Topics的名字。
 查看所有Topics和分区：
 
 \begin{lstlisting}[language=Bash]
-./kafka-topics.sh --describe --zookeeper 192.168.24.238:2181
+./kafka-topics.sh --describe --zookeeper 192.168.244.238:2181
 \end{lstlisting}
 
 以上命令会列出所有Topics的名字和分区。
 删除topic:
 
 \begin{lstlisting}[language=Bash]
-./kafka-topics.sh --zookeeper 192.168.24.238:2181 --delete --topic 13714988574
+./kafka-topics.sh --zookeeper 192.168.24.244:2181 --delete --topic 14914186881
 \end{lstlisting}
 
 查看Kafka队列的消息：
 
 \begin{lstlisting}[language=Bash]
-./bin/kafka-console-consumer.sh --zookeeper 192.168.24.222:2181 --topic 14914186882 --from-beginning
+./kafka-console-consumer.sh --zookeeper 192.168.24.244:2181 --topic 14914186882 --from-beginning
 \end{lstlisting}
 
 消费组检查，当一个消费组是活动的状态时,
@@ -16593,6 +16617,12 @@ Kafka日志查看：/tmp/kafka-logs。
 partition的lag指的是log end offset和last committed offset的差距. 管理人员可以监视这些来确保消费组能赶上生产者.
 (译注:生产者写入消息,LEO(Last End Offset)会增加,消费者提交offset,会增加LCO(Last Committed Offset),
 两者差距小说明消费者的消费速度能赶上生产者的生产速度)。
+在服务端消费kafka数据：
+
+\begin{lstlisting}[language=Bash]
+./kafka-console-consumer.sh --zookeeper localhost:2181 --from-beginning --topic 14914186881
+\end{lstlisting}
+
 
 \section{Apache ZooKeeper}
 
@@ -16606,7 +16636,11 @@ ZooKeeper的架构通过冗余服务实现高可用性。因此，如果第一�
 
 \subsection{常用操作}
 
+查看端口占用情况：
 
+\begin{lstlisting}[language=Bash]
+lsof -i:2181
+\end{lstlisting}
 
 \section{Apache Tomcat}
 
@@ -17826,6 +17860,8 @@ find / -name configuration.yml
 \end{lstlisting}
 
 找到 delivery\_method: :smtp，将smtp改为async\_smtp，保存退出，重启Apache服务即可。
+
+\subsection{Redmine日志}
 
 \section{Code Review}
 
