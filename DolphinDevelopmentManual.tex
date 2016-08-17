@@ -8484,6 +8484,8 @@ Text output will generally be HTML encoded.
 Using Html.Raw allows you to output text containing html elements to the client, 
 and have them still be rendered as such. 
 Should be used with caution, as it exposes you to cross site scripting vulnerabilities.
+
+
 \end{quotation}
 
 代码可以如下所示。
@@ -14740,6 +14742,7 @@ cordova create hello com.example.hello Helloworld
 #为该项目添加Android平台支持
 cordova platform add android
 
+
 #运行Cordova
 cordova run android
 #运行，指定模拟器
@@ -15088,7 +15091,11 @@ Proxy类在rt.jar包文件中。而AOP的原理就是Java的动态代理机制.
 
 \subsection{编写测试类}
 
+安装jar包
 
+\begin{lstlisting}[language=Bash]
+java -jar packagename.jar
+\end{lstlisting}
 
 \section{线程}
 
@@ -15348,6 +15355,31 @@ ctrl+.将光标移动至当前文件中的下一个报错处或警告处。
 \paragraph{配置黑色主题}
 
 Window—>Preferences—>General—>Apperance选择主题为Dark，确认。
+
+\paragraph{找出调用某个方法的所有类}
+
+想查看某个java方法被哪些类方法调用了，可以直接使用Ctrl + Shif + G。
+
+\paragraph{Console中过长的内容输出到文件中}
+
+通常，Eclipse中输出的Console如果太长，你是无法看到所有内容，
+也不方便进行内容搜索，这个时候你可以把内容输出到文件，进行查看。
+项目右键--Debug As--Debug Configuration--Common--Output File，
+填写路径和文件名即可。
+
+\paragraph{调试时修改变量}
+
+代码停在了断点处，但是传过来的值不正确，如何修改一下变量值保证代码继续走正确的流程，
+或是说有一个异常分支老是进不去，能不能调试时改一下条件，看一下异常分支代码是否正确？
+在Debug 视图的 Variables 小窗口中，我们可以看到变量的值，对此进行修改即可，
+如图\ref{code:ChangeVariableValueWhenDebug}所示。 
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{ChangeVariableValueWhenDebug.jpg}
+	\caption{调试时修改变量值}
+	\label{code:ChangeVariableValueWhenDebug}
+\end{figure}
 
 \subsection{提高启动速度}
 
@@ -16239,11 +16271,6 @@ This is done in Java code using the Servlet API
 or by adding "<async-supported>true</async-supported>" to 
 servlet and filter declarations in web.xml. Also you must use a Servlet 3.0+ container
 
-
-\subsection{Kafka消费客户端}
-
-
-
 \subsection{Spring Bean的生命周期}
 
 \begin{itemize}
@@ -16369,6 +16396,21 @@ find . -name 'my'
 find / -name "lam.conf"
 \end{lstlisting}
 
+\subsection{Kafka配置}
+
+Kafka配置：
+
+\begin{lstlisting}[language=Bash]
+#启用端口
+port=9092
+#启用主机
+host.name=localhost
+#本机IP
+advertised.host.name=192.168.24.222
+\end{lstlisting}
+
+
+
 \subsection{名词解释}
 
 \paragraph{Offset}
@@ -16432,6 +16474,7 @@ public void ConsumerConnect(@Value("${websocket.serverurl}") String serverUrl) t
 	Properties props = new Properties();
 	props.put("auto.offset.reset", "smallest"); //必须要加，如果要读旧数据
 	props.put("bootstrap.servers", serverUrl);
+	props.put("auto.offset.reset", "smallest`\makeremark{0.9.0版本是earliest，之前的版本是smallest，是否消费旧数据}`");
 	props.put("group.id`\makeremark{group id is a string that uniquely identifies a set of consumers within the same consumer group.}`", "test789");
 	props.put("enable.auto.commit", "true");
 	props.put("auto.commit.interval.ms", "1000");
@@ -16504,6 +16547,12 @@ Kafka会为每一个consumer group保留一些metadata信息–当前消费的�
 
 \subsection{Kafka常用操作}
 
+启动解析程序：
+
+\begin{lstlisting}[language=Bash]
+ java -jar mina_server.jar 192.168.24.244:9092 8089 &
+\end{lstlisting}
+
 启动Kafka之前先启动ZooKeeper：
 
 \begin{lstlisting}[language=Bash]
@@ -16517,30 +16566,36 @@ Kafka日志查看：/tmp/kafka-logs。
 ./kafka-server-start.sh ../config/server.properties &
 \end{lstlisting}
 
+创建topic：
+
+\begin{lstlisting}[language=Bash]
+./kafka-topics.sh --zookeeper localhost:2181 --create --topic my-topic --partitions 1 --replication-factor 2 --config max.message.bytes=64000 --config flush.messages=1
+\end{lstlisting}
+
 查看所有Topics：
 
 \begin{lstlisting}[language=Bash]
-./kafka-topics.sh --list --zookeeper 192.168.24.238:2181
+./kafka-topics.sh --list --zookeeper 192.168.24.244:2181
 \end{lstlisting}
 
 以上命令会列出所有Topics的名字。
 查看所有Topics和分区：
 
 \begin{lstlisting}[language=Bash]
-./kafka-topics.sh --describe --zookeeper 192.168.24.238:2181
+./kafka-topics.sh --describe --zookeeper 192.168.244.238:2181
 \end{lstlisting}
 
 以上命令会列出所有Topics的名字和分区。
 删除topic:
 
 \begin{lstlisting}[language=Bash]
-./kafka-topics.sh --zookeeper 192.168.24.238:2181 --delete --topic 13714988574
+./kafka-topics.sh --zookeeper 192.168.24.244:2181 --delete --topic 14914186881
 \end{lstlisting}
 
 查看Kafka队列的消息：
 
 \begin{lstlisting}[language=Bash]
-./bin/kafka-console-consumer.sh --zookeeper 192.168.24.222:2181 --topic 14914186882 --from-beginning
+./kafka-console-consumer.sh --zookeeper 192.168.24.244:2181 --topic 14914186882 --from-beginning
 \end{lstlisting}
 
 消费组检查，当一个消费组是活动的状态时,
@@ -16566,6 +16621,12 @@ partition的lag指的是log end offset和last committed offset的差距.
 管理人员可以监视这些来确保消费组能赶上生产者.
 (译注:生产者写入消息,LEO(Last End Offset)会增加,消费者提交offset,会增加LCO(Last Committed Offset),
 两者差距小说明消费者的消费速度能赶上生产者的生产速度)。
+在服务端消费kafka数据：
+
+\begin{lstlisting}[language=Bash]
+./kafka-console-consumer.sh --zookeeper localhost:2181 --from-beginning --topic 14914186881
+\end{lstlisting}
+
 
 \section{Apache ZooKeeper}
 
@@ -16579,7 +16640,11 @@ ZooKeeper的架构通过冗余服务实现高可用性。因此，如果第一�
 
 \subsection{常用操作}
 
+查看端口占用情况：
 
+\begin{lstlisting}[language=Bash]
+lsof -i:2181
+\end{lstlisting}
 
 \section{Apache Tomcat}
 
@@ -17297,6 +17362,8 @@ scp -r -P 50000 root@servername:/root/package/scripts ./
 
 #将本地文件夹上传到服务器
 scp -r /tmp/local_dir username@servername:remote_dir
+
+scp -r kafka_2.10-0.9.0.1.tgz root@192.168.24.244:/opt/kafka
 \end{lstlisting}
 
 P参数指定端口为自定义端口，此处为50000，
@@ -17797,6 +17864,8 @@ find / -name configuration.yml
 \end{lstlisting}
 
 找到 delivery\_method: :smtp，将smtp改为async\_smtp，保存退出，重启Apache服务即可。
+
+\subsection{Redmine日志}
 
 \section{Code Review}
 
@@ -19461,6 +19530,26 @@ VisualStudioVersion=11.0 表示VS2012。
 
 \subsection{自动打包}
 
+\subsection{Jenkins部署}
+
+Java下Jenkins部署到Tomcat配置如下：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{JenkinsTomcatDeployment.jpg}
+	\caption{Jenkins自动部署到Tomcat}
+	\label{fig:JenkinsTomcatDeployment}
+\end{figure}
+
+第一项(WAR/EAR files):是war包的相对路径(相对于工作区路径,即在工作区中war包的相对路径.)
+如我的maven执行完成之后会在工作区的target目录下生成项目.war,
+所以这里我的路径就写target\textbackslash 项目.war.
+
+第二项:(content path):tomcat的发布路径,即使用localhost/(content path设置的名字)来访问项目.
+
+最后一项是deploy on failure是发生错误的时候是否发布到tomcat.
+
+tomcat用户权限配置：
 
 \subsection{Jenkins执行批处理命令}
 
