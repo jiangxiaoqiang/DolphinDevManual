@@ -1074,7 +1074,8 @@ and not interpreters (step-by-step executors of source code, where no pre-runtim
     网页性能优化 & MiniProfiler & latest\\
     后端性能优化 & dotTrace & 10.0.0.2(Commercial)\\
     内存泄漏检测 & dotMemory & 10.0.0.2(Commercial)\\
-    Rest客户端 & RestSharp & latest\\		
+    Rest客户端 & RestSharp & latest\\
+    Markdown编辑器 & Haroopad & 0.13.1\\		
     \end{tabular}
 
 \subsubsection{Visual Studio Code}
@@ -8486,6 +8487,7 @@ and have them still be rendered as such.
 Should be used with caution, as it exposes you to cross site scripting vulnerabilities.
 
 
+
 \end{quotation}
 
 代码可以如下所示。
@@ -14743,6 +14745,7 @@ cordova create hello com.example.hello Helloworld
 cordova platform add android
 
 
+
 #运行Cordova
 cordova run android
 #运行，指定模拟器
@@ -15096,6 +15099,17 @@ Proxy类在rt.jar包文件中。而AOP的原理就是Java的动态代理机制.
 \begin{lstlisting}[language=Bash]
 java -jar packagename.jar
 \end{lstlisting}
+
+\subsection{Java中Int和Integer区别}
+
+int是基本类型，直接存数值，而Integer是对象，用一个引用指向这个对象。
+类似的还有：float Float;double Double;string String等，
+而且还提供了处理 int 类型时非常有用的其他一些常量和方法。
+使用Integer在数据库返回空值时可以很好的处理，
+int在数据库返回空值时会报空指针异常，
+这也是在定义实体时使用Integer定义所获得的好处。
+但是使用Integer会出现装箱与拆箱，
+在程序性能上会作一些妥协。
 
 \section{线程}
 
@@ -16506,7 +16520,7 @@ public void ConsumerConnect(@Value("${websocket.serverurl}") String serverUrl) t
 	props.put("value.deserializer`\makeremark{The deserializer settings specify how to turn bytes into objects. For example, by specifying string deserializers, we are saying that our record's key and value will just be simple strings.}`", "org.apache.kafka.common.serialization.StringDeserializer");
 	try {
 		KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-		consumer.subscribe(Arrays.asList("14914186882", "14914186881"));
+		consumer.subscribe(Arrays.asList("14914186882", "14914186881")`\makeremark{在传入多个主题时，传入String[]}`);
 		new KafkaComsumerImpl(consumer).start();
 	}catch(Exception e) {
 		// TODO: handle exception
@@ -16583,7 +16597,7 @@ Kafka会为每一个consumer group保留一些metadata信息–当前消费的�
 \end{lstlisting}
 
 Kafka日志查看：/tmp/kafka-logs。
-切换到Kafka的bin目录，启动Kafka：
+切换到Kafka的bin目录，后台启动Kafka命令如下：
 
 \begin{lstlisting}[language=Bash]
 ./kafka-server-start.sh ../config/server.properties &
@@ -16644,7 +16658,7 @@ partition的lag指的是log end offset和last committed offset的差距.
 管理人员可以监视这些来确保消费组能赶上生产者.
 (译注:生产者写入消息,LEO(Last End Offset)会增加,消费者提交offset,会增加LCO(Last Committed Offset),
 两者差距小说明消费者的消费速度能赶上生产者的生产速度)。
-在服务端消费kafka数据：
+在服务端消费指定主题为14914186881的Kafka数据：
 
 \begin{lstlisting}[language=Bash]
 ./kafka-console-consumer.sh --zookeeper localhost:2181 --from-beginning --topic 14914186881
