@@ -1074,7 +1074,8 @@ and not interpreters (step-by-step executors of source code, where no pre-runtim
     网页性能优化 & MiniProfiler & latest\\
     后端性能优化 & dotTrace & 10.0.0.2(Commercial)\\
     内存泄漏检测 & dotMemory & 10.0.0.2(Commercial)\\
-    Rest客户端 & RestSharp & latest\\		
+    Rest客户端 & RestSharp & latest\\
+    Markdown编辑器 & Haroopad & 0.13.1\\		
     \end{tabular}
 
 \subsubsection{Visual Studio Code}
@@ -8486,6 +8487,7 @@ and have them still be rendered as such.
 Should be used with caution, as it exposes you to cross site scripting vulnerabilities.
 
 
+
 \end{quotation}
 
 代码可以如下所示。
@@ -14743,6 +14745,7 @@ cordova create hello com.example.hello Helloworld
 cordova platform add android
 
 
+
 #运行Cordova
 cordova run android
 #运行，指定模拟器
@@ -15096,6 +15099,17 @@ Proxy类在rt.jar包文件中。而AOP的原理就是Java的动态代理机制.
 \begin{lstlisting}[language=Bash]
 java -jar packagename.jar
 \end{lstlisting}
+
+\subsection{Java中Int和Integer区别}
+
+int是基本类型，直接存数值，而Integer是对象，用一个引用指向这个对象。
+类似的还有：float Float;double Double;string String等，
+而且还提供了处理 int 类型时非常有用的其他一些常量和方法。
+使用Integer在数据库返回空值时可以很好的处理，
+int在数据库返回空值时会报空指针异常，
+这也是在定义实体时使用Integer定义所获得的好处。
+但是使用Integer会出现装箱与拆箱，
+在程序性能上会作一些妥协。
 
 \section{线程}
 
@@ -15873,8 +15887,9 @@ HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.ge
 
 \subsection{Spring Bean配置}
 
-web.xml有Tomcat在启动时候加载。Web层框架的配置文件（如SpringMVC的\${dispatcherServletName}-servlet.xml
-和Struts的struts-config.xml配置文件）一般由框架定义的dispatcher servlet在初始化时加载。
+web.xml有Tomcat在启动时候加载。
+Web层框架的配置文件(如SpringMVC的dispatcherServletName-servlet.xml
+和Struts的struts-config.xml配置文件)一般由框架定义的dispatcher servlet在初始化时加载。
 而Spring的应用上下文配置文件则由Spring框架在web.xml中定义的一个listener加载。
 需要注意的是web.xml的定义是顺序相关的，listener的定义要在servlet之前。
 需要注入Bean时，在web.xml文件中指定spring配置文件(spring-base.xml)的位置。
@@ -16443,6 +16458,12 @@ Partition中的每条Message由offset来表示它在这个partition中的偏移�
 这个offset不是该Message在partition数据文件中的实际存储位置，
 而是逻辑上一个值，它唯一确定了partition中的一条Message。
 因此，可以认为offset是partition中Message的id。
+Kafka会记录offset到Zookeeper中。但是，
+Zookeeper Client API对Zookeeper的频繁写入是一个低效的操作。
+0.8.2 Kafka引入了native offset storage，
+将offset管理从Zookeeper移出，并且可以做到水平扩展。
+其原理就是利用了Kafka的compacted topic，offset以consumer group,
+topic与partion的组合作为key直接提交到compacted topic中。
 
 \paragraph{Broker}
 
@@ -16487,6 +16508,20 @@ partition物理上由多个segment组成，下面2.2和2.3有详细说明。
 
 \subsection{消费者(Consumer)}
 
+对于一个Client对应于一个Comsumer来说，
+程序设计相对简单，结构清晰，
+缺点是一个Comsumer需要新开启一个线程，
+而服务器能承载的线程是非常有限的，
+支持的客户段有限，还有重复消费的问题，
+一个位置信息多个消费者消费。
+
+对于一个Comsumer服务多个客户端的情况，
+服务端需要维护一个状态和订阅列表，
+记录哪些客户端订阅了哪些车辆，
+资源利用充分，但是设计相对比较复杂，
+能支撑更多客户端，由于每条信息都需要发给订阅的客户端(每个客户端订阅的车辆是不一样的)，
+还有必要设计优化算法，组织数据结构。
+
 对于kafka的consumer接口，提供两种版本.
 新建立一个线程去单独拖Kafka数据，
 没有新线程会Block住Tomcat的启动。
@@ -16506,7 +16541,7 @@ public void ConsumerConnect(@Value("${websocket.serverurl}") String serverUrl) t
 	props.put("value.deserializer`\makeremark{The deserializer settings specify how to turn bytes into objects. For example, by specifying string deserializers, we are saying that our record's key and value will just be simple strings.}`", "org.apache.kafka.common.serialization.StringDeserializer");
 	try {
 		KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-		consumer.subscribe(Arrays.asList("14914186882", "14914186881"));
+		consumer.subscribe(Arrays.asList("14914186882", "14914186881")`\makeremark{在传入多个主题时，传入Strings数组而不是以逗号隔开的字符串}`);
 		new KafkaComsumerImpl(consumer).start();
 	}catch(Exception e) {
 		// TODO: handle exception
@@ -16565,8 +16600,29 @@ Kafka会为每一个consumer group保留一些metadata信息–当前消费的�
 
 \paragraph{多个消费者同时消费}
 
-看一下这个topic存到了几个partitions里面，因为一个partitions只会被一个consumer消费(为了保证消息的顺序)，
+看一下这个topic存到了几个partitions里面，
+因为一个partitions只会被一个consumer消费(为了保证消息的顺序)，
 如果test的partitions数量为1 ，那么只会有一个consumer能消费。
+
+\paragraph{订阅指定分区(Subscribing To Specific Partitions)}
+
+In this mode the consumer will just get the partitions it subscribes 
+to and if the consumer instance fails no attempt will be made to 
+rebalance partitions to other instances.
+
+\begin{lstlisting}[language=Java]
+String topic = "foo";
+TopicPartition partition0 = new TopicPartition(topic, 0);
+TopicPartition partition1 = new TopicPartition(topic, 1);
+consumer.assign(Arrays.asList(partition0, partition1));
+\end{lstlisting}
+
+The group that the consumer specifies is still used for committing offsets, 
+but now the set of partitions will only be changed if the consumer 
+specifies new partitions, and no attempt at failure detection will be made.
+It isn't possible to mix both subscription to specific partitions 
+(with no load balancing) and to topics (with load balancing) 
+using the same consumer instance.
 
 \subsection{Kafka常用操作}
 
@@ -16583,7 +16639,7 @@ Kafka会为每一个consumer group保留一些metadata信息–当前消费的�
 \end{lstlisting}
 
 Kafka日志查看：/tmp/kafka-logs。
-切换到Kafka的bin目录，启动Kafka：
+切换到Kafka的bin目录，后台启动Kafka命令如下：
 
 \begin{lstlisting}[language=Bash]
 ./kafka-server-start.sh ../config/server.properties &
@@ -16644,7 +16700,7 @@ partition的lag指的是log end offset和last committed offset的差距.
 管理人员可以监视这些来确保消费组能赶上生产者.
 (译注:生产者写入消息,LEO(Last End Offset)会增加,消费者提交offset,会增加LCO(Last Committed Offset),
 两者差距小说明消费者的消费速度能赶上生产者的生产速度)。
-在服务端消费kafka数据：
+在服务端消费指定主题为14914186881的Kafka数据：
 
 \begin{lstlisting}[language=Bash]
 ./kafka-console-consumer.sh --zookeeper localhost:2181 --from-beginning --topic 14914186881
