@@ -4694,6 +4694,17 @@ public static void IsDllRegisteredSuccess(string[] classId)
 #endregion
 \end{lstlisting}
 
+\section{集合操作}
+
+\subsection{HashMap value to list}
+
+What is the best way to convert a Map<key,value> to a List<value>:
+
+\begin{lstlisting}[language=Java]
+List<Value> list = new ArrayList<Value>(map.values());
+\end{lstlisting}
+
+
 \chapter{Web}
 
 Web应用这些年来变得越来越强大，但相比于桌面应用能够完全访问计算机硬件，Web应用还有一些差距。
@@ -14877,6 +14888,10 @@ Dan North对此还补充说：“Those system then constrain the options for org
 
 \chapter{Java}
 
+\section{Scala}
+
+\subsection{sbt}
+
 \section{基础}
 
 \subsection{final关键字}
@@ -15110,6 +15125,25 @@ int在数据库返回空值时会报空指针异常，
 这也是在定义实体时使用Integer定义所获得的好处。
 但是使用Integer会出现装箱与拆箱，
 在程序性能上会作一些妥协。
+
+\subsection{泛型}
+
+JDK 5.0 中增加的泛型类型，是 Java 语言中类型安全的一次重要改进。
+泛型是Java SE 1.5的新特性，泛型的本质是参数化类型，
+也就是说所操作的数据类型被指定为一个参数。这种参数类型可以用在类、接口和方法的创建中，
+分别称为泛型类、泛型接口、泛型方法。 Java语言引入泛型的好处是安全简单。
+
+\paragraph{泛型中E，T，？的区别}
+
+一般使用<T>来声明类型持有者名称，自定义泛型类时，类持有者名称可以使用T(Type) 
+如果是容器的元素可以使用E(Element)，若键值匹配可以用K(Key)和V(Value)等， 
+若是<?>，则是默认是允许Object及其下的子类，也就是Java的所有对象了。
+举例说明： 
+Set<T>表示集合里是T类的实例 
+List<E>表示集合里是E类的实例 
+List<?>表示集合里的对象类型不确定，未指定 
+List同List<?>是一样的。
+
 
 \section{线程}
 
@@ -15442,6 +15476,20 @@ Buildship 1.0 版专注于 Gradle 用户，之后的版本会扩大至 Gradle �
 在eclipse中编写properties文件时，如果直接写中文，它不会自动转换成ASCII编码，
 在浏览器中就会显示为乱码。
 那么怎么解决这个问题呢-->安装properties插件。该插件可以在输入中文时自动转换为ASCII码。
+
+\subsection{eclipse Multiple annotations found at this line}
+
+eclipse Multiple annotations found at this line错误，
+eclipse开发过程中，一些XML配置文件会报错，但是这些其实不是错，
+飘红的原因是因为eclipse的校验问题。
+去掉校验设置步骤：
+
+1.设置全局eclipse校验信息，
+windows>preferences>Validation,在编辑面板选中“Enable project specific settings”,
+同时选中“Suspend all validators”.
+
+2.右击项目名，选择proferences>validation>选中：
+Enable project specific settings”,同时选中“Suspend all validators”.
 
 \subsection{The import cannot be resolved}
 
@@ -16370,6 +16418,8 @@ Tomcat/Resin 做 App 容器，Memcached 做通用 Cache，MySQL 做数据库，
 
 \section{Apache Kafka}
 
+Kafka作为时下最流行的开源消息系统，被广泛地应用在数据缓冲、异步通信、汇集日志、系统解耦等方面。
+相比较于RocketMQ等其他常见消息系统，Kafka在保障了大部分功能特性的同时，还提供了超一流的读写性能。
 Kafka是最初由Linkedin公司开发，是一个分布式、分区的、多副本的、多订阅者，
 基于Zookeeper协调的分布式日志系统(也可以当做MQ系统)，常见可以用于Web/Nginx日志、访问日志，消息服务等等。
 使用Kafka的理由：
@@ -16468,6 +16518,16 @@ topic与partion的组合作为key直接提交到compacted topic中。
 \paragraph{Broker}
 
 消息中间件处理结点，一个Kafka节点就是一个broker，多个broker可以组成一个Kafka集群。
+Kafka中使用Broker来接受Producer和Consumer的请求，并把Message持久化到本地磁盘。
+每个Cluster当中会选举出一个Broker来担任Controller，
+负责处理Partition的Leader选举，协调Partition迁移等工作。
+
+\paragraph{ISR(In-Sync Replica)}
+
+是Replicas的一个子集，表示目前Alive且与Leader能够“Catch-up”的Replicas集合。
+由于读写都是首先落到Leader上，
+所以一般来说通过同步机制从Leader上拉取数据的Replica都会和Leader有一些延迟(包括了延迟时间和延迟条数两个维度)，
+任意一个超过阈值都会把该Replica踢出ISR。每个Partition都有它自己独立的ISR。
 
 \paragraph{Topic}
 
@@ -16506,6 +16566,17 @@ partition物理上由多个segment组成，下面2.2和2.3有详细说明。
 只要每个consumer有一个独立的CG就可以了。要实现单播只要所有的consumer在同一个CG。
 用CG还可以将consumer进行自由的分组而不需要多次发送消息到不同的topic。
 
+\paragraph{Replication}
+
+Kafka支持以Partition为单位对Message进行冗余备份，
+每个Partition都可以配置至少1个Replication(当仅1个Replication时即仅该Partition本身)。
+
+\paragraph{Leader}
+
+每个Replication集合中的Partition都会选出一个唯一的Leader，
+所有的读写请求都由Leader处理。其他Replicas从Leader处把数据更新同步到本地，
+过程类似大家熟悉的MySQL中的Binlog同步。
+
 \subsection{消费者(Consumer)}
 
 对于一个Client对应于一个Comsumer来说，
@@ -16518,11 +16589,17 @@ partition物理上由多个segment组成，下面2.2和2.3有详细说明。
 对于一个Comsumer服务多个客户端的情况，
 服务端需要维护一个状态和订阅列表，
 记录哪些客户端订阅了哪些车辆，
-资源利用充分，但是设计相对比较复杂，
+资源利用充分，劣势是设计相对比较复杂，
 能支撑更多客户端，由于每条信息都需要发给订阅的客户端(每个客户端订阅的车辆是不一样的)，
-还有必要设计优化算法，组织数据结构。
+还有必要设计优化算法，追求效率需要组织查询客户端与订阅车辆对应的数据结构。
 
-对于kafka的consumer接口，提供两种版本.
+对于Kafka的consumer接口，提供两种版本，
+分别为High level和Low level两种。前一种重度依赖Zookeeper，
+所以性能差一些且不自由，但是超省心。第二种不依赖Zookeeper服务，
+无论从自由度和性能上都有更好的表现，但是所有的异常(Leader迁移、Offset越界、Broker宕机等)和Offset的维护都需要自行处理。
+使用Low level API，虽然繁琐一些，但是目前只有这个API可以对Error数据进行自定义处理，
+尤其是处理Broker异常或由于Unclean Shutdown导致的Corrupted Data时，
+否则无法Skip只能等着“坏消息”在Broker上被Rotate掉，在此期间该Replica将会一直处于不可用状态。
 新建立一个线程去单独拖Kafka数据，
 没有新线程会Block住Tomcat的启动。
 一个简单的Kafka消费者示例如下：
@@ -16624,6 +16701,10 @@ It isn't possible to mix both subscription to specific partitions
 (with no load balancing) and to topics (with load balancing) 
 using the same consumer instance.
 
+\subsection{生产者(Producer)}
+
+
+
 \subsection{Kafka常用操作}
 
 启动解析程序：
@@ -16638,7 +16719,7 @@ using the same consumer instance.
 ./zookeeper-server-start.sh  ../config/zookeeper.properties &
 \end{lstlisting}
 
-Kafka日志查看：/tmp/kafka-logs。
+Kafka日志查看：/tmp/kafka-logs/topics-pitatioin下有log文件。
 切换到Kafka的bin目录，后台启动Kafka命令如下：
 
 \begin{lstlisting}[language=Bash]
@@ -16706,6 +16787,28 @@ partition的lag指的是log end offset和last committed offset的差距.
 ./kafka-console-consumer.sh --zookeeper localhost:2181 --from-beginning --topic 14914186881
 \end{lstlisting}
 
+\subsection{Kafka Manager}
+
+Kafka Manager使用Scala语言编写，其Web控制台基于Play Framework实现，
+除此之外，Yahoo还迁移了一些Apache Kafka的帮助程序以便能够与Apache Curator框架一起工作。
+
+在CentOS上已经安装了JDK 1.8，但是sbt要求安装JDK 1.7,为了避免冲突，
+直接在Windows下编译。
+
+\begin{lstlisting}[language=Bash]
+git clone https://github.com/yahoo/kafka-manager
+cd kafka-manager
+sbt clean dist
+\end{lstlisting}
+
+编译成功后，在目录/target/universal/下有相应的压缩包。
+启动Kafka-Manager：
+
+\begin{lstlisting}[language=Bash]
+./kafka-manager -Dkafka-manager.zkhosts="192.168.24.244:2181"
+\end{lstlisting}
+
+启动之后使用如下地址访问即可：http://localhost:9000。
 
 \section{Apache ZooKeeper}
 
@@ -17284,6 +17387,8 @@ pyinstaller -F -w -i ./a.icon ./../UI/MainForm.py -p ./../UI/Widgets/
 Python的代码块通过缩进对齐表达代码逻辑，而不是使用大括号（从此告别神圣的大括号战争了），
 Python支持制表符缩进和空格缩进，但Python社区推荐使用四空格缩进。也可以使用制表符缩进，
 但切不可以混用两种缩进符号。
+
+
 
 \chapter{Linux}
 
