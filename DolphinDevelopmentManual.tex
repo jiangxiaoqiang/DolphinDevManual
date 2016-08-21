@@ -11180,6 +11180,29 @@ applications while you are developing and testing your applications.
 Its also a great tool for experienced pentesters to use for manual security testing.
 使用Java语言开发。
 
+\section{Patator}
+
+\subsection{简介}
+
+Patator was written out of frustration from using Hydra, 
+Medusa, Ncrack, Metasploit modules and Nmap NSE scripts for password guessing attacks. 
+
+\subsection{使用}
+
+查看某一个协议的用法：
+
+\begin{lstlisting}[language=Bash]
+./patator.py mysql_login --help
+\end{lstlisting}
+
+其中MySQL是协议的名称。
+破解MySQL登录：
+
+\begin{lstlisting}[language=Bash]
+./patator.py mysql_login host=ip user=root password=FILE0 0=dic.txt
+\end{lstlisting}
+
+
 \section{Hacking}
 
 \subsection{Google Hacking}
@@ -15126,6 +15149,13 @@ int在数据库返回空值时会报空指针异常，
 但是使用Integer会出现装箱与拆箱，
 在程序性能上会作一些妥协。
 
+\subsection{Java中关键字volatile的作用}
+
+用在多线程，同步变量。 线程为了提高效率，将某成员变量(如A)拷贝了一份（如B），
+线程中对A的访问其实访问的是B。只在某些动作时才进行A和B的同步。
+因此存在A和B不一致的情况。volatile就是用来避免这种情况的。
+volatile告诉JVM， 它所修饰的变量不保留拷贝，直接访问主内存中的（也就是上面说的A) 
+
 \subsection{泛型}
 
 JDK 5.0 中增加的泛型类型，是 Java 语言中类型安全的一次重要改进。
@@ -15143,6 +15173,53 @@ Set<T>表示集合里是T类的实例
 List<E>表示集合里是E类的实例 
 List<?>表示集合里的对象类型不确定，未指定 
 List同List<?>是一样的。
+
+\subsection{Java内存管理}
+
+\paragraph{Java内存模型}
+理解Java垃圾回收如何工作，首先理解JVM的内存模型就非常重要。
+Java的内存模型如图\ref{fig:JavaMemoryModel}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{JavaMemoryModel.png}
+	\caption{Java内存模型}
+	\label{fig:JavaMemoryModel}
+\end{figure}
+
+JVM堆内存可以划分为两部分：年轻代和老年代(Young Generation and Old Generation)。
+
+\paragraph{年轻代(Young Generation)}
+
+大多数新创建的对象都存放在Eden内存区。
+当Eden区存满对象时，最小化GC将会被执行，所有存活的对象被移到其中一个Survivor区。
+最小化GC同时也会检查存活的对象并将它们移到另一个Survivor区，
+所以在一段时间，其中一个Survivor区总是空的。存活的对象经过多次GC后，
+将会被移到老年代（Old Generation）通常年轻代转化多长时间变为老年代都会设置一个阀值。
+
+\paragraph{Java堆内存Switches(Java Heap Memory Switches)}
+
+提供了大量的内存Switch，我们可以用来设置内存大小及它们的比率。
+
+\begin{tabular}{l|p{10cm}}
+	\multirow{1}{*}{VM Switch}			
+	& \multicolumn{1}{c}{VM Switch 描述}\\	 
+	\hline
+	-Xms & 设置JVM启动时堆初始值\\
+	\hline
+	-Xmx & 设置堆的最大值\\
+	\hline
+	-Xmn & 设置年轻代的大小\\
+	\hline	
+\end{tabular}
+
+X指代Execution，m指代Maximum，s指代Startup。
+The flag Xmx specifies the maximum memory allocation pool for a Java Virtual Machine (JVM), while Xms specifies the initial memory allocation pool.
+
+\paragraph{Java VisualVM with Visual GC}
+
+如果你想在GUI下查看内存及GC操作。那么你可以使用jvisualvm工具。
+
 
 
 \section{线程}
@@ -15449,6 +15526,18 @@ Window—>Preferences—>General—>Apperance选择主题为Dark，确认。
 	\includegraphics[scale=0.5]{ChangeVariableValueWhenDebug.jpg}
 	\caption{调试时修改变量值}
 	\label{code:ChangeVariableValueWhenDebug}
+\end{figure}
+
+\paragraph{Eclipse打开文件夹}
+
+选中文件/文件夹/包名--右击--Properties--Location--复制路径--打开我的电脑--粘贴地址--回车。
+点击菜单栏上的Run--External Tools--External Tools Configurations：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{OpenCurrentFileContainer.png}
+	\caption{打开包含文件的文件夹}
+	\label{code:OpenCurrentFileContainer}
 \end{figure}
 
 \subsection{提高启动速度}
@@ -16431,6 +16520,9 @@ Kafka是最初由Linkedin公司开发，是一个分布式、分区的、多副�
 	\item{源码由Scala编写，可以运行在JVM上}
 \end{itemize}
 
+Kafka在底层摒弃了Java堆缓存机制，采用了操作系统级别的页缓存，
+同时将随机写操作改为顺序写，再结合Zero-Copy的特性极大地改善了IO性能。
+
 \subsection{Apache Kafka安装}
 
 1、关闭SELINUX
@@ -16553,6 +16645,10 @@ Partition的数据文件则包含了若干条上述格式的Message，按offset�
 在实现上都是以每个Partition为基本实现单元的。
 消费时，每个消费线程最多只能使用一个partition。
 一个topic中partition的数量，就是每个user group中消费该topic的最大并行度数量。
+Kafka中可以将Topic从物理上划分成一个或多个分区（Partition），
+每个分区在物理上对应一个文件夹，以”topicName\_partitionIndex”的命名方式命名，
+该文件夹下存储这个分区的所有消息(.log)和索引文件(.index)，
+这使得Kafka的吞吐率可以水平扩展。
 
 \paragraph{Segment}
 
@@ -16661,9 +16757,11 @@ public void run() {
 }
 \end{lstlisting}
 
-旧的消费者依赖于zookeeper管理消费组(译注:ZookeeperConsumerConnector->ZKRebalancerListener),
-新的消费者使用了消费组协调协议. 对于每个消费组,会选择一个brokers作为消费组的协调者(group coordinator).
-协调者负责管理消费者组的状态. 它的主要工作是负责协调partition的分配(assignment): 当有新成员加入,旧成员退出,
+旧的消费者依赖于zookeeper管理消费组,
+新的消费者使用了消费组协调协议. 对于每个消费组,
+会选择一个brokers作为消费组的协调者(group coordinator).
+协调者负责管理消费者组的状态. 它的主要工作是负责协调partition的分配(assignment): 
+当有新成员加入,旧成员退出,
 或者topic的metadata发生变化(topic的partitions改变).重新分配partition叫做消费组的平衡(group rebalance)
 当消费组第一次被初始化时,消费者通常会读取每个partition的最早或最近的offset.
 然后顺序地读取每个partition log的消息.
@@ -17847,7 +17945,7 @@ This is very handy for analysing new pro-tocols.
 	\hline
 	Ctrl+r & 恢复(redo)上一步被撤销的操作\\
 	\hline
-	\end{tabular}
+\end{tabular}
 
 \paragraph{多行复制与粘贴}
 
