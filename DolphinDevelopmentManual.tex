@@ -11969,8 +11969,7 @@ TCP/IP是个协议组，可分为三个层次：网络层、传输层和应用�
 	\label{fig:TCPCommunicationBundle}
 \end{figure}
 
-
-
+TCP协议的包头长度为20bytes。
 
 \subsection{Ethernet v2}
 
@@ -15530,8 +15529,12 @@ Window—>Preferences—>General—>Apperance选择主题为Dark，确认。
 
 \paragraph{Eclipse打开文件夹}
 
-选中文件/文件夹/包名--右击--Properties--Location--复制路径--打开我的电脑--粘贴地址--回车。
-点击菜单栏上的Run--External Tools--External Tools Configurations：
+一种方式是选中文件/文件夹/包名--右击--Properties--Location--复制路径--打开我的电脑--粘贴地址--回车。
+另一种方式是配置一个命令行工具，
+点击菜单栏上的Run--External Tools--External Tools Configurations，
+location里面填：C:/WINDOWS/explorer.exe，
+Arguments里面填: \${container\_loc}，
+如图\ref{code:OpenCurrentFileContainer}所示：
 
 \begin{figure}[htbp]
 	\centering
@@ -15577,7 +15580,7 @@ eclipse开发过程中，一些XML配置文件会报错，但是这些其实不�
 windows>preferences>Validation,在编辑面板选中“Enable project specific settings”,
 同时选中“Suspend all validators”.
 
-2.右击项目名，选择proferences>validation>选中：
+2.右击项目名，选择proferences>validation选中：
 Enable project specific settings”,同时选中“Suspend all validators”.
 
 \subsection{The import cannot be resolved}
@@ -17847,14 +17850,14 @@ tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>140' -vv
 且IP包40位的后两位数据是7e02的网络数据(位置信息上报)，注意过滤时需要添加0x前缀：
 
 \begin{lstlisting}[language=Bash]
-tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>140 and ip[40,2]=0x7e02' -vv -X -c 100
+tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>140 and ip[41:2]=0x7e02' -vv -X -c 100
 \end{lstlisting}
 
 抓取所有经过eth1，数据包类型是TCP，目的地址是12.26.32.14，端口是6973,数据包长度大于140字节，
 且IP包40位的后两位数据是7e02的网络数据(位置信息上报)，注意过滤时需要添加0x前缀：
 
 \begin{lstlisting}[language=Bash]
-tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>140 and ip[40,2]=0x7e02' -vv -X -c 100
+tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>140 and ip[41:2]=0x7e02' -vv -X -c 100
 \end{lstlisting}
 
 抓取所有经过eth1，数据包类型是TCP，目的地址是12.26.32.14，端口是6973,数据包长度大于140字节，
@@ -19812,7 +19815,7 @@ VisualStudioVersion=11.0 表示VS2012。
 
 \subsection{自动打包}
 
-\subsection{Jenkins部署}
+\subsection{Jenkins部署(Jenkins Deployment)}
 
 Java下Jenkins部署到Tomcat配置如下：
 
@@ -19832,6 +19835,22 @@ Java下Jenkins部署到Tomcat配置如下：
 最后一项是deploy on failure是发生错误的时候是否发布到tomcat.
 
 tomcat用户权限配置：
+
+\paragraph{配置文件自动替换}
+
+一般工程至少都有测试环境和正式环境，不同环境的配置文件是不一样的，
+配置文件替换功能就是事先在Jenkins上设置好不同环境相对应的配置文件，
+构建的时候根据环境自动替换成对应环境的配置文件，
+这样就可以避免每次上传代码的时候都要记住改环境或者手动的改环境，
+避免由于环境不一致而导致程序出错。这里需要一个安装插件Config File Provider Plugin，
+替换配置文件的配置如图\ref{fig:JenkinsConfigurationFileReplace}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{JenkinsConfigurationFileReplace.jpg}
+	\caption{Jenkins自动替换配置文件}
+	\label{fig:JenkinsConfigurationFileReplace}
+\end{figure}
 
 \subsection{Jenkins执行批处理命令}
 
