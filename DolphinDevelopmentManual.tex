@@ -279,8 +279,9 @@ they strive to achieve a balance between quality and speed of execution.}
 \chapter{规范准则}
 
 集群、负载均衡、排队、分库分表、锁、缓存。
-编程语言虽然该学，但是学习计算机算法和理论更重要，因为计算机算法和理论更重要，
-因为计算机语言和开发平台日新月异，但万变不离其宗的是那些算法和理论，例如数据结构、算法、编译原理、计算机体系结构、关系型数据库原理等等。
+编程语言虽然该学，但是学习计算机算法和理论更重要，
+因为计算机语言和开发平台日新月异，但万变不离其宗的是那些算法和理论，
+例如数据结构、算法、编译原理、计算机体系结构、关系型数据库原理等等。
 
 
 \clearpage
@@ -11300,6 +11301,23 @@ hacking filetype:ppt
 只显示那些网页标题包含了特定关键字的内容。例如搜索关于莱昂纳多的内容，
 但是网页标题明确包含泰坦尼克号关键字的：莱昂纳多 intitle:泰坦尼克号。
 
+\paragraph{善用星号}
+
+在搜索引擎中，我们可以用星号填补关键词中的缺失部分，
+不论缺失的是一连串单词的其中一个还是一个单词的某一部分。
+此外，当你希望搜索一篇确定性偏低的文章时，也可以使用星号填补缺失部分。
+
+比如用关键字 Array.prototype.* 进行搜索，
+前几条依次是 Array.prototype.slice()，Array.prototype.find()，
+Array.prototype.sort() 相关。
+再比如，对于某个人名你不确定，可以这样搜，武*兰，武初兰是什么鬼？
+
+\paragraph{搜索相关网站}
+
+实例：related:www.tudou.com，related:www.cnblogs.com.
+这个功能比较好玩，可以搜索类似的网站，竞品网站。
+比如我要搜索和土豆网类似的网站，可以这样 related:www.tudou.com，
+优酷，爱奇艺，腾讯视频什么的都出来了。搜一下和博客园类似的网站？
 
 \subsection{Shodan Hacking}
 
@@ -15219,7 +15237,29 @@ The flag Xmx specifies the maximum memory allocation pool for a Java Virtual Mac
 
 如果你想在GUI下查看内存及GC操作。那么你可以使用jvisualvm工具。
 
+\subsection{ClassLoader}
 
+\paragraph{BootStrap ClassLoader}
+
+称为启动类加载器，是Java类加载层次中最顶层的类加载器，
+负责加载JDK中的核心类库，如：rt.jar、resources.jar、charsets.jar等，
+可通过如下程序获得该类加载器从哪些地方加载了相关的jar或class文件:
+
+\begin{lstlisting}[language=Java]
+URL[] urls = sun.misc.Launcher.getBootstrapClassPath().getURLs();
+for (int i = 0; i < urls.length; i++) {
+	System.out.println(urls[i].toExternalForm());
+}
+\end{lstlisting}
+
+\paragraph{Extension ClassLoader}
+
+称为扩展类加载器，负责加载Java的扩展类库，
+默认加载JAVA\_HOME/jre/lib/ext/目下的所有jar。
+
+\paragraph{App ClassLoader}
+
+称为系统类加载器，负责加载应用程序classpath目录下的所有jar和class文件。
 
 \section{线程}
 
