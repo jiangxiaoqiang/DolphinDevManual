@@ -3698,6 +3698,14 @@ SelectSingleNode方法总是返回为null，
 
 \subsection{序列化时添加字段}
 
+\subsection{fastjson反序列化泛型}
+
+使用fastjson反序列化泛型时用TypeReference传入泛型类型：
+
+\begin{lstlisting}[language=Java]
+ArrayList<ClientVehicleInfo> clientVehicleInfo = JSON.parseObject(subscribeVehicles, new TypeReference<ArrayList<ClientVehicleInfo>>(){});
+\end{lstlisting}
+
 \section{数据转换}
 
 \subsection{将DataTable转为List}
@@ -15353,6 +15361,18 @@ Debug视图下的3个小窗口视图：变量视图、断点视图和表达式�
 为了能让我们的debug按照预期的方式继续走下去（如变量满足一定条件才能走到某一个特定的分支中去），
 我们可以设置变量值为预期的值，达到测试目的。
 
+\paragraph{Eclipse调试多线程}
+
+在Eclipse中查看当前程序有哪些线程，
+如图\ref{code:EclipseMultiThreadDebugView}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{EclipseMultiThreadDebugView.jpg}
+	\caption{Eclipse多线程查看}
+	\label{code:EclipseMultiThreadDebugView}
+\end{figure}
+
 \subsection{使用技巧}
 
 \paragraph{包显示方式}
@@ -16693,6 +16713,9 @@ Kafka中可以将Topic从物理上划分成一个或多个分区（Partition）�
 该文件夹下存储这个分区的所有消息(.log)和索引文件(.index)，
 这使得Kafka的吞吐率可以水平扩展。
 
+每个topic都是有分区数和复制因子的，但是我们无法通过Producer相关的API设定分区数和复制因子的，
+因为Producer相关API创建topic的是通过读取server.properties文件中的num.partitions和default.replication.factor。
+
 \paragraph{Segment}
 
 partition物理上由多个segment组成，下面2.2和2.3有详细说明。
@@ -16842,6 +16865,44 @@ It isn't possible to mix both subscription to specific partitions
 (with no load balancing) and to topics (with load balancing) 
 using the same consumer instance.
 
+\paragraph{停止消费}
+
+The Kafka consumer is NOT thread-safe. 
+All network I/O happens in the thread of the application making the call. 
+It is the responsibility of the user to ensure that multi-threaded access is properly synchronized. 
+Un-synchronized access will result in ConcurrentModificationException.
+停止消费如下代码片段所示：
+
+\begin{lstlisting}[language=Java]
+public class KafkaConsumerRunner implements Runnable {
+	private final AtomicBoolean closed = new AtomicBoolean(false);
+	private final KafkaConsumer consumer;
+	
+	public void run() {
+		try {
+			consumer.subscribe(Arrays.asList("topic"));
+			while (!closed.get()) {
+				ConsumerRecords records = consumer.poll(10000);
+				// Handle new records
+			}
+		} catch (WakeupException e) {
+			// Ignore exception if closing
+			if (!closed.get()) throw e;
+		} finally {
+			consumer.close();
+		}
+	}
+		
+	// Shutdown hook which can be called from a separate thread
+	public void shutdown() {
+		closed.set(true);
+		consumer.wakeup();
+	}
+}
+\end{lstlisting}
+
+AtomicBoolean在这个Boolean值的变化的时候不允许在之间插入，保持操作的原子性。
+
 \subsection{生产者(Producer)}
 
 
@@ -16946,7 +17007,7 @@ sbt clean dist
 启动Kafka-Manager：
 
 \begin{lstlisting}[language=Bash]
-./kafka-manager -Dkafka-manager.zkhosts="192.168.24.244:2181"
+./kafka-manager -Dkafka-manager.zkhosts="192.168.24.244:2181" &
 \end{lstlisting}
 
 启动之后使用如下地址访问即可：http://localhost:9000。
@@ -17813,8 +17874,10 @@ iptables -L -n
 /sbin/iptables -I INPUT -p tcp --dport 8080 -j ACCEPT
 #添加output记录
 iptables -A OUTPUT -p tcp –sport 22 -j ACCEPT
+
 #记得保存
 /etc/init.d/iptables save
+
 #在CentOS上执行如下命令，需要加上路径
 /etc/rc.d/init.d/iptables save
 #重启防火墙
@@ -19304,6 +19367,7 @@ ssh-agent bash
 \begin{lstlisting}[language=Bash]
 git pull <远程主机名> <远程分支名>:<本地分支名>
 \end{lstlisting}
+
 
 为了便于管理，Git要求每个远程主机都必须指定一个主机名。git remote命令就用于管理主机名。
 不带选项的时候，git remote命令列出所有远程主机。
