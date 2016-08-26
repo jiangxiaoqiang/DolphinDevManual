@@ -16948,7 +16948,17 @@ Kafka日志查看：/tmp/kafka-logs/topics-pitatioin下有log文件。
 \end{lstlisting}
 
 以上命令会列出所有Topics的名字和分区。
-删除topic:
+
+\paragraph{删除topic}
+
+如果只是用kafka-topics.sh的delete命令删除topic，会有两种情况：
+如果当前topic没有使用过即没有传输过信息：可以彻底删除。
+如果当前topic有使用过即有过传输过信息：
+并没有真正删除topic，只是把这个topic标记为删除(marked for deletion)。
+要彻底把后者的topic删除，必须把kafka中与当前topic相关的数据目录和zookeeper与当前topic相关的路径一并删除。
+如果kafaka启动时加载的配置文件中server.properties没有配置delete.topic.enable=true，
+那么此时的删除并不是真正的删除，而是把topic标记为：marked for deletion。
+删除topic的命令行为：
 
 \begin{lstlisting}[language=Bash]
 ./kafka-topics.sh --zookeeper 192.168.24.244:2181 --delete --topic 14914186881
@@ -17911,6 +17921,8 @@ nfs端口111
 
 \subsection{tcpdump}
 
+使用tcpdump抓取包时，需要有服务程序开启相应的监听端口，
+否则是抓取不到包的。
 使用tcpdump时需要看看目前服务器一共多少网卡，抓取所有经过eth1，目的或源地址是12.26.32.14的网络数据：
 
 \begin{lstlisting}[language=Bash]
@@ -17953,7 +17965,7 @@ tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>140' -vv
 且IP包40位的后两位数据是7e02的网络数据(位置信息上报)，注意过滤时需要添加0x前缀：
 
 \begin{lstlisting}[language=Bash]
-tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>140 and ip[41:2]=0x7e02' -vv -X -c 100
+tcpdump -i eth1 tcp and host 192.168.24.244 and port 8089 and 'ip[2:2]>140 and ip[41:2]=0x7e02' -vv -X -c 100
 \end{lstlisting}
 
 抓取所有经过eth1，数据包类型是TCP，目的地址是12.26.32.14，端口是6973,数据包长度大于140字节，
