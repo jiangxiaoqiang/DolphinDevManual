@@ -16921,6 +16921,8 @@ AtomicBoolean在这个Boolean值的变化的时候不允许在之间插入，保
 ./zookeeper-server-start.sh  ../config/zookeeper.properties &
 \end{lstlisting}
 
+\paragraph{启动Kafka}
+
 Kafka日志查看：/tmp/kafka-logs/topics-pitatioin下有log文件。
 切换到Kafka的bin目录，后台启动Kafka命令如下：
 
@@ -17633,7 +17635,7 @@ fi
 \begin{lstlisting}[language=Bash]
 #!/bin/sh
 if [ ! -d "/root/package/my" ] ;then
-mkdir /root/package/my
+	mkdir /root/package/my
 fi
 \end{lstlisting}
 
@@ -17648,14 +17650,14 @@ currentDate='date '+%Y-%m-%d''
 currentTime='date +'%Y%m%d%H%M%S''
 packageStoreDir=/root/package/location/$currentDate
 if [ ! -d "$packageStoreDir" ] ; then
-mkdir "$packageStoreDir"
+	mkdir "$packageStoreDir"
 fi
 #tcpdump -i eth1 port 6973 and host 12.26.32.14 -w $packageStoreDir/$currentTime.cap
 tcpdump -i eth1 port 6973 and host 12.26.32.14 -w $packageStoreDir/$currentTime.cap
 \end{lstlisting}
 
 要让进程在后台运行，一般情况下，我们在命令后面加上\&即可，实际上，这样是将命令放入到一个作业队列中。
-但是如上方到后台执行的进程，其父进程还是当前终端shell的进程，而一旦父进程退出，
+但是到后台执行的进程，其父进程还是当前终端shell的进程，而一旦父进程退出，
 则会发送hangup信号给所有子进程，子进程收到hangup以后也会退出。
 如果我们要在退出shell的时候继续运行进程，则需要使用nohup忽略hangup信号，
 或者setsid将将父进程设为init进程(进程号为1)。
@@ -17671,10 +17673,10 @@ nohup ./capture.sh &
 \begin{lstlisting}[language=Bash]
 #!/bin/bash
 for processId in $(ps -ef|grep "tcpdump"|grep -v grep|cut -c 10-15); do	
-if [ $processId != 1 ] ;then
-kill -9 $processId
-echo "kill $processId success" >> ./log/log.log
-fi
+	if [ $processId != 1 ] ;then
+		kill -9 $processId
+		echo "kill $processId success" >> ./log/log.log
+	fi
 done
 \end{lstlisting}
 
@@ -17689,13 +17691,13 @@ done
 #!/bin/bash
 process_exists=false
 for processId in $(ps -ef|grep "tcpdump"|grep -v grep|cut -c 10-15); do
-if [ $processId != 1 ] ;then
-process_exists=true
-echo "tcpdump process aready exists,will not start capture process" >> ./log/capture.log
-fi
+	if [ $processId != 1 ] ;then
+		process_exists=true
+		echo "tcpdump process aready exists,will not start capture process" >> ./log/capture.log
+	fi
 done
 if [ "$process_exists" != true ] ;then
-nohup /root/package/scripts/capture.sh &
+	nohup /root/package/scripts/capture.sh &
 fi
 \end{lstlisting}
 
@@ -17703,6 +17705,39 @@ shell变量名字是大小写敏感的。给变量赋值时，等号周围不能
 如此处的:process\_exists=true。
 
 \subsection{shell日志处理}
+
+\subsection{自动启动}
+
+凡是需要随系统自动启动的服务、程序等，只要系统没有提供Sys V风格的启动脚本，
+就把这些需求都塞到/etc/rc.d/rc.local。
+例如需要开机启动Kafka，可以在rc.local脚本中希尔如下命令：
+
+\begin{lstlisting}[language=Bash]
+/opt/start-kafka.sh >> /opt/log.txt
+\end{lstlisting}
+
+由于不知道是不是允许跟参数，
+所以将启动脚本做了一次封装，
+start-kafka.sh是封装的带参数的启动脚本：
+
+\begin{lstlisting}[language=Bash]
+nohup /opt/kafka/kafka9/bin/kafka-server-start.sh  /opt/kafka/kafka9/config/server.properties & >> /opt/log.txt
+\end{lstlisting}
+
+注意一定要加上nohup命令，避免父进程结束的时候子进程一并结束。
+简单而有用的nohup命令在UNIX/LINUX中，普通进程用\&符号放到后台运行，
+如果启动该程序的控制台logout，则该进程随即终止。
+
+要实现守护进程，一种方法是按守护进程的规则去编程，
+比较麻烦；另一种方法是仍然用普通方法编程，然后用nohup命令启动程序：
+
+\begin{lstlisting}[language=Bash]
+nohup <程序名> &
+\end{lstlisting}  
+
+则控制台logout后，进程仍然继续运行，起到守护进程的作用（虽然它不是严格意义上的守护进程）。
+使用nohup命令后，原程序的的标准输出被自动改向到当前目录下的nohup.out文件，
+起到了log的作用，实现了完整的守护进程功能。
 
 \section{基础}
 
