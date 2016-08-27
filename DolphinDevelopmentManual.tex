@@ -15692,11 +15692,13 @@ Java世界中主要有三大构建工具：Ant、Maven和Gradle。
 \end{figure}
 
 设置下jar下载保存的地址,不然默认保存在C盘。
-切换到项目的目录下，构建项目：
+切换到项目的目录下(即build.gradle文件的存储位置)，构建项目：
 
 \begin{lstlisting}[language=Bash]
 gradle build
 \end{lstlisting}
+
+项目构建完毕后会在当前目录下生成一个build目录。
 
 \subsection{Gradle和Gradle Wrapper}
 
@@ -17244,7 +17246,31 @@ Apache在本阶段的主要工作：清理本次请求事务处理完成之后�
 A Java servlet is a Java program that extends the capabilities of a server. 
 Although servlets can respond to any types of requests, 
 they most commonly implement applications hosted on Web servers. 
-Such Web servlets are the Java counterpart to other dynamic Web content technologies such as PHP and ASP.NET.
+Such Web servlets are the Java counterpart to other 
+dynamic Web content technologies such as PHP and ASP.NET.
+Servlet使你能够编写根据请求动态生成内容的服务端组件。
+Servlet是一个在javax.servlet包里定义的接口。
+它为Servlet的生命周期声明了三个基本方法——init()、service()和destroy()。
+每个Servlet都要实现这些方法并在它们的生命周期的特定时间由服务器来调用这些方法。
+类加载器通过懒加载（lazy-loading）或者
+预加载（eager loading）自动地把Servlet类加载到容器里。
+每个请求都拥有自己的线程，而一个Servlet对象可以同时为多个线程服务。
+当Servlet对象不再被使用时，它就会被JVM当做垃圾回收掉。
+
+\paragraph{ServletContext}
+
+当Servlet容器启动时，它会部署并加载所有的web应用。
+当web应用被加载时，Servlet容器会一次性为每个应用创建Servlet上下文（ServletContext）并把它保存在内存里。
+Servlet容器会处理web应用的web.xml文件，并且一次性创建在web.xml里定义的Servlet、Filter和Listener，
+同样也会把它们保存在内存里。当Servlet容器关闭时，它会卸载所有的web应用和ServletContext，
+所有的Servlet、Filter和Listner实例都会被销毁。
+
+从Java文档可知，ServletContext定义了一组方法，Servlet使用这些方法来与它的Servlet容器进行通信。
+例如，用来获取文件的MIME类型、转发请求或者编写日志文件。
+在web应用的部署文件（deployment descriptor）标明“分布式”的情况下，
+web应用的每一个虚拟机都拥有一个上下文实例。在这种情况下，
+不能把Servlet上下文当做共享全局信息的变量（因为它的信息已经不具有全局性了）。
+可以使用外部资源来代替，比如数据库。
 
 \paragraph{Servlet生命周期、工作原理}
 
