@@ -15335,6 +15335,9 @@ Usage: java javassist.tools.web.Webserver <port number>
 \section{Eclipse}
 
 开发用的Eclipse是Eclipse IDE for Java EE Developers。
+Eclipse Versions: 
+Neon (4.6), Mars (4.5), 
+Luna (4.4), Kepler (4.3), Juno (4.2, 3.8), Previous to Juno (<=4.1)
 
 \subsection{Eclipse调试技巧}
 
@@ -15629,9 +15632,24 @@ Buildship 1.0 版专注于 Gradle 用户，之后的版本会扩大至 Gradle �
 在浏览器中就会显示为乱码。
 那么怎么解决这个问题呢-->安装properties插件。该插件可以在输入中文时自动转换为ASCII码。
 
-\subsection{eclipse Multiple annotations found at this line}
+\paragraph{FindBugs}
 
-eclipse Multiple annotations found at this line错误，
+FindBugs是一款Java静态代码分析工具，与其他静态分析工具（如Checkstyle和PMD）不同，
+FindBugs 不注重样式或者格式，它专注于寻找真正的缺陷或者潜在的性能问题,
+它可以帮助Java工程师提高代码质量以及排除隐含的缺陷。有了静态分析工具，
+就可以在不实际运行程序的情况对软件进行分析。
+Findbugs安装URL：\url{http://findbugs.cs.umd.edu/eclipse/}。
+找出的bug有3中颜色，黑色的臭虫标志是分类，
+红色的臭虫表示严重bug发现后必须修改代码，橘黄色的臭虫表示潜在警告性bug应尽量修改。
+
+\paragraph{PyDev}
+
+Pydev这个插件能够让用户利用Eclipse进行Python、Jython以及Iron Python开发，
+使Eclipse成为一流的Python IDE。
+
+\subsection{Eclipse Multiple annotations found at this line}
+
+Eclipse Multiple annotations found at this line错误，
 eclipse开发过程中，一些XML配置文件会报错，但是这些其实不是错，
 飘红的原因是因为eclipse的校验问题。
 去掉校验设置步骤：
@@ -19561,6 +19579,20 @@ Under Linux it is possible, if you escape those characters.
 git rm -r --cached  */src/\* 
 \end{lstlisting}
 
+\paragraph{git filename too long}
+
+Git has a limit of 4096 characters for a filename, 
+except on windows when git is compiled with msys. 
+It uses an older version of the windows api 
+and there's a limit of 260 characters for a filename.
+
+\begin{lstlisting}[language=Bash]
+git config --system core.longpaths true	
+\end{lstlisting}
+
+add it to one of your git config files manually to turn this functionality on, 
+once your are on a supported version of git. It looks like maybe 1.9.0 and after.
+
 \section{StyleCop.exe}
 
 StyleCop analyzes C\# source code to enforce a set of style and consistency rules. It can be run from inside of Visual Studio or integrated into an MSBuild project. StyleCop has also been integrated into many third-party development tools.
@@ -21664,6 +21696,12 @@ digraph G{
 	\label{YZLogic}
 \end{figure}
 
+\subsection{子图(Subgraphiz)}
+
+子图的名称必须以cluster开头，否则graphviz无法设别。
+
+
+
 \section{gVim}
 
 \subsection{乱码}
@@ -23467,6 +23505,7 @@ public string GetMacAddress()
 	Over Engineering & 过度工程\\
 	Gene-Editing & 基因编辑\\
 	ludicrous & 滑稽的，荒唐的\\
+	notoriously & 众所周知地；声名狼藉地；恶名昭彰地\\
 	Disposable items & 一次性用品\\
 	bible & 有权威的书\\
 	swagger & 昂首阔步; 夸耀，炫耀\\
@@ -23530,6 +23569,7 @@ more concisely, or in an alternative style that some may prefer.}
 	即原来的流量正常通行，同时分一股出来供监测设备分析使用。\\
 	JAR & Java Archive\\
 	WAR & Web Application Archive\\
+	STS & SpringSource Tool Suite\\
 \end{longtable}
 
 \section{常用术语}
