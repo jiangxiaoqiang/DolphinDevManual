@@ -15376,6 +15376,22 @@ Debug视图下的3个小窗口视图：变量视图、断点视图和表达式�
 	\label{code:EclipseMultiThreadDebugView}
 \end{figure}
 
+\paragraph{远程调试(Remote Debugging)}
+
+在Tomcat中，修改启动脚本最后一行为：
+
+\begin{lstlisting}[language=Bash]
+exec "$PRGDIR"/"$EXECUTABLE" jpda start "$@"
+\end{lstlisting}
+
+从J2SE 1.4.2开始，就已经提出并实现了JavaTM Platform Debugger Architecture，简称JPDA。
+JPDA为Java平台上的调试器定义了一个标准的体系结构。
+该体系结构包括3个主要组成部分：JVM TI、JDI和JDWP。
+在Eclipse中选择Run--Debug，在弹出的对话框中右击Remote Java Application新建一个远程调试项，
+如下如所示：
+
+
+
 \subsection{使用技巧}
 
 \paragraph{包显示方式}
@@ -17750,7 +17766,7 @@ shell变量名字是大小写敏感的。给变量赋值时，等号周围不能
 
 \subsection{shell日志处理}
 
-\subsection{自动启动}
+\subsection{开机自动启动}
 
 凡是需要随系统自动启动的服务、程序等，只要系统没有提供Sys V风格的启动脚本，
 就把这些需求都塞到/etc/rc.d/rc.local。
@@ -21700,7 +21716,32 @@ digraph G{
 
 子图的名称必须以cluster开头，否则graphviz无法设别。
 
+\subsection{箭头指向子图}
 
+箭头指向子图示例代码如下所示：
+
+\begin{lstlisting}
+digraph G {
+	compound=true;
+	subgraph cluster0 {
+		a -> b;
+		a -> c;
+		b -> d;
+		c -> d;
+	}
+	subgraph cluster1 {
+		e -> g;
+		e -> f;
+	}
+	b -> f [lhead=cluster1];
+	d -> e;
+	c -> g [ltail=cluster0,lhead=cluster1];
+	c -> e [ltail=cluster0];
+	d -> h;
+}
+\end{lstlisting}
+
+注意在开始时需要加入compound=true语句。
 
 \section{gVim}
 
