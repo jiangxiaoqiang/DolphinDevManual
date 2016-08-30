@@ -20078,7 +20078,7 @@ tomcat用户权限配置：
 xcopy D:\ClientRelease\JenkinRelease\*.* \\192.168.24.253\公共区\Client\2.0\Release /S /R /Y
 \end{lstlisting}
 
-初始执行时提示无效的驱动器规格。
+初始执行时提示\textbf{无效的驱动器规格}错误。
 将Jenkins服务的启动登录账户权限修改下即可(因为Jenkins登录账户还没有保存登录远程账户的凭据)，
 如下图\ref{fig:JenkinsChangeLoginAccount}所示。
 
@@ -20107,8 +20107,16 @@ xcopy D:\ClientRelease\JenkinRelease\*.* \\192.168.24.253\公共区\Client\2.0\C
 xcopy D:\ClientRelease\JenkinRelease\*.* \\192.168.24.253\公共区\Client\2.0\Client2.0-Release-%date:~0,4%%date:~5,2%%date:~8,2%-%BUILD_NUMBER% /S /R /Y /I
 \end{lstlisting}
 
-\section{Travis CI}
+在Jenkins中执行批处理命令如图\ref{fig:JenkinsExecuteBatchCommand}所示：
 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{JenkinsExecuteBatchCommand.jpg}
+	\caption{Jenkins执行批处理命令}
+	\label{fig:JenkinsExecuteBatchCommand}
+\end{figure}
+
+\section{Travis CI}
 
 \section{自动化脚本}
 
@@ -21635,7 +21643,7 @@ dot -Tjpg -Gdpi=1024 PhotoPrintWorkflow.dot -o ppw.jpg
 \subsection{中文乱码}
 
 Graphviz默认设置下是不支持中文，如果在dot文件中直接写中文，会显示成乱码。
-解决Graphviz中文乱码的问题就是指定fontname，如下代码片段所示：
+解决Graphviz中文乱码的问题就是指定字体名称(fontname)，如下代码片段所示：
 
 \begin{lstlisting}[language=Bash]
 digraph G{
@@ -21742,6 +21750,47 @@ digraph G {
 \end{lstlisting}
 
 注意在开始时需要加入compound=true语句。
+
+\subsection{Graphviz绘制开发流程}
+
+使用Graphviz绘制开发流程：
+
+\begin{lstlisting}
+digraph kafkaComsumerModel{ 
+	compound=true;
+	node[fontname="FangSong",size="20,20",shape="Mrecord",color="skyblue",style="filled"];  
+	edge[fontname = "FangSong", fontsize = 12, color="darkgreen"];
+	decision[shape=diamond, label="pass",fixedsize=true, width=2.4, height=0.5]
+	
+	subgraph cluster_1 {
+		label="CI";
+		bgcolor="aliceblue";
+		Jenkins build "Unit Test" "Test Server" "Integrete Server";
+	}  
+	
+	subgraph cluster_developers{
+		label="Programmer";
+		bgcolor="aliceblue";
+		developer1 developer2 developer3;
+	}
+	
+	developer1 -> svn[label="commit"];
+	developer2 -> svn[label="commit"];
+	developer3 -> svn[label="commit"];
+	svn -> Jenkins[label="pull"];
+	Jenkins -> build;
+	build -> "Unit Test";
+	"Unit Test" -> "Test Server"[label="publish"];
+	"Unit Test" -> "Integrete Server"[label="publish"];
+	"Test Server" -> Tester;  
+	Tester -> decision;
+	decision -> Redmine[label="No"];
+	decision -> "Integrete Server"[label="Yes"];
+	Redmine -> developer1[lhead="cluster_developers",label="issue"];  
+	"Integrete Server" -> "Product Server"[label="release"];
+}
+\end{lstlisting}
+
 
 \section{gVim}
 
