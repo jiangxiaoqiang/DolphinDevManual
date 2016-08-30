@@ -20043,7 +20043,7 @@ Java下Jenkins部署到Tomcat配置如下：
 	\label{fig:JenkinsTomcatDeployment}
 \end{figure}
 
-第一项(WAR/EAR files):是war包的相对路径(相对于工作区路径,即在工作区中war包的相对路径.)
+第一项(WAR/EAR\footnote{EAR (Enterprise Application aRchive) is a file format used by Java EE for packaging one or more modules into a single archive so that the deployment of the various modules onto an application server happens simultaneously and coherently. It also contains XML files called deployment descriptors which describe how to deploy the modules.Ant, Maven, or Gradle can be used to build EAR files.jar--封装类,war--封装web站点,ear--封装ejb。} files):是war包的相对路径(相对于工作区路径,即在工作区中war包的相对路径.)
 如我的maven执行完成之后会在工作区的target目录下生成项目.war,
 所以这里我的路径就写target\textbackslash 项目.war.
 
