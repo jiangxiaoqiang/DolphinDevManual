@@ -20048,6 +20048,7 @@ VisualStudioVersion=11.0 表示VS2012。
 
 \subsection{Jenkins部署(Jenkins Deployment)}
 
+自动化部署主要靠SSH/FTP，
 Java下Jenkins部署到Tomcat配置如下：
 
 \begin{figure}[htbp]
@@ -20087,6 +20088,10 @@ tomcat用户权限配置：
 
 在编译成功之后查看编译文件在构建界面的Module Builds中，
 可以看到构建产生文件，并且可以下载。
+
+\paragraph{Publish Over SSH}
+
+多主机发布时，Jenkins服务器需要安装Publish Over SSH插件。
 
 \subsection{Jenkins执行批处理命令}
 
