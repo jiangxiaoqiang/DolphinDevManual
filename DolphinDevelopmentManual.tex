@@ -11329,6 +11329,13 @@ Array.prototype.sort() 相关。
 
 \subsection{Shodan Hacking}
 
+\subsection{网站攻击步骤}
+
+一般的攻击步骤如图所示。
+
+
+
+
 \chapter{Node.js}
 
 \clearpage
@@ -11354,7 +11361,6 @@ Node.js' package ecosystem, npm, is the largest ecosystem of open source librari
 我这里下载的是node-v4.1.1-x64.msi。
 安装基本是下一步下一步即可完成。
 当Node.js安装完成以后，npm(Node.js Package Management)也一并安装完毕。
-
 
 \subsection{基础的HTTP服务器}
 
@@ -15657,6 +15663,14 @@ FindBugs 不注重样式或者格式，它专注于寻找真正的缺陷或者�
 Findbugs安装URL：\url{http://findbugs.cs.umd.edu/eclipse/}。
 找出的bug有3中颜色，黑色的臭虫标志是分类，
 红色的臭虫表示严重bug发现后必须修改代码，橘黄色的臭虫表示潜在警告性bug应尽量修改。
+如图\ref{code:JavaFindBugsPluginView}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=1]{JavaFindBugsPluginView.jpg}
+	\caption{Bug级别}
+	\label{code:JavaFindBugsPluginView}
+\end{figure}
 
 \paragraph{PyDev}
 
@@ -15695,8 +15709,6 @@ are in your project so that you can do a complete fresh rebuild.
 \subsection{从SVN检出项目}
 
 Import->SVN。
-
-
 
 \section{Gradle}
 
@@ -17031,6 +17043,8 @@ partition的lag指的是log end offset和last committed offset的差距.
 管理人员可以监视这些来确保消费组能赶上生产者.
 (译注:生产者写入消息,LEO(Last End Offset)会增加,消费者提交offset,会增加LCO(Last Committed Offset),
 两者差距小说明消费者的消费速度能赶上生产者的生产速度)。
+
+\paragraph{消费topic}
 在服务端消费指定主题为14914186881的Kafka数据：
 
 \begin{lstlisting}[language=Bash]
@@ -20038,7 +20052,7 @@ Java下Jenkins部署到Tomcat配置如下：
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.8]{JenkinsTomcatDeployment.jpg}
+	\includegraphics[scale=0.5]{JenkinsTomcatDeployment.jpg}
 	\caption{Jenkins自动部署到Tomcat}
 	\label{fig:JenkinsTomcatDeployment}
 \end{figure}
@@ -20047,7 +20061,7 @@ Java下Jenkins部署到Tomcat配置如下：
 如我的maven执行完成之后会在工作区的target目录下生成项目.war,
 所以这里我的路径就写target\textbackslash 项目.war.
 
-第二项:(content path):tomcat的发布路径,即使用localhost/(content path设置的名字)来访问项目.
+第二项:(content path):tomcat的发布路径,即使用localhost(content path设置的名字)来访问项目.
 
 最后一项是deploy on failure是发生错误的时候是否发布到tomcat.
 
@@ -20068,6 +20082,11 @@ tomcat用户权限配置：
 	\caption{Jenkins自动替换配置文件}
 	\label{fig:JenkinsConfigurationFileReplace}
 \end{figure}
+
+\paragraph{查看打包文件}
+
+在编译成功之后查看编译文件在构建界面的Module Builds中，
+可以看到构建产生文件，并且可以下载。
 
 \subsection{Jenkins执行批处理命令}
 
