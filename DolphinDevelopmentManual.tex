@@ -15094,6 +15094,16 @@ with exemplary process content and tools, supporting a broad variety of project 
 	\label{code:JavaCodeTemplate}
 \end{figure}
 
+\subsection{Java Classpath}
+
+The rule is that -classpath option, when used to start the java application, 
+overrides the CLASSPATH environment variable. If none are specified, 
+the current working directory is used as classpath. 
+This means that when our working directory is D:/myprogram/ (on Linux, /home/user/myprogram/), 
+we would not need to specify the classpath explicitly. When overriding however, 
+it is advised to include current folder "." into the classpath 
+in the case when loading classes from current folder is desired.
+
 \subsection{web.xml配置文件}
 
 web.xml是所有配置文件的入口配置文件，Tomcat在启动时会自动加载该配置文件，
@@ -15709,6 +15719,23 @@ Pydev这个插件能够让用户利用Eclipse进行Python、Jython以及Iron Pyt
 	\caption{PyDev插件菜单}
 	\label{fig:PythonDevelopmentPluginMenu}
 \end{figure}
+
+\paragraph{PlantUML}
+
+PlantUML 是一个用来绘制 UML 图的 Java 类库。
+支持的 UML 图包括：时序图、用例图、类图、组件图、活动图等。
+PlantUML的下载地址：\url{http://basar.idi.ntnu.no/svn/tdt4100/anonymous/trunk/updatesite}。
+
+\paragraph{GEF(Graphical Editing Framework)}
+
+The Eclipse Graphical Editing Framework (GEF) provides 
+Eclipse-integrated end-user tools in terms of a 
+Graphviz authoring (DOT editor, DOT Graph view) 
+and a word cloud rendering environment (Tag Cloud view), 
+as well as framework components (Common, Geometry, 
+FX, MVC, Graph, Layout, Zest, DOT, and Cloudio) to 
+create rich graphical Java client applications, 
+Eclipse-integrated or standalone.
 
 \subsection{Eclipse Multiple annotations found at this line}
 
@@ -16619,7 +16646,7 @@ MyBatis 可以对配置和原生Map使用简单的 XML 或注解，
 mina 2.0在合理的负载下1000个并发，最高能达到5076.81rps(Requests Per Second)。
 Apache MINA(Multipurpose Infrastructure for Network Applications) 是 Apache 组织一个较新的项目，
 它为开发高性能和高可用性的网络应用程序提供了非常便利的框架。
-当前发行的 MINA 版本支持基于 Java NIO 技术的 TCP/UDP 应用程序开发、串口通讯程序(只在最新的预览版中提供)，
+当前发行的MINA版本支持基于Java NIO(Java non-blocking IO)技术的TCP/UDP应用程序开发、串口通讯程序(只在最新的预览版中提供)，
 MINA 所支持的功能也在进一步的扩展中。
 新项目里的web service需要高并发服务能力，tomcat目前最多支持到200个并发。
 Apache MINA is a network application framework 
@@ -17407,10 +17434,18 @@ Jetty supports the latest Java Servlet API (with JSP support) as well as protoco
 Netty和Mina是Java世界非常知名的通讯框架。它们都出自同一个作者，
 Mina诞生略早，属于Apache基金会，而Netty开始在Jboss名下，
 后来出来自立门户netty.io（http://netty.io/）。
-Netty是一个基于JAVA NIO类库的异步通信框架，
+Netty是一个基于JAVA NIO(Java non-blocking IO)类库的异步通信框架，
 它的架构特点是：异步非阻塞、基于事件驱动、高性能、高可靠性和高可定制性。
-Netty主要用于NIO，但Netty的Channel实现类支持老版本的、同步的IO（OIO）。
+Netty主要用于NIO，但Netty的Channel实现类支持老版本的、同步的IO(OIO)。
 OIO有一些优点，而且Netty对它的实现方式和NIO一样，这些实现模块能够被替换和重用。
+Netty与其他服务的比较：
+
+\begin{itemize}
+	\item{Tomcat是一个Web服务器，它是采取一个请求一个线程，当有1000客户端时，会耗费很多内存。通常一个线程将花费 256kb到1mb的stack空间。}
+	\item{Node.js是一个线程服务于所有请求，在错误处理上有限制}
+	\item{Netty是一个线程服务于很多请求，如下图，当从Java NIO获得一个Selector事件，将激活通道Channel。}
+\end{itemize}
+
 
 \section{常见问题}
 
@@ -19026,6 +19061,7 @@ IIS 6.0默认运行在NETWORK SERVICE账户下，
 \section{log4j}
 
 Log4j支持两种配置文件格式，一种是XML格式的文件，一种是properties格式的文件。
+将配置好的log4j.xml 放到项目的classpath下即可。
 
 \section{Opserver}
 
