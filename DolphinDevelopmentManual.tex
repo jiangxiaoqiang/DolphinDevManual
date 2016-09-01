@@ -14971,20 +14971,21 @@ JavaBeans事实上有三层含义。首先，JavaBeans是一种规范，一种�
 关于JDK和OpenJDK的区别，可以归纳为以下几点：
 
 授权协议的不同：
-openjdk采用GPL V2协议放出，而JDK则采用JRL放出。
+OpenJDK采用GPL V2协议放出，而JDK则采用JRL放出。
 两者协议虽然都是开放源代码的，但是在使用上的不同在于GPL V2允许在商业上使用，而JRL只允许个人研究使用。
 OpenJDK不包含Deployment（部署）功能：
-部署的功能包括：Browser Plugin、Java Web Start、以及Java控制面板，这些功能在Openjdk中是找不到的。
+部署的功能包括：Browser Plugin、Java Web Start、以及Java控制面板，这些功能在OpenJDK中是找不到的。
 OpenJDK源代码不完整：
-这个很容易想到，在采用GPL协议的Openjdk中，sun jdk的一部分源代码因为产权的问题无法开放openjdk使用，
+这个很容易想到，在采用GPL协议的Openjdk中，sun jdk的一部分源代码因为产权的问题无法开放OpenJDK使用，
 其中最主要的部份就是JMX中的可选元件SNMP部份的代码。因此这些不能开放的源代码将它作成plug，
 以供OpenJDK编译时使用，你也可以选择不要使用plug。
 而Icedtea则为这些不完整的部分开发了相同功能的源代码(OpenJDK6)，促使OpenJDK更加完整。
 部分源代码用开源代码替换：
 由于产权的问题，很多产权不是SUN的源代码被替换成一些功能相同的开源代码，
 比如说字体栅格化引擎，使用Free Type代替。
-openjdk只包含最精简的JDK：
-OpenJDK不包含其他的软件包，比如Rhino Java DB JAXP……，并且可以分离的软件包也都是尽量的分离，但是这大多数都是自由软件，你可以自己下载加入。 
+OpenJDK只包含最精简的JDK：
+OpenJDK不包含其他的软件包，比如Rhino Java DB JAXP……，
+并且可以分离的软件包也都是尽量的分离，但是这大多数都是自由软件，你可以自己下载加入。 
 OpenJDK (Open Java Development Kit) is a free and open source 
 implementation of the Java Platform, Standard Edition (Java SE).
 It is the result of an effort Sun Microsystems began in 2006. 
@@ -15274,6 +15275,30 @@ for (int i = 0; i < urls.length; i++) {
 \paragraph{App ClassLoader}
 
 称为系统类加载器，负责加载应用程序classpath目录下的所有jar和class文件。
+
+\subsection{Java安装}
+
+查询系统已经安装的JDK：
+
+\begin{lstlisting}[language=Bash]
+rpm -qa | grep -E '^(java|jdk)'
+\end{lstlisting}
+
+rpm -qa代表查询所有已安装的packages，grep语句是通过正则表达式来过滤输出以java或者jdk开头的结果。
+下载rpm包：
+
+\begin{lstlisting}[language=Bash]
+wget http://download.oracle.com/otn-pub/java/jdk/8u101-b13/jdk-8u101-linux-x64.rpm?AuthParam=1472693640_91d06a7fe3533c4298b48ccc7e38974f
+\end{lstlisting}
+
+安装Java：
+
+\begin{lstlisting}[language=Bash]
+rpm -ivh jdk-8u101-linux-x64.rpm
+\end{lstlisting}
+
+输入命令确认当前系统默认的java版本。
+安装文件默认存放在/usr/java目录下。
 
 \section{线程}
 
@@ -17100,6 +17125,8 @@ ZooKeeper的架构通过冗余服务实现高可用性。因此，如果第一�
 lsof -i:2181
 \end{lstlisting}
 
+
+
 \section{Apache Tomcat}
 
 \subsection{常识(Common Sense)}
@@ -17348,6 +17375,43 @@ service() 方法检查 HTTP 请求类型（GET、POST、PUT、DELETE 等），
 一个Servlet在运行service()方法时可能会产生其他的线程，
 因此需要确认在调用destroy()方法时，这些线程已经终止或完成。
 
+\subsection{管理App}
+
+在Tomcat的首页管理点击Manage App按钮即可进入管理App页面，
+需要在配置文件/conf/tomcat-users.xml中配置管理GUI的角色。
+
+\begin{lstlisting}[language=XML]
+<role rolename="manager-gui"/>
+<user username="tomcat" password="tomcat" roles="tomcat,manager-gui"/>
+\end{lstlisting}
+
+\section{Jetty}
+
+\subsection{简介}
+
+Jetty is a Java HTTP (Web) server and Java Servlet container. 
+While Web Servers are usually associated with serving documents to people, 
+Jetty is now often used for machine to machine communications, 
+usually within larger software frameworks. 
+Jetty is developed as a free and open source project as part of the Eclipse Foundation. 
+The web server is used in products such as Apache ActiveMQ, Alfresco, Apache Geronimo, 
+Apache Maven, Apache Spark, Google App Engine, Eclipse, FUSE, iDempiere, 
+Twitter's Streaming API and Zimbra. 
+Jetty is also the server in open source projects such as Lift, Eucalyptus,Red5, Hadoop and I2P. 
+Jetty supports the latest Java Servlet API (with JSP support) as well as protocols HTTP/2 and WebSocket.
+
+\section{Netty}
+
+\subsection{简介}
+
+Netty和Mina是Java世界非常知名的通讯框架。它们都出自同一个作者，
+Mina诞生略早，属于Apache基金会，而Netty开始在Jboss名下，
+后来出来自立门户netty.io（http://netty.io/）。
+Netty是一个基于JAVA NIO类库的异步通信框架，
+它的架构特点是：异步非阻塞、基于事件驱动、高性能、高可靠性和高可定制性。
+Netty主要用于NIO，但Netty的Channel实现类支持老版本的、同步的IO（OIO）。
+OIO有一些优点，而且Netty对它的实现方式和NIO一样，这些实现模块能够被替换和重用。
+
 \section{常见问题}
 
 \subsection{The import javax.servlet can't be resolved}
@@ -17389,6 +17453,12 @@ for /r %i in (*.lastUpdated) do del %i
 
 Then rightclick on your project in eclipse and choose Maven->"Update Project ...", 
 make sure "Update Dependencies" is checked in the resulting dialog and click OK.
+
+\subsection{java.net.BindException: Address already in use: JVM\_Bind}
+
+启动程序时提示端口被占用，
+可以用工具TCPView\footnote{https://technet.microsoft.com/en-us/sysinternals/bb897437}查看本机所有端口的使用情况。
+找到占用此端口的程序是javaw.exe，原来是开启了另一个Java调试导致。
 
 \chapter{Python}
 
@@ -17822,6 +17892,8 @@ nohup <程序名> &
 起到了log的作用，实现了完整的守护进程功能。
 
 \section{基础}
+
+Linux目录说明：
 
 \begin{figure}[htbp]
 	\centering
@@ -18951,6 +19023,10 @@ log4net在本地可以正常写日志，
 IIS 6.0默认运行在NETWORK SERVICE账户下，
 更改网站或者log目录权限即可。
 
+\section{log4j}
+
+Log4j支持两种配置文件格式，一种是XML格式的文件，一种是properties格式的文件。
+
 \section{Opserver}
 
 Opserver是Stack Exchange的一个开源监控系统，基于Net、MVC开发，所以Net程序员可以轻松基于它二次开发。
@@ -20066,6 +20142,7 @@ Java下Jenkins部署到Tomcat配置如下：
 	\label{fig:JenkinsTomcatDeployment}
 \end{figure}
 
+用户名和密码的配置在文件/conf/tomcat-users.xml下，
 第一项(WAR/EAR\footnote{EAR (Enterprise Application aRchive) is a file format used by Java EE for packaging one or more modules into a single archive so that the deployment of the various modules onto an application server happens simultaneously and coherently. It also contains XML files called deployment descriptors which describe how to deploy the modules.Ant, Maven, or Gradle can be used to build EAR files.jar--封装类,war--封装web站点,ear--封装ejb。} files):是war包的相对路径(相对于工作区路径,即在工作区中war包的相对路径.)
 如我的maven执行完成之后会在工作区的target目录下生成项目.war,
 所以这里我的路径就写target\textbackslash 项目.war.
@@ -20100,6 +20177,25 @@ tomcat用户权限配置：
 \paragraph{Publish Over SSH}
 
 多主机发布时，Jenkins服务器需要安装Publish Over SSH插件。
+安装完毕后配置远程主机，点击“系统管理”---“系统设置”----找到“Publish over SSH”组件，
+如图\ref{fig:JenkinsPublishOverSSHConfiguration}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{JenkinsPublishOverSSHConfiguration.jpg}
+	\caption{Jenkins通过SSH发布}
+	\label{fig:JenkinsPublishOverSSHConfiguration}
+\end{figure}
+
+Passphrase填写SSH登录的密码。
+Push Over SSH的项目配置如图\ref{fig:JenkinsPublishOverSSHProjConfig}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{JenkinsPublishOverSSHProjConfig.jpg}
+	\caption{Jenkins通过SSH发布项目配置}
+	\label{fig:JenkinsPublishOverSSHProjConfig}
+\end{figure}
 
 \subsection{Jenkins执行批处理命令}
 
