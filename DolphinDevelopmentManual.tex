@@ -15431,6 +15431,23 @@ JPDA为Java平台上的调试器定义了一个标准的体系结构。
 在Eclipse中选择Run--Debug，在弹出的对话框中右击Remote Java Application新建一个远程调试项，
 如下如所示：
 
+\paragraph{Eclipse调试异常中断}
+
+在Visual Studio中可以在引发异常时中断调试，
+可以快速的定位到问题点。在Eclipse中引发异常时中断可以作如下设置。
+Go to the breakpoints window, there's a button that looks like J!, 
+there you can set breakpoints for Java exceptions, either caught or uncaught. 
+You can reference classes or use pattern matchers for exception names.
+Also, under Window -> Preferences, Select Java -> Debug and there's a 
+checkbox to tell the debugger to break on uncaught exceptions。
+如图\ref{code:EclipseBreakpointOnAllException}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{EclipseBreakpointOnAllException.png}
+	\caption{Eclipse断点中断}
+	\label{code:EclipseBreakpointOnAllException}
+\end{figure}
 
 
 \subsection{使用技巧}
