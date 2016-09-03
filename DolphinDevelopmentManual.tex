@@ -15395,8 +15395,6 @@ Luna (4.4), Kepler (4.3), Juno (4.2, 3.8), Previous to Juno (<=4.1)
 	\label{code:EclipseDropToFrame}
 \end{figure}
 
-
-
 \paragraph{Debug视图}
 
 Debug视图下的3个小窗口视图：变量视图、断点视图和表达式视图。
@@ -15662,6 +15660,24 @@ Arguments里面填: \${container\_loc}，
 	\caption{打开包含文件的文件夹}
 	\label{code:OpenCurrentFileContainer}
 \end{figure}
+
+\paragraph{查看调用的层次结构}
+
+每次看代码都会很痛苦，因为不知道方法哪里在用或调用了哪里的方法，
+特别是一些没有注释的方法，看的更加云里雾里。
+在Eclipse中查看某方法在哪里被调用（或调用其他方法）的方法：
+选中方法名，点右键，选“open call hierarchy”或者按快捷键“Ctrl+Alt+H”，
+Eclipse就会显示出这个方法被哪些方法调用，最终产生一个调用关系树，
+可以看到一个方法被哪些方法调，调了哪些方法。
+如图\ref{code:JavaMethodCallHierarchyView}所示：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{JavaMethodCallHierarchyView.jpg}
+	\caption{查看调用的层次结构}
+	\label{code:JavaMethodCallHierarchyView}
+\end{figure}
+
 
 \subsection{提高启动速度}
 
@@ -17446,6 +17462,11 @@ Netty与其他服务的比较：
 	\item{Netty是一个线程服务于很多请求，如下图，当从Java NIO获得一个Selector事件，将激活通道Channel。}
 \end{itemize}
 
+\subsection{Netty编解码框架}
+
+作为一个高性能的异步、NIO通信框架，编解码框架是Netty的重要组成部分。
+尽管站在微内核的角度看，编解码框架并不是Netty微内核的组成部分，
+但是通过ChannelHandler定制扩展出的编解码框架却是不可或缺的。
 
 \section{常见问题}
 
