@@ -15318,6 +15318,23 @@ SPI 全称为 (Service Provider Interface) ,是JDK内置的一种服务提供发
 而后，把新加的实现，描述给JDK知道就行啦（通过改一个文本文件即可） ，
 目前Dubbo框架就基于SPI机制提供扩展功能。
 
+\subsection{Java可变参数}
+
+Java 1.5增加了新特性：可变参数：适用于参数个数不确定，
+类型确定的情况，Java把可变参数当做数组处理。
+注意：可变参数必须位于最后一项。当可变参数个数多余一个时，
+必将有一个不是最后一项，所以只支持有一个可变参数。
+因为参数个数不定，所以当其后边还有相同类型参数时，
+java无法区分传入的参数属于前一个可变参数还是后边的参数，
+所以只能让可变参数位于最后一项。
+可变参数的特点：
+
+\begin{itemize}
+	\item{只能出现在参数列表的最后}
+	\item{...位于变量类型和变量名之间，前后有无空格都可以}
+	\item{调用可变参数的方法时，编译器为该可变参数隐含创建一个数组，在方法体中一数组的形式访问可变参数。}
+\end{itemize}
+
 \section{线程}
 
 \subsection{Java多线程}
@@ -15457,9 +15474,6 @@ checkbox to tell the debugger to break on uncaught exceptions。
 
 \subsection{使用技巧}
 
-\paragraph{包显示方式}
-Eclipse 中包结构展开有两种方式：一：平坦方式（flat）;二、分层方式（hierarchical）。
-
 \paragraph{自定义log颜色}
 不同的错误级别输出不同的颜色的log。在Eclipse Market中安装Grep Console。
 
@@ -15467,21 +15481,11 @@ Eclipse 中包结构展开有两种方式：一：平坦方式（flat）;二、�
 添加服务器在Eclipse->Window->Show View->Other(也可以使用快捷键),
 在调出的窗口中搜索“Server”关键字即可。
 
-\paragraph{调出开发界面}
-如果开发界面消失，调出开发界面如图\ref{code:DevelopWindow}所示。
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.6]{DevelopWindow.jpg}
-	\caption{调出编辑器界面}
-	\label{code:DevelopWindow}
-\end{figure}
-
 \paragraph{显示所有打开的文件}
 Ctrl + F6，在当前文件里显示当前打开的所有文件。
 Ctrl + E,在右边显示出当前打开的所有文件。
 
-\paragraph{快速定位代码}
+\paragraph{在源码树中快速定位代码}
 一种方法是直接点击package视图中的“Link with Editor”，
 如图\ref{code:EclipseLinkEditor}所示。
 
@@ -15719,7 +15723,9 @@ Maven to Eclipse
 http://m2eclipse.sonatype.org/sites/m2e
 
 
-\paragraph{Buildship}Buildship 是 Eclipse 插件的集合，它可以对 Gradle 项目提供支持。
+\paragraph{Buildship}
+
+Buildship 是 Eclipse 插件的集合，它可以对 Gradle 项目提供支持。
 Buildship 旨在为 Gradle 项目在 Eclipse 内部提供深度的整合，它同时也使 Eclipse IDE 更加强大。
 Buildship 1.0 版专注于 Gradle 用户，之后的版本会扩大至 Gradle 的开发者。
 
@@ -15776,6 +15782,13 @@ as well as framework components (Common, Geometry,
 FX, MVC, Graph, Layout, Zest, DOT, and Cloudio) to 
 create rich graphical Java client applications, 
 Eclipse-integrated or standalone.
+
+\paragraph{CallGraph Viewer}
+
+Provides Call-Path and Sequence Diagram viewers.
+Enables graphical analysis of program call relations and flow sequencing. 
+Also enables exploration of extended class inheritance hierarchies.
+CallGraph Viewer插件可直接在Eclipse Market中安装。
 
 \subsection{Eclipse Multiple annotations found at this line}
 
@@ -15935,14 +15948,16 @@ Apache Ivy是专门用来管理项目的jar包依赖的。
 
 \section{Spring}
 
-Spring框架是由于软件开发的复杂性而创建的。Spring使用的是基本的JavaBean来完成以前只可能由EJB完成的事情。
+Spring框架是由于软件开发的复杂性而创建的。
+Spring使用的是基本的JavaBean来完成以前只可能由EJB完成的事情。
 然而，Spring的用途不仅仅限于服务器端的开发。从简单性、可测试性和松耦合性的角度而言，
 绝大部分Java应用都可以从Spring中受益。
 减少了不必要的异常捕捉，
 为JavaBean提供了一个更好的应用配置框架。
 Spring MVC框架就是一种MVC框架。其前端控制器是DispatcherServlet主要用于控制流程；
 应用控制器为Handler Mapping-处理器映射器进行处理器管理和View Resolver-视图解析器进行视图的解析；
-页面控制器/动作跳转处理器为Controller接口；支持本地化解析、文件上传等；提供了十分灵活的数据校验、格式化和数据绑定机制；
+页面控制器/动作跳转处理器为Controller接口；支持本地化解析、文件上传等；
+提供了十分灵活的数据校验、格式化和数据绑定机制；
 采用约定优于配置的契约式编程方式。 
 Spring MVC框架围绕DispatcherServlet这个核心展开，
 DispatcherServlet的作用是截获请求并组织一系列组件共同完成请求的处理工作。
@@ -15962,6 +15977,7 @@ Spring的模块如图\ref{code:spring-overview-current}所示。
 	\label{code:spring-overview-current}
 \end{figure}
 
+Spring框架中的核心组件只有三个：Core、Context 和 Beans。
 JMS即Java消息服务（Java Message Service）应用程序接口，
 是一个Java平台中关于面向消息中间件（MOM）的API，用于在两个应用程序之间，
 或分布式系统中发送消息，进行异步通信。Java消息服务是一个与具体平台无关的API，
@@ -16037,12 +16053,167 @@ IoC意味着将你设计好的类交给系统去控制，
 
 i18n（其来源是英文单词 internationalization的首末字符i和n，18为中间的字符数）是“国际化”的简称。
 在资讯领域，国际化(i18n)指让产品（出版物，软件，硬件等）无需做大的改变就能够适应不同的语言和地区的需要。
-对程序来说，在不修改内部代码的情况下，能根据不同语言及地区显示相应的界面。 在全球化的时代，国际化尤为重要，因为产品的潜在用户可能来自世界的各个角落。
+对程序来说，在不修改内部代码的情况下，能根据不同语言及地区显示相应的界面。
+在全球化的时代，国际化尤为重要，因为产品的潜在用户可能来自世界的各个角落。
 通常与i18n相关的还有L10n(“本地化”的简称)。
 
 \subsection{Spring源码分析}
 
+Spring源码分析所用的工具有Git，
+使用Git从GitHub上获取Spring-Framework的源码。
+Eclipse作为开发IDE打开并浏览源码，
+由于Spring-Framework是用Gradle构建，
+所以需要安装Gradle，另外需要Eclipse的插件BuildShip和CallGraph Viewer，
+BuildShip用于将构建工具Gradle与Eclipse结合，
+CallGraph Viewer用于查看函数的调用关系以及类的继承关系，
+CallGraph Viewer可以图形化的方式展现。
+
 \paragraph{构建}
+
+构建语句如下：
+
+\begin{lstlisting}[language=Bash]
+gradlew --no-daemon cleanEclipse :spring-oxm:compileTestJava eclipse -x :eclipse
+\end{lstlisting}
+
+主要是下载依赖包，构建成功后会提示BUILD SUCCESSFUL。
+
+\begin{lstlisting}[language=Bash]
+gradle install
+\end{lstlisting}
+
+运行import-into-eclipse.bat文件。
+
+\paragraph{Bean组件}
+
+Bean组件在Spring的org.springframework.beans包下。
+这个包下的所有类主要解决了三件事：Bean 的定义、Bean的创建以及对Bean的解析。
+对 Spring 的使用者来说唯一需要关心的就是 Bean 的创建，
+其他两个由 Spring 在内部帮你完成了，对你来说是透明的。
+Spring Bean 的创建时典型的工厂模式，
+他的顶级接口是 BeanFactory，图\ref{fig:SpringBeanCreateRelation}是这个工厂的继承层次关系：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{SpringBeanCreateRelation.png}
+	\caption{Spring Bean的创建}
+	\label{fig:SpringBeanCreateRelation}
+\end{figure}
+
+BeanFactory有三个子类：ListableBeanFactory、HierarchicalBeanFactory和AutowireCapableBeanFactory。
+但是从上图中我们可以发现最终的默认实现类是DefaultListableBeanFactory，
+他实现了所有的接口。那为何要定义这么多层次的接口呢？查阅这些接口的源码和说明发现，
+每个接口都有他使用的场合，它主要是为了区分在 Spring 内部在操作过程中对象的传递和转化过程中，
+对对象的数据访问所做的限制。例如 ListableBeanFactory 接口表示这些 Bean 是可列表的，
+而 HierarchicalBeanFactory 表示的是这些 Bean 是有继承关系的，
+也就是每个 Bean 有可能有父 Bean。AutowireCapableBeanFactory 接口定义 Bean 的自动装配规则。
+这四个接口共同定义了 Bean 的集合、Bean 之间的关系、以及 Bean 行为。
+Bean的定义主要有BeanDefinition描述。
+
+Bean 的解析过程非常复杂，功能被分的很细，因为这里需要被扩展的地方很多，
+必须保证有足够的灵活性，以应对可能的变化。Bean 的解析主要就是对 Spring 配置文件的解析。
+这个解析过程主要通过图\ref{fig:SpringBeanParse}中的类完成：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{SpringBeanParse.png}
+	\caption{Spring Bean的解析}
+	\label{fig:SpringBeanParse}
+\end{figure}
+
+\paragraph{BeanFactory入口}
+
+IoC容器实际上就是Context组件结合其他两个组件共同构建了一个Bean关系网，
+如何构建这个关系网？构建的入口就在AbstractApplicationContext类的refresh方法中。
+方法的代码如下：
+
+\begin{lstlisting}[language=Bash]
+public void refresh() throws BeansException, IllegalStateException {
+synchronized (this.startupShutdownMonitor) {
+	// Prepare this context for refreshing.
+	prepareRefresh();
+	
+	// Tell the subclass to refresh the internal bean factory.
+	ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+	
+	// Prepare the bean factory for use in this context.
+	prepareBeanFactory(beanFactory);
+	
+	try {
+		// Allows post-processing of the bean factory in context subclasses.
+		postProcessBeanFactory(beanFactory);
+		
+		// Invoke factory processors registered as beans in the context.
+		invokeBeanFactoryPostProcessors(beanFactory);
+		
+		// Register bean processors that intercept bean creation.
+		registerBeanPostProcessors(beanFactory);
+		
+		// Initialize message source for this context.
+		initMessageSource();
+		
+		// Initialize event multicaster for this context.
+		initApplicationEventMulticaster();
+		
+		// Initialize other special beans in specific context subclasses.
+		onRefresh();
+		
+		// Check for listener beans and register them.
+		registerListeners();
+		
+		// Instantiate all remaining (non-lazy-init) singletons.
+		finishBeanFactoryInitialization(beanFactory);
+		
+		// Last step: publish corresponding event.
+		finishRefresh();
+	}	
+	catch (BeansException ex) {
+		if (logger.isWarnEnabled()) {
+			logger.warn("Exception encountered during context initialization - " +
+			"cancelling refresh attempt: " + ex);
+		}
+		
+		// Destroy already created singletons to avoid dangling resources.
+		destroyBeans();
+		
+		// Reset 'active' flag.
+		cancelRefresh(ex);
+		
+		// Propagate exception to caller.
+		throw ex;
+	}	
+	finally {
+		// Reset common introspection caches in Spring's core, since we
+		// might not ever need metadata for singleton beans anymore...
+		resetCommonCaches();
+		}
+	}
+}
+\end{lstlisting}
+
+这个方法就是构建整个 Ioc 容器过程的完整的代码，了解了里面的每一行代码基本上就了解大部分 Spring 的原理和功能了。
+这段代码主要包含这样几个步骤：
+
+\begin{itemize}
+	\item{构建 BeanFactory，以便于产生所需的“演员”}
+	\item{注册可能感兴趣的事件}
+	\item{创建Bean实例对象}
+	\item{触发被监听的事件}
+\end{itemize}
+
+\paragraph{Context组件}
+
+Context 在 Spring 的 org.springframework.context 包下，
+前面已经讲解了 Context 组件在 Spring 中的作用，
+他实际上就是给 Spring 提供一个运行时的环境，
+用以保存各个对象的状态。
+
+\paragraph{SpEL组件}
+
+Spring Excpression Language (SpEL)语言支持在运行时操作和查询对象，
+其语法类似统一的EL语言，但是SpEL提供了额外的功能。
+
+\paragraph{Core组件}
 
 \subsection{Spring安全配置}
 
@@ -17523,13 +17694,23 @@ Click Add JARs...
 Find servlet-api.jar in your project and select it.
 Click OK to update the build path.
 
-\paragraph{the resource is not on the build path of a java project}
+\subsection{the resource is not on the build path of a java project}
 
 这种问题一般都是没找到对应的源码，在对应工程上，
-右键--->Properties--->Java Build Path 上找到Source选项卡，
-这个地方一般指的的是src目录。选择相应的目录即可。
+右键--->Properties--->Java Build Path上找到Source选项卡，
+这个地方一般指的的是src目录。有时右键属性时可能会没有Java Build Path项，
+将项目转换一下即可，比如Gradle转为Maven，此时会刷新依赖。
+然后右键源码路径选择相应的目录即可,
+如图\ref{fig:EclipseChooseJavaBuildFolder}所示。
 
-\paragraph{Failure to transfer org.apache.maven.shared}
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{EclipseChooseJavaBuildFolder.png}
+	\caption{Eclipse指定源码路径}
+	\label{fig:EclipseChooseJavaBuildFolder}
+\end{figure}
+
+\subsection{Failure to transfer org.apache.maven.shared}
 
 Remove all your failed downloads:
 
