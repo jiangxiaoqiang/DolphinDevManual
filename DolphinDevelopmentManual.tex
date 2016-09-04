@@ -16059,7 +16059,7 @@ i18n（其来源是英文单词 internationalization的首末字符i和n，18为
 
 \subsection{Spring源码分析}
 
-Spring源码分析所用的工具有Git，
+Spring源码(4.3.x分支)分析所用的工具有Git，
 使用Git从GitHub上获取Spring-Framework的源码。
 Eclipse作为开发IDE打开并浏览源码，
 由于Spring-Framework是用Gradle构建，
@@ -16214,6 +16214,38 @@ Spring Excpression Language (SpEL)语言支持在运行时操作和查询对象�
 其语法类似统一的EL语言，但是SpEL提供了额外的功能。
 
 \paragraph{Core组件}
+
+\paragraph{Spring配置文件初始化}
+
+Spring通过在web.xml中配置ContextLoaderListener 来加载context配置文件，
+但是通过在DispatcherServlet中也可以来加载spring context配置文件，
+那么这两个有什么区别呢？
+
+\begin{itemize}
+	\item{两者都将applicationContext存放于ServletContext中，但KEY不一样}
+	\item{后者会另外将applicationContext 存放在requestattribute中，前者不会}
+	\item{两者获取applicationContext的方法不一样，前者通过WebApplicationContextUtils相应方法获取，后者通过RequestContextUtils或者WebApplicationContextUtils获取，注意KEY值不一样}
+\end{itemize}
+
+ContextLoaderListener中加载的context成功后，
+Spring将 applicationContext存放在ServletContext中key值为
+"org.springframework.web.context.WebApplicationContext.ROOT"的attribute中，
+如通过
+
+\begin{lstlisting}[language=Java]
+servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, this.context)
+\end{lstlisting}
+
+设置，通过WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext)
+或WebApplicationContextUtils.getWebApplicationContext(servletContext)方法来获取对应的applicationContext。
+DispatcherServlet加载的context成功后，如果publishContext属性的值设置为true的话(缺省为true)
+会将applicationContext存放在
+
+\begin{lstlisting}[language=Java]
+org.springframework.web.servlet.FrameworkServlet.CONTEXT.+ (servletName)
+\end{lstlisting}
+
+的attribute中。
 
 \subsection{Spring安全配置}
 
