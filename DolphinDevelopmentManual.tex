@@ -15509,17 +15509,24 @@ Ctrl + E,在右边显示出当前打开的所有文件。
 \end{figure}
 
 \paragraph{打开资源}
+
 查找类的快捷键为Ctrl + Shift + R。
 这可能是所有快捷键组合中最省时间的了。这组快捷键可以让你打开你的工作区中任何一个文件，
-而你只需要按下文件名或mask名中的前几个字母，比如applic*.xml。美中不足的是这组快捷键并非在所有视图下都能用。
-格式化代码Ctrl + Shift + F。
+而你只需要按下文件名或mask名中的前几个字母，比如applic*.xml。
+美中不足的是这组快捷键并非在所有视图下都能用。
+注意打开的类Tab图标是空心的J还是实心的J，
+如果是空心的J代表是Java的资源文件，
+资源文件不进行编译，所以在查找引用等操作时会提示the resource is not on the build path of a java project错误。
 
 \paragraph{XML文件格式化}
 
 Window->Preferences, then XML->XML Files->Editor中可以配置XML文件格式化相关设置。
 
-\paragraph{重命名}
-重命名Alt + Shift + R。
+\paragraph{快速找到方法位置}
+
+有时在搜索结果窗口中需要快速定位到方法或类的位置，
+虽然可以双击定位，但是如果想在项目树上定位还是不行，
+此时可以右键选择Show in(Alt + Shift + W)--Project Explorer。
 
 \paragraph{TODO List}
 tasks可以在代码里增加标识，通过tasks view可以快速的找到这些标识的地方，有助于提高开发效率和代码管理。
@@ -16246,6 +16253,33 @@ org.springframework.web.servlet.FrameworkServlet.CONTEXT.+ (servletName)
 \end{lstlisting}
 
 的attribute中。
+
+\subsection{Spring Resource}
+
+在 Sun 所提供的标准 API 里，资源访问通常由 java.net.URL 和文件 IO 来完成，
+尤其是当我们需要访问来自网络的资源时，通常会选择 URL 类。
+Spring 改进了 Java 资源访问的策略。
+Spring 为资源访问提供了一个 Resource 接口，该接口提供了更强的资源访问能力，
+Spring 框架本身大量使用了 Resource 接口来访问底层资源。
+Resource 和策略模式 Resource 接口就是策略模式的典型应用，
+Resource 接口就代表资源访问策略，但具体采用哪种策略实现，
+Resource 接口并不理会。客户端程序只和 Resource 接口耦合，
+并不知道底层采用何种资源访问策略，这样应用可以在不同的资源访问策略之间自由切换。
+
+\paragraph{ClassPathResource}
+
+ClassPathResource 用来访问类加载路径下的资源，
+相对于其他的 Resource 实现类，其主要优势是方便访问类加载路径里的资源
+，尤其对于 Web 应用，ClassPathResource 可自动搜索位于 WEB-INF/classes 下的资源文件，
+无须使用绝对路径访问。
+ClassPathResource与Resource的继承关系如图\ref{fig:ClassPathResource}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{ClassPathResource.png}
+	\caption{ClassPathResource继承关系}
+	\label{fig:ClassPathResource}
+\end{figure}
 
 \subsection{Spring安全配置}
 
