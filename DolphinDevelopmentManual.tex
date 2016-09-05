@@ -16063,7 +16063,7 @@ Spring源码(4.3.x分支)分析所用的工具有Git，
 使用Git从GitHub上获取Spring-Framework的源码。
 Eclipse作为开发IDE打开并浏览源码，
 由于Spring-Framework是用Gradle构建，
-所以需要安装Gradle，另外需要Eclipse的插件BuildShip和CallGraph Viewer，
+所以需要安装Gradle构建工具，另外需要Eclipse的插件BuildShip和CallGraph Viewer，
 BuildShip用于将构建工具Gradle与Eclipse结合，
 CallGraph Viewer用于查看函数的调用关系以及类的继承关系，
 CallGraph Viewer可以图形化的方式展现。
@@ -17347,7 +17347,7 @@ partition的lag指的是log end offset和last committed offset的差距.
 (译注:生产者写入消息,LEO(Last End Offset)会增加,消费者提交offset,会增加LCO(Last Committed Offset),
 两者差距小说明消费者的消费速度能赶上生产者的生产速度)。
 
-\paragraph{消费topic}
+\paragraph{消费指定topic}
 在服务端消费指定主题为14914186881的Kafka数据：
 
 \begin{lstlisting}[language=Bash]
