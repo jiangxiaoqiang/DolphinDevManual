@@ -15170,7 +15170,50 @@ Proxy类在rt.jar包文件中。而AOP的原理就是Java的动态代理机制.
 
 \paragraph{java.lang.reflect.InvocationHandler}
 
-\subsection{HashMap}
+\subsection{HashMap\&HashTable}
+
+\paragraph{HashTable}
+
+Hashtable继承Map接口，实现一个key-value映射的哈希表。
+任何非空（non-null）的对象都可作为key或者value。
+添加数据使用put(key, value)，取出数据使用get(key)，
+这两个基本操作的时间开销为常数。
+HashMap或Dictionary的存取是O(1)的操作，二分查找什么的则是O(log(N))。
+HashSet的Add方法是O(1)的操作，而SortedSet内部是用了红黑树，
+它的Add方法是O(log(N))的操作（但它能顺序输出元素）。
+Hashtable通过initial capacity和load factor两个参数调整性能。
+通常缺省的load factor 0.75较好地实现了时间和空间的均衡。
+增大load factor可以节省空间但相应的查找时间将增大，
+这会影响像get和put这样的操作。
+
+\paragraph{HashMap}
+
+Hashtable的方法是同步的，HashMap则是非同步的，所以在多线程场合要手动同步HashMap，
+这个区别就像Vector和ArrayList一样。
+sychronized意味着在一次仅有一个线程能够更改Hashtable。
+就是说任何线程要更新Hashtable时要首先获得同步锁，
+其它线程要等到同步锁被释放之后才能再次获得同步锁更新Hashtable。
+Hashtable不允许null值(key和value都不可以)，HashMap允许null值(key和value都可以)。
+Hashtable比HashMap多一个elements方法用于遍历。
+Hashtable使用Enumeration，HashMap使用Iterator。
+哈希值的使用不同，Hashtable直接使用对象的hashCode，而HashMap重新计算hash值，而且用与代替求模。
+Hashtable中hash数组默认大小是11，增加的方式是 old*2+1。
+HashMap中hash数组的默认大小是16，而且一定是2的指数。
+HashMap不能保证随着时间的推移Map中的元素次序是不变的。
+在HashMap中有两个很重要的参数，容量(Capacity)和负载因子(Load factor)。
+Capacity就是bucket的大小，Load factor就是bucket填满程度的最大比例。
+如果对迭代性能要求很高的话不要把capacity设置过大，也不要把load factor设置过小。
+当bucket中的entries的数目大于capacity*load factor时就需要调整bucket的大小为当前的2倍。
+HashMap与HashTable的继承关系如图\ref{fig:HashMapAndHashTable}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{HashMapAndHashTable.jpg}
+	\caption{HashMap与HashTable的继承关系}
+	\label{fig:HashMapAndHashTable}
+\end{figure}
+
+HashTable和HashMap都在rt.jar(runtime.jar)的java.util命名空间下。
 
 \subsection{编写测试类}
 
@@ -15408,9 +15451,11 @@ Luna (4.4), Kepler (4.3), Juno (4.2, 3.8), Previous to Juno (<=4.1)
 \subsection{Eclipse调试技巧}
 
 \paragraph{Drop to Frame}
+
 调试期间，可以重新跳到调用堆栈框架的开始处执行，并且变量值也会回到最初。
 根据回档调整堆栈的深度，这个功能的主要用途是所有变量状态可以快速回到方法开始执行时候的样子，
-然后你可以重新进行一遍一遍执行，这样就可以在你关注的地方进行多次调试，但是在执行过程中也会产生一些副作用，
+然后你可以重新进行一遍一遍执行，这样就可以在你关注的地方进行多次调试，
+但是在执行过程中也会产生一些副作用，
 比如插入到数据库里面的数据是无法删除的！功能如图\ref{code:EclipseDropToFrame}所示：
 
 \begin{figure}[htbp]
@@ -15419,6 +15464,9 @@ Luna (4.4), Kepler (4.3), Juno (4.2, 3.8), Previous to Juno (<=4.1)
 	\caption{Eclipse Drop to Frame功能}
 	\label{code:EclipseDropToFrame}
 \end{figure}
+
+除了如图所示的右键点击应用Drop to Frame功能，在工具栏中也有此功能的小图标，
+点击图标也可，更加方便。
 
 \paragraph{Debug视图}
 
@@ -15472,6 +15520,20 @@ checkbox to tell the debugger to break on uncaught exceptions。
 	\label{code:EclipseBreakpointOnAllException}
 \end{figure}
 
+\paragraph{调试时修改变量}
+
+代码停在了断点处，但是传过来的值不正确，如何修改一下变量值保证代码继续走正确的流程，
+或是说有一个异常分支老是进不去，能不能调试时改一下条件，看一下异常分支代码是否正确？
+在Debug 视图的 Variables 小窗口中，我们可以看到变量的值，对此进行修改即可，
+如图\ref{code:ChangeVariableValueWhenDebug}所示。 
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.5]{ChangeVariableValueWhenDebug.jpg}
+	\caption{调试时修改变量值}
+	\label{code:ChangeVariableValueWhenDebug}
+\end{figure}
+
 \subsection{使用技巧}
 
 \paragraph{自定义log颜色}
@@ -15517,6 +15579,8 @@ Ctrl + E,在右边显示出当前打开的所有文件。
 注意打开的类Tab图标是空心的J还是实心的J，
 如果是空心的J代表是Java的资源文件，
 资源文件不进行编译，所以在查找引用等操作时会提示the resource is not on the build path of a java project错误。
+如果想要避免这个问题，
+可以使用快捷键Ctrl + Shift + T，此时只会列出Java类。
 
 \paragraph{XML文件格式化}
 
@@ -15665,20 +15729,6 @@ Window—>Preferences—>General—>Apperance选择主题为Dark，确认。
 也不方便进行内容搜索，这个时候你可以把内容输出到文件，进行查看。
 项目右键--Debug As--Debug Configuration--Common--Output File，
 填写路径和文件名即可。
-
-\paragraph{调试时修改变量}
-
-代码停在了断点处，但是传过来的值不正确，如何修改一下变量值保证代码继续走正确的流程，
-或是说有一个异常分支老是进不去，能不能调试时改一下条件，看一下异常分支代码是否正确？
-在Debug 视图的 Variables 小窗口中，我们可以看到变量的值，对此进行修改即可，
-如图\ref{code:ChangeVariableValueWhenDebug}所示。 
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.5]{ChangeVariableValueWhenDebug.jpg}
-	\caption{调试时修改变量值}
-	\label{code:ChangeVariableValueWhenDebug}
-\end{figure}
 
 \paragraph{Eclipse打开文件夹}
 
