@@ -15847,6 +15847,21 @@ Enables graphical analysis of program call relations and flow sequencing.
 Also enables exploration of extended class inheritance hierarchies.
 CallGraph Viewer插件可直接在Eclipse Market中安装。
 
+\paragraph{JRebel}
+
+JRebel 可快速实现Tomcat的热部署，最为强大的是支持Spring注解的热部署，
+这样就能节省大量的服务器重启时间，提高了个人开发效率。
+JRebel 是一款热部署插件。当你的java-web项目在 tomcat中run/debug 的时候 ,
+修改某一个 java 文件时，tomcat 并不能将此文件的修改 实时编译并反映到运行的项目中去。
+JRebel 就可以解决在项目运行状态run/debug 状态下任意修改 java 文件并动态反馈到运行的项目中。
+Eclipse中配置 window->preference->tomcat->JVM Settings，加入以下参数:
+
+\begin{lstlisting}[language=Bash]
+-Drebel.spring_plugin=true //支持spring框架
+\end{lstlisting}
+
+\paragraph{Tomcat}
+
 \subsection{Eclipse Multiple annotations found at this line}
 
 Eclipse Multiple annotations found at this line错误，
@@ -17809,6 +17824,19 @@ Choose Java Build Path.
 Click Add JARs...
 Find servlet-api.jar in your project and select it.
 Click OK to update the build path.
+
+\subsection{The superclass "javax.servlet.http.HttpServlet" was not found on the Java Build Path}
+
+Include servlet-api-3.1.jar in your dependencies.
+
+\begin{lstlisting}[language=XML]
+<dependency>
+	<groupId>javax.servlet</groupId>
+	<artifactId>javax.servlet-api</artifactId>
+	<version>3.1.0</version>
+	<scope>provided</scope>
+</dependency>
+\end{lstlisting}
 
 \subsection{the resource is not on the build path of a java project}
 
