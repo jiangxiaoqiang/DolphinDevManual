@@ -15847,9 +15847,36 @@ Enables graphical analysis of program call relations and flow sequencing.
 Also enables exploration of extended class inheritance hierarchies.
 CallGraph Viewer插件可直接在Eclipse Market中安装。
 
+\paragraph{JRebel}
 
+JRebel 可快速实现Tomcat的热部署，最为强大的是支持Spring注解的热部署，
+这样就能节省大量的服务器重启时间，提高了个人开发效率。
+JRebel 是一款热部署插件。当你的java-web项目在 tomcat中run/debug 的时候 ,
+修改某一个 java 文件时，tomcat 并不能将此文件的修改 实时编译并反映到运行的项目中去。
+JRebel 就可以解决在项目运行状态run/debug 状态下任意修改 java 文件并动态反馈到运行的项目中。
+Eclipse中配置 window->preference->tomcat->JVM Settings，加入以下参数:
 
+\begin{lstlisting}[language=Bash]
+-Drebel.spring_plugin=true //支持spring框架
+\end{lstlisting}
 
+\paragraph{Tomcat}
+
+The Eclipse Tomcat Plugin provides simple integration of a tomcat servlet container for the development of java web applications.
+
+\paragraph{CheckStyle}
+
+CheckStyle提供了大部分功能都是对于代码规范的检查，而没有提供象PMD和Jalopy那么多的增强代码质量和修改代码的功能。
+但是，对于团队开发，尤其是强调代码规范的公司来说，它的功能已经足够强大。
+
+\paragraph{PMD}
+
+PMD能够扫描Java 源代码，查找类似以下的潜在问题：
+可能的bug - try/catch/finally/switch语句中返回空值；
+死代码 - 未使用的局部变量、参数、私有方法；不理想的代码 - 使用String/StringBuffer；
+过于复杂的表达式 - 没有必要使用if语句、while循环可以代替for循环；重复代码 - 复制/粘贴的代码引发的bug。
+PMD集成了JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, 
+NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, 以及 Emacs。
 
 \subsection{Eclipse Multiple annotations found at this line}
 
@@ -17816,6 +17843,19 @@ Click Add JARs...
 Find servlet-api.jar in your project and select it.
 Click OK to update the build path.
 
+\subsection{The superclass "javax.servlet.http.HttpServlet" was not found on the Java Build Path}
+
+Include servlet-api-3.1.jar in your dependencies.
+
+\begin{lstlisting}[language=XML]
+<dependency>
+	<groupId>javax.servlet</groupId>
+	<artifactId>javax.servlet-api</artifactId>
+	<version>3.1.0</version>
+	<scope>provided</scope>
+</dependency>
+\end{lstlisting}
+
 \subsection{the resource is not on the build path of a java project}
 
 这种问题一般都是没找到对应的源码，在对应工程上，
@@ -17870,8 +17910,7 @@ Python，是一种面向对象、直译式的计算机程序语言，具有近�
 然而它也非常适合完成各种高级任务。Python虚拟机本身几乎可以在所有的作业系统中运行。
 使用一些诸如py2exe、PyPy、PyInstaller之类的工具可以将Python源代码转换成可以脱离Python解释器运行的程序。
 
-Python的官方解释器是CPython，该解释器用C语言编写，
-是一个由社区驱动的自由软件，目前由Python软件基金会管理。
+Python的官方解释器是CPython，该解释器用C语言编写，是一个由社区驱动的自由软件，目前由Python软件基金会管理。
 
 Python支持命令式程序设计、面向对象程序设计、函数式编程、面向侧面的程序设计、泛型编程多种编程范式。
 Python的设计哲学是“优雅”、“明确”、“简单”。Python开发者的哲学是“用一种方法，
@@ -18184,7 +18223,9 @@ fi
 
 注意条件判断语句的中括号两边都需要留有空格。
 
-\paragraph{使用tcpdump抓取包}如下代码使用tcpdump抓取指定的包，
+\paragraph{使用tcpdump抓取包}
+
+如下代码使用tcpdump抓取指定的包，
 并按照时间存放到不同的目录下。
 
 \begin{lstlisting}[language=Bash]
@@ -18210,6 +18251,7 @@ nohup ./capture.sh &
 \end{lstlisting}
 
 可以使用jobs命令查看后台的进程。
+
 
 \paragraph{批量终止进程}批量终止指定的进程如下命令所示：
 
@@ -18582,6 +18624,22 @@ Savefiles after the first  save-file  will  have  the name specified with the -w
 with a number after it, starting at 1 and continuing upward.  
 The units of file\_size are millions of bytes (1,000,000 bytes, not 1,048,576 bytes).
 所以持续的捕获消息会生成许多差不多大小的包。
+
+\paragraph{找到发送消息的主机}
+
+在Kafka中，一直接收到生产者的消息，
+但是单从消息无法判断是哪一个生产者(主机)发送的数据，
+用tcpdump抓取包即可分析出目标主机，
+如图\ref{fig:tcpdumptracehost}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{tcpdumptracehost.jpg}
+	\caption{tcpdump查看发包主机地址}
+	\label{fig:tcpdumptracehost}
+\end{figure}
+
+还可以看到报文的内容。
 
 \subsubsection{tcpdump详细日期}
 
