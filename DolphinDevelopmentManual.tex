@@ -16651,7 +16651,7 @@ Spring Web Service返回的参数类名称需要以Response结尾。
 \paragraph{@Resource}@Resource和@Autowired两者都是做bean的注入使用。@Autowired只按照byType注入，
 @Resource默认按byName自动注入,由J2EE提供。
 
-\subsection{Spring底层的实例化方式}
+\subsection{Spring底层的实例化方式-动态代理(Dynamic Proxy)}
 
 有两种实现方式：JDK动态代理和Cglib动态代理。
 CGLib (Code Generation Library) 是一个强大的,高性能,高质量的Code生成类库。
@@ -16665,6 +16665,55 @@ Cglib动态代理，采用的是继承方式，它会在底层创建一个类，
 但是这个子类所有的方法都是直接调用父类去实现，相当于父类的一个代理、封装(封装的目的是支持事务处理)，
 实际上我们在程序中使用的是这个子类的对象，并不是ApplyStatusHandler的对象。
 通过这两种代理方式，才让Spring可以支持事务、管理对象。
+
+\paragraph{java.lang.reflect.Proxy}
+
+这是 Java 动态代理机制的主类，它提供了一组静态方法来为一组接口动态地生成代理类及其对象。
+
+\begin{lstlisting}[language=Java]
+// 方法 1: 该方法用于获取指定代理对象所关联的调用处理器
+static InvocationHandler getInvocationHandler(Object proxy) 
+
+// 方法 2：该方法用于获取关联于指定类装载器和一组接口的动态代理类的类对象
+static Class getProxyClass(ClassLoader loader, Class[] interfaces) 
+
+// 方法 3：该方法用于判断指定类对象是否是一个动态代理类
+static boolean isProxyClass(Class cl) 
+
+// 方法 4：该方法用于为指定类装载器、一组接口及调用处理器生成动态代理类实例
+static Object newProxyInstance(ClassLoader loader, Class[] interfaces, 
+InvocationHandler h)
+\end{lstlisting}
+
+\paragraph{InvocationHandler}
+
+这是调用处理器接口，它自定义了一个 invoke 方法，
+用于集中处理在动态代理类对象上的方法调用，通常在该方法中实现对委托类的代理访问。
+
+\begin{lstlisting}[language=Java]
+// 该方法负责集中处理动态代理类上的所有方法调用。
+//第一个参数既是代理类实例，第二个参数是被调用的方法对象
+// 第三个方法是调用参数。调用处理器根据这三个参数进行预处理或分派到委托类实例上发射执行
+Object invoke(Object proxy, Method method, Object[] args)
+\end{lstlisting}
+
+\paragraph{java.lang.ClassLoader}
+
+这是类装载器类，负责将类的字节码装载到Java虚拟机(JVM)中并为其定义类对象，
+然后该类才能被使用。Proxy 静态方法生成动态代理类同样需要通过类装载器来进行装载才能使用，
+它与普通类的唯一区别就是其字节码是由 JVM 在运行时动态生成的而非预存在于任何一个.class 文件中。
+每次生成动态代理类对象时都需要指定一个类装载器对象。
+JVM在运行时会产生3个类加载器组成的初始化加载器层次结构。
+App/System ClassLoader系统(应用)类加载器：
+负责java –classpath 或 –D java.class.path所指的目录下的类与jar包装入工作 ，
+是最常用的加载器可以通过ClassLoader的静态方法getSystemLoader()来获取系统类的加载器。
+如果没有特别指定，则用户自定义的类的加载器都以此类加载器作为父类。
+Extension ClassLoader扩展类加载器：
+负责jre/lib/ext目录下的jar包或 –D java.ext.dirs指定目录下的jar包装入工作库。
+Bootstrap ClassLoader引导类加载器：用C++编写的，
+是JVM自带的类加载器，负责Java平台核心库，用来加载核心类库。该加载器无法直接获取。
+从系统类加载器到扩展类加载器到引导类加载器,检查是否已加载，反之尝试加载类。
+JVM的根加载器并不是由java实现的，所以无法通过程序获取跟加载器Bootstrap ClassLoader。
 
 \subsection{BeanFactory和ApplicationContext的区别}
 
