@@ -15378,6 +15378,17 @@ java无法区分传入的参数属于前一个可变参数还是后边的参数�
 	\item{调用可变参数的方法时，编译器为该可变参数隐含创建一个数组，在方法体中一数组的形式访问可变参数。}
 \end{itemize}
 
+\subsection{Artifact}
+
+An artifact is one of many kinds of tangible by-products produced during the development of software. 
+Some artifacts (e.g., use cases, class diagrams, and other Unified Modeling Language (UML) models, 
+requirements and design documents) help describe the function, architecture, and design of software. 
+Other artifacts are concerned with the process of development itself—such as project plans, 
+business cases, and risk assessments.
+The term artifact in connection with software development is largely associated 
+with specific development methods or processes e.g., Unified Process. 
+This usage of the term may have originated with those methods.
+
 \section{线程}
 
 \subsection{Java多线程}
@@ -16586,7 +16597,26 @@ ContextLoaderListener的作用是在启动Web容器时，自动装配Spring appl
 
 \subsection{Spring多线程注入}
 
+多线程时自动注入失败，手动获取Bean。
 
+\begin{lstlisting}[language=Java]
+public class SpringApplicationContextHolder implements ApplicationContextAware {
+	private static ApplicationContext context;
+	
+	@Override
+	public void setApplicationContext(ApplicationContext context) throws BeansException {
+		SpringApplicationContextHolder.context = context;
+	}
+	
+	public static Object getSpringBean(String beanName) {
+		return context == null ? null : context.getBean(beanName);
+	}
+	
+	public static String[] getBeanDefinitionNames() {
+		return context.getBeanDefinitionNames();
+	}
+}
+\end{lstlisting}
 
 \subsection{Spring Web Service开发流程}
 
@@ -16830,6 +16860,19 @@ Websocket的连接分为两个阶段，第一阶段使用http协议进行握手�
 \begin{lstlisting}[language={[Sharp]C}]
 HttpSession session = servletRequest.getServletRequest().getSession(true);
 String sessionId=session.getId();
+\end{lstlisting}
+
+\paragraph{The remote endpoint was in state [TEXT\_PARTIAL\_WRITING] which is an invalid state for called method}
+
+使用WebSocket发送消息时提示：The remote endpoint was in 
+state [TEXT\_PARTIAL\_WRITING] which is an invalid state for called method。
+
+\begin{lstlisting}[language=Java]
+String websocketsesssion_id = map_id.get(username);
+WebSocketSession wss = map_users.get(websocketsesssion_id);
+synchronized(wss) {
+wss.sendMessage(new TextMessage(new java.util.Date()));
+}
 \end{lstlisting}
 
 \subsection{C\#客户端连接Spring Websocket}
@@ -17514,6 +17557,7 @@ partition的lag指的是log end offset和last committed offset的差距.
 两者差距小说明消费者的消费速度能赶上生产者的生产速度)。
 
 \paragraph{消费指定topic}
+
 在服务端消费指定主题为14914186881的Kafka数据：
 
 \begin{lstlisting}[language=Bash]
