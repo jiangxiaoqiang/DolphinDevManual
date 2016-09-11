@@ -15545,7 +15545,7 @@ checkbox to tell the debugger to break on uncaught exceptions。
 	\label{code:ChangeVariableValueWhenDebug}
 \end{figure}
 
-\subsection{使用技巧}
+\subsection{Eclipse使用技巧}
 
 \paragraph{自定义log颜色}
 不同的错误级别输出不同的颜色的log。在Eclipse Market中安装Grep Console。
@@ -15633,10 +15633,15 @@ Window -> Preferences -> General -> Editors
 勾选 Close editors automatically 并设置 Number of opened tabs 为5。
 
 \paragraph{Eclipse智能提示}
+
 定位到：Windows→Preferences→Java→Editor→Content Assist。
-然后修改：Auto Activation triggers for java的默认值“.”为".abc"。
-接着File→Export→Preferences→导出到某一文件（假设为test.epf),
-然后用记事本打开test.epf,搜索".abc"然后将其改为".abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVW"，保存即可。
+然后修改：Auto Activation triggers for java的默认值“.”为：
+
+\begin{lstlisting}
+.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVW
+\end{lstlisting}
+
+保存即可。
 
 \paragraph{Ctrl+E：快速转换编辑器}
 
@@ -15774,10 +15779,70 @@ Eclipse就会显示出这个方法被哪些方法调用，最终产生一个调�
 	\label{code:JavaMethodCallHierarchyView}
 \end{figure}
 
+\paragraph{Eclipse模板(Template)}
 
-\subsection{提高启动速度}
+代码模板可以帮助我们固化代码片段，对于经常使用的片段或者功能可以以快捷方式代替。
+例如需要输入Main函数，就不用一字一句敲，使用模板可以快速完成。
+在配置好智能提示后，只需要输入main，根据提示点击确定即可。
+如图\ref{fig:TemplateInputMainMethod}所示：
 
-配置里增加缓存。
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{TemplateInputMainMethod.png}
+	\caption{利用模板功能输入Main函数}
+	\label{fig:TemplateInputMainMethod}
+\end{figure}
+
+Eclipse默认还提供了很多代码模板。打开 Windows->Preferences->Java->Editor->Templates，
+可以看到所有已定义的代码模板列表。
+以前如果你已经习惯了一个字母一个字母的敲的话，那么现在你可以尝试一下键入sysout，
+然后按Alt+/，呵呵，整个语句都自动完成了，而且光标还非常体贴的停在括号中，方便你继续输入.
+在编程中有时还会遇到另一类问题，比如我想把某些代码加到try/catch块中，
+进行异常检测。在代码模板的帮助下，你完全不用手工键入这部分代码，
+也不用去管代码缩进，你只需要选中要处理的代码块，然后按Alt+Shift+Z，
+回车后， Eclipse会自动为所选代码块包上try/catch语句。
+
+\paragraph{Eclipse执行代码片段}
+
+有时像测试某个代码片段的执行结果，
+首先添加一个Scrapbook页，如图\ref{fig:AddScrapbookPage}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.6]{AddScrapbookPage.png}
+	\caption{添加Scrapbook页}
+	\label{fig:AddScrapbookPage}
+\end{figure}
+
+在页面中写好代码右键点击执行即可。
+
+
+\subsection{Eclipse中package,source folder,folder区别}
+
+在Eclipse下,package,source folder,folder本质上都是文件夹.
+
+它们的区别如下: 
+package:package属于source folder，当你在建立一个package,
+必须建立在source folder下，如果直接建立一个类，
+则它自动建立到(default package)包下.
+
+source folder:存放java源代码的文件夹,当然也包括一些package文件夹,
+还可以包含其他文件. 
+source folder里面的java类会自动编译成class文件到相应的bin文件夹中,
+其他文件也会移到到相应的目录下.
+
+folder:里面可以放入任何文件.包括java源文件,jar文件,其他文件(例如,图片,声音等).
+在此我说明一下,如果里面含有java源文件,不管程序是否正确,eclipse都不会报错,
+把它们当做普通文件处理.但是项目如果要使用这里面的文件,情况就不同了.
+
+package,source folder,folder 之间相互转换：
+package 转成 folder ：选中package, build path-> Exclude 
+folder 转成 package ：选中folder, build path-> Include
+
+package 转成 source folder ：选中package, build path-> Use as Source folder 
+source folder 转成 package ：选中folder, build path-> Remove from BuildPath
+src目录存放源码。在Eclipse的项目视图中对应为Java Resources/src。
+还有注意左侧项目树是包视图(Package Explorer)还是项目视图(Project Explorer).
 
 \subsection{Plugin}
 
@@ -15799,9 +15864,12 @@ Buildship 1.0 版专注于 Gradle 用户，之后的版本会扩大至 Gradle �
 
 \paragraph{Properties Editor}
 
-在eclipse中编写properties文件时，如果直接写中文，它不会自动转换成ASCII编码，
-在浏览器中就会显示为乱码。
-那么怎么解决这个问题呢-->安装properties插件。该插件可以在输入中文时自动转换为ASCII码。
+在Eclipse中编写properties文件时，如果直接写中文，
+在编辑器中就会显示为乱码。
+那么怎么解决这个问题呢-->安装Properties Editor插件。
+使用Properties Editor插件(此类插件有许多，注意名字是Properties Editor)
+则可以在Eclipse中直接编辑带中文信息的Java属性文件，
+并自动存盘为Unicode格式，无需二次转码了。
 
 \paragraph{FindBugs}
 
@@ -15888,6 +15956,17 @@ PMD能够扫描Java 源代码，查找类似以下的潜在问题：
 过于复杂的表达式 - 没有必要使用if语句、while循环可以代替for循环；重复代码 - 复制/粘贴的代码引发的bug。
 PMD集成了JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, 
 NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, 以及 Emacs。
+
+\paragraph{MyBatis-Generator}
+
+MyBatis Generator (MBG) is a code generator for MyBatis MyBatis and iBATIS. 
+It will generate code for all versions of MyBatis, and versions of iBATIS after version 2.2.0. 
+It will introspect a database table (or many tables) and will generate artifacts 
+that can be used to access the table(s). 
+This lessens the initial nuisance of setting up objects and configuration files to interact 
+with database tables. MBG seeks to make a major impact on the large percentage of database 
+operations that are simple CRUD (Create, Retrieve, Update, Delete). 
+You will still need to hand code SQL and objects for join queries, or stored procedures.
 
 \subsection{Eclipse Multiple annotations found at this line}
 
@@ -16695,6 +16774,7 @@ Cglib动态代理，采用的是继承方式，它会在底层创建一个类，
 但是这个子类所有的方法都是直接调用父类去实现，相当于父类的一个代理、封装(封装的目的是支持事务处理)，
 实际上我们在程序中使用的是这个子类的对象，并不是ApplyStatusHandler的对象。
 通过这两种代理方式，才让Spring可以支持事务、管理对象。
+动态代理类的名称以“\$ProxyN”开头,N是代理类的唯一编号.
 
 \paragraph{java.lang.reflect.Proxy}
 
@@ -17815,10 +17895,12 @@ Servlet使你能够编写根据请求动态生成内容的服务端组件。
 Servlet是一个在javax.servlet包里定义的接口。
 它为Servlet的生命周期声明了三个基本方法——init()、service()和destroy()。
 每个Servlet都要实现这些方法并在它们的生命周期的特定时间由服务器来调用这些方法。
-类加载器通过懒加载（lazy-loading）或者
-预加载（eager loading）自动地把Servlet类加载到容器里。
+类加载器通过懒加载(lazy-loading)或者
+预加载(eager loading)自动地把Servlet类加载到容器里。
 每个请求都拥有自己的线程，而一个Servlet对象可以同时为多个线程服务。
 当Servlet对象不再被使用时，它就会被JVM当做垃圾回收掉。
+struts神马的不过是对servlet、filter的封装而已，
+Hibernate也是对jdbc的封装而已，他们只是把一些常见的操作流程化了
 
 \paragraph{ServletContext}
 
