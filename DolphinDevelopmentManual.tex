@@ -15816,6 +15816,14 @@ Eclipse默认还提供了很多代码模板。打开 Windows->Preferences->Java-
 
 在页面中写好代码右键点击执行即可。
 
+\paragraph{代码重构-重命名}
+
+重命名属性及方法在几年前还是个很麻烦的事，需要大量使用搜索及替换，
+以至于代码变得零零散散的。今天的Java IDE提供源码处理功能，Eclipse也是一样。
+现在，变量和方法的重命名变得十分简单，你会习惯于在每次出现更好替代名称的时候都做一次重命名。
+要使 用这个功能，将鼠标移动至属性名或方法名上，按下alt+shift+r，
+输入新名称并点击回车。就此完成。如果你重命名的是类中的一个属性，
+你可以点击alt+shift+r两次，这会呼叫出源码处理对话框，可以实现get及set方法的自动重命名。
 
 \subsection{Eclipse中package,source folder,folder区别}
 
@@ -15990,16 +15998,20 @@ Enable project specific settings”,同时选中“Suspend all validators”.
 Project > Clean
 \end{lstlisting}
 
-eclipse -->project -->clean... 选项， 将工程中的.class文件删除，
+eclipse -->project -->clean... 选项，将工程中的.class文件删除，
 同时重新编译工程(Java文件)，
 类似于jbuild中的rebuild。It removes whatever already-compiled files 
 are in your project so that you can do a complete fresh rebuild.
 
-\subsection{配置项目}
+\subsection{Web项目}
 
-\subsection{从SVN检出项目}
+Web项目在Eclipse本地Apache Tomcat的运行路径为：
 
-Import->SVN。
+\begin{lstlisting}
+\.metadata\.plugins\org.eclipse.wst.server.core
+\end{lstlisting}
+
+
 
 \section{Gradle}
 
@@ -18755,7 +18767,8 @@ tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>140' -vv
 端口是6973,数据包长度大于140字节，抓取100个数据包的网络数据：
 
 \begin{lstlisting}[language=Bash]
-tcpdump -i eth1 tcp and dst host 12.26.32.14 and port 6973 and 'ip[2:2]>140' -vv -X -c 100
+tcpdump -i eth1 tcp and dst host 192.168.24.244 and port 6970 and 'ip[2:2]>140' -vv -X -c 100
+tcpdump -i eth1 tcp and host 192.168.24.244 and port 6970 -vv -X -c 100
 \end{lstlisting}
 
 抓取所有经过eth1，数据包类型是TCP，目的地址是12.26.32.14，端口是6973,数据包长度大于140字节，
