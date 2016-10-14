@@ -17834,6 +17834,7 @@ but you can modify them in the launcher configuration for the application you wn
 \subsection{WEB-INF}
 
 WEB-INF是Java的WEB应用的安全目录。所谓安全就是客户端无法访问，只有服务端可以访问的目录。
+INF是Information的缩写。
 WEB-INF文件夹下除了web.xml外，还存一个classes文件夹，用以放置 *.class文件，
 这些 *.class文件是网站设计人员编写的类库，实现了jsp页面前台美工与后台服务的分离，
 使得网站的维护非常方便。web.xml文件为网站部署描述XML文件，对网站的部署非常重要。
@@ -18563,8 +18564,6 @@ v代表verbosse，即输出详细的信息。
 scp是有Security的文件copy，基于ssh登录。 
 
 \begin{lstlisting}[language=Bash]
-scp -r -P 50000 root@servername:/root/package/scripts ./
-
 #将本地文件夹上传到服务器
 scp -r /tmp/local_dir username@servername:remote_dir
 
@@ -22867,7 +22866,6 @@ $ hexo generate
 $ hexo s
 \end{lstlisting}
 
-![](images\maven-private-service\nexus-main-page.png)
 
 \section{PowerDesigner(Commercial)}
 
